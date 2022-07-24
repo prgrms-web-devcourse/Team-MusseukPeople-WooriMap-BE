@@ -9,18 +9,21 @@ permissions:
   contents: read
 
 jobs:
-  DEV-CD:
+  PROD-CD:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{secrets.GIT_TOKEN}}
+          submodules: true
+        
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
-          token: ${{secrets.GIT_TOKEN}}
-          submodules: true
 
       - name: Cache Gradle packages
         uses: actions/cache@v1
@@ -29,33 +32,24 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      # create application-prod.yml
-      - name: make application-prod.yml
-        run: |
-          cd ./../../src/main/resources
-          touch ./application-prod.yml
-          echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
-        shell: bash
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build with Gradle
         run: ./gradlew clean build
 
-      ## docker build & push to develop
       - name: Docker build & push to prod
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_REPO }}/woorimap-prod .
+          docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_REPO }}/woorimap-prod .
           docker push ${{ secrets.DOCKER_REPO }}/woorimap-prod
 
-      ## deploy to develop
+      ## deploy to prod
       - name: Deploy to prod
         uses: appleboy/ssh-action@master
         id: deploy-prod
         with:
-          host: ${{ secrets.HOST_DEV }}
+          host: ${{ secrets.HOST_PROD }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: 22
