@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <property name="LOG_PATTERN"
+              value="%clr(%d{yyyy-MM-dd HH:mm:ss}){yellow} [%thread] %clr(%-5level) %logger{36} - %msg%n"/>
+
+    <include resource="appender/console-appender.xml"/>
+
+    <springProfile name="test">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE_APPENDER"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="local">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE_APPENDER"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <property name="LOG_PATH" value="./logs"/>
+        <include resource="appender/info-file-appender.xml"/>
+        <include resource="appender/warn-file-appender.xml"/>
+        <include resource="appender/error-file-appender.xml"/>
+        <include resource="appender/sql-file-appender.xml"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE_APPENDER"/>
+            <appender-ref ref="INFO_FILE"/>
+            <appender-ref ref="WARN_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+
+        <logger name="org.hibernate.SQL" level="DEBUG">
+            <appender-ref ref="SQL_FILE"/>
+        </logger>
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additivity="false">
+            <appender-ref ref="SQL_FILE"/>
+        </logger>
+        <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="TRACE" additivity="false">
+            <appender-ref ref="SQL_FILE"/>
+        </logger>
+    </springProfile>
+
+</configuration>
