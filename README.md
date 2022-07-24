@@ -1,16 +1,10 @@
 # Team-MusseukPeople-WooriMap-BE
-
----
 ## 📔 [머슥한녀석들의 프로젝트 노션](https://www.notion.so/backend-devcourse/02-2183133deb8a4dd4a88c6cba2ee10004)
 
 # 프로젝트 소개
-
---- 
 우리 커플의 추억 장소 공유 프로젝트
 
 # 팀원 소개
-
---- 
 ## [Backend]
 <table>
     <tr>
@@ -82,16 +76,12 @@
 </table>
 
 # 커뮤니케이션
-
----
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 <img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white">
 <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white">
 <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 
 # 기술 스택
-
----
 - Java 11
 - Gradle 
 - Spring Boot 
