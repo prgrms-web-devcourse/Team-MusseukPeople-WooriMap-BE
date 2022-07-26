@@ -9,6 +9,7 @@ services:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_USER=woorimap
       - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=woorimap
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
