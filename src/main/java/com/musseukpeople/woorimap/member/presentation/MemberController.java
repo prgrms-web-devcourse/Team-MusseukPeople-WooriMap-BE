@@ -9,15 +9,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.musseukpeople.woorimap.member.application.MemberService;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/members")
 public class MemberController {
 
+	private final MemberService memberService;
+
 	@PostMapping("/signup")
 	public ResponseEntity<Void> signUp(@Valid @RequestBody SignupRequest signupRequest) {
+		memberService.createMember(signupRequest);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
-
 }

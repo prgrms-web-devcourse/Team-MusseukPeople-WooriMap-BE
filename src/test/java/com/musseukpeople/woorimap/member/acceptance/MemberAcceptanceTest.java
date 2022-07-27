@@ -19,7 +19,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
 	@Test
 	void signup_success() throws Exception {
 		// given
-		SignupRequest signupRequest = new SignupRequest("test@gmail.com", "!@#asdasd", "hwan");
+		SignupRequest signupRequest = new SignupRequest("test@gmail.com", "!Hwan1234", "hwan");
 
 		// when
 		MockHttpServletResponse response = mockMvc.perform(post("/api/members/signup")
