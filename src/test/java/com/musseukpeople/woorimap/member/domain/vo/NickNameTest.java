@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 class NickNameTest {
 
 	@DisplayName("닉네임 생성 성공")
-	@ParameterizedTest(name = "name : {0}")
+	@ParameterizedTest(name = "닉네임 : {0}")
 	@ValueSource(strings = {"우리맵", "hwan", "mato", "willhwanmatoooo"})
 	void createNickName_success(String value) {
 		// given
@@ -23,7 +23,7 @@ class NickNameTest {
 	}
 
 	@DisplayName("닉네임 생성 빈 값으로 인한 실패")
-	@ParameterizedTest(name = "name : {0}")
+	@ParameterizedTest(name = "닉네임 : {0}")
 	@NullAndEmptySource
 	void createNickName_fail_empty(String value) {
 		assertThatThrownBy(() -> new NickName(value))

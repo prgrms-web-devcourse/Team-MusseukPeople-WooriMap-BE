@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 class EmailTest {
 
 	@DisplayName("이메일 생성 성공")
-	@ParameterizedTest(name = "value : {0}")
+	@ParameterizedTest(name = "이메일 : {0}")
 	@ValueSource(strings = {"test@gmail.com", "woorimap@naver.com", "hwan@daum.com"})
 	void createEmail_success(String value) {
 		// given
@@ -23,7 +23,7 @@ class EmailTest {
 	}
 
 	@DisplayName("이메일 생성 빈 값으로 인한 실패")
-	@ParameterizedTest
+	@ParameterizedTest(name = "이메일 : {0}")
 	@NullAndEmptySource
 	void createEmail_fail_nullOrBlank(String value) {
 		assertThatThrownBy(() -> new Email(value))
@@ -45,7 +45,7 @@ class EmailTest {
 	}
 
 	@DisplayName("이메일 생성 이메일 형식 불일치로 인한 실패")
-	@ParameterizedTest(name = "value : {0}")
+	@ParameterizedTest(name = "이메일 : {0}")
 	@ValueSource(strings = {"test@nnnnn", "woorimap", "test@.com"})
 	void createEmail_fail_notCorrectEmail(String value) {
 		assertThatThrownBy(() -> new Email(value))
