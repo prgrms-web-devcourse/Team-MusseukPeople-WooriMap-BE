@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.member.domain;
+package com.musseukpeople.woorimap.member.domain.vo;
 
 import static org.assertj.core.api.Assertions.*;
 

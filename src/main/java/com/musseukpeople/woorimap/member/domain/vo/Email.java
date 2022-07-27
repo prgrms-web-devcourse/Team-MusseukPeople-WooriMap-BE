@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.member.domain;
+package com.musseukpeople.woorimap.member.domain.vo;
 
 import static com.google.common.base.Preconditions.*;
 import static java.text.MessageFormat.*;
