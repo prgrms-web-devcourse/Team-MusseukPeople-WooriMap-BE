@@ -11,11 +11,13 @@ import javax.persistence.Embeddable;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Embeddable
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Email {
 
@@ -32,9 +34,9 @@ public class Email {
 	}
 
 	private void validateEmail(String value) {
-		checkArgument(!StringUtils.isBlank(value), format("이메일은 비어있을 수 없습니다. email = {0}", value));
+		checkArgument(!StringUtils.isBlank(value), format("이메일은 비어있을 수 없습니다. 현재 이메일 : {0}", value));
 		checkArgument(value.length() <= MAX_EMAIL_LENGTH,
-			format("이메일은 {0}글자를 초과할 수 없습니다. emailLength = {1}", MAX_EMAIL_LENGTH, value.length()));
-		checkArgument(EMAIL_FORMAT_PATTERN.matcher(value).matches(), format("올바른 이메일 형식이 아닙니다. email = {0}", value));
+			format("이메일은 {0}글자를 초과할 수 없습니다. 현재 이메일 길이: {1}", MAX_EMAIL_LENGTH, value.length()));
+		checkArgument(EMAIL_FORMAT_PATTERN.matcher(value).matches(), format("올바른 이메일 형식이 아닙니다. 현재 이메일 : {0}", value));
 	}
 }

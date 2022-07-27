@@ -9,11 +9,13 @@ import javax.persistence.Embeddable;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Embeddable
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class NickName {
 
@@ -28,8 +30,8 @@ public class NickName {
 	}
 
 	private void validateNickName(String value) {
-		checkArgument(!StringUtils.isBlank(value), format("닉네임은 비어있을 수 없습니다. nickName = {0}", value));
+		checkArgument(!StringUtils.isBlank(value), format("닉네임은 비어있을 수 없습니다. 현재 닉네임 : {0}", value));
 		checkArgument(value.length() <= MAX_NICKNAME_LENGTH,
-			format("닉네임은 {0}글자를 초과할 수 없습니다. nickNameLength = {1}", MAX_NICKNAME_LENGTH, value.length()));
+			format("닉네임은 {0}글자를 초과할 수 없습니다. 현재 닉네임 길이 : {1}", MAX_NICKNAME_LENGTH, value.length()));
 	}
 }
