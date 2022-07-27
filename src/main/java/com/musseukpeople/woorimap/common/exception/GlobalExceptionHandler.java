@@ -15,15 +15,6 @@ public class GlobalExceptionHandler {
 
 	private static final String ERROR_LOG_MESSAGE = "[ERROR] {} : {}";
 
-	@ExceptionHandler(BusinessException.class)
-	protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
-		log.error(ERROR_LOG_MESSAGE, e.getClass().getSimpleName(), e.getMessage(), e);
-		ErrorCode errorCode = e.getErrorCode();
-		return ResponseEntity
-			.status(errorCode.getStatus())
-			.body(ErrorResponse.of(errorCode));
-	}
-
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleException(Exception e) {
 		log.error(ERROR_LOG_MESSAGE, e.getClass().getSimpleName(), e.getMessage(), e);
@@ -49,5 +40,14 @@ public class GlobalExceptionHandler {
 		return ResponseEntity
 			.status(errorCode.getStatus())
 			.body(ErrorResponse.of(errorCode, e.getBindingResult()));
+	}
+
+	@ExceptionHandler(BusinessException.class)
+	public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
+		log.warn(ERROR_LOG_MESSAGE, e.getClass().getSimpleName(), e.getMessage(), e);
+		ErrorCode errorCode = e.getErrorCode();
+		return ResponseEntity
+			.status(errorCode.getStatus())
+			.body(ErrorResponse.of(errorCode));
 	}
 }
