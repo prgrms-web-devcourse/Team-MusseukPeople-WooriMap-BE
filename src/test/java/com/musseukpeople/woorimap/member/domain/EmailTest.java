@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class EmailTest {
 
-	@DisplayName("이메일생성 성공")
+	@DisplayName("이메일 생성 성공")
 	@ParameterizedTest(name = "value : {0}")
 	@ValueSource(strings = {"test@gmail.com", "woorimap@naver.com", "hwan@daum.com"})
 	void createEmail_success(String value) {
@@ -22,7 +22,7 @@ class EmailTest {
 		assertThat(email).isNotNull();
 	}
 
-	@DisplayName("이메일생성 실패 - 비어있으면 안된다.")
+	@DisplayName("이메일 생성 빈 값으로 인한 실패")
 	@ParameterizedTest
 	@NullAndEmptySource
 	void createEmail_fail_nullOrBlank(String value) {
@@ -31,7 +31,7 @@ class EmailTest {
 			.hasMessageContaining("이메일은 비어있을 수 없습니다.");
 	}
 
-	@DisplayName("이메일생성 실패 - 최대 글자수 초과")
+	@DisplayName("이메일 생성 최대 글자수 초과로 인한 실패")
 	@Test
 	void createEmail_fail_overMaxLength() {
 		// given
@@ -44,7 +44,7 @@ class EmailTest {
 			.hasMessageContaining("글자를 초과할 수 없습니다.");
 	}
 
-	@DisplayName("이메일생성 실패 - 이메일 형식 불일치")
+	@DisplayName("이메일 생성 이메일 형식 불일치로 인한 실패")
 	@ParameterizedTest(name = "value : {0}")
 	@ValueSource(strings = {"test@nnnnn", "woorimap", "test@.com"})
 	void createEmail_fail_notCorrectEmail(String value) {
