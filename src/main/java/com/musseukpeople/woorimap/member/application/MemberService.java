@@ -26,11 +26,11 @@ public class MemberService {
 
     @Transactional
     public Long createMember(SignupRequest signupRequest) {
-        Email email = new Email(signupRequest.getEmail());
+        String email = signupRequest.getEmail();
         validateDuplicateEmail(email);
 
         Member member = Member.builder()
-            .email(email)
+            .email(new Email(email))
             .password(Password.encryptPassword(passwordEncoder, signupRequest.getPassword()))
             .nickName(new NickName(signupRequest.getNickName()))
             .build();
@@ -38,13 +38,13 @@ public class MemberService {
     }
 
     public Member getMemberByEmail(String email) {
-        return memberRepository.findMemberByEmail(new Email(email))
+        return memberRepository.findMemberByEmailValue(email)
             .orElseThrow(() -> new NotFoundMemberException(ErrorCode.NOT_FOUND_MEMBER, email));
     }
 
-    private void validateDuplicateEmail(Email email) {
-        if (memberRepository.existsByEmail(email)) {
-            throw new DuplicateEmailException(email.getValue(), ErrorCode.DUPLICATE_EMAIL);
+    private void validateDuplicateEmail(String email) {
+        if (memberRepository.existsByEmailValue(email)) {
+            throw new DuplicateEmailException(email, ErrorCode.DUPLICATE_EMAIL);
         }
     }
 }
