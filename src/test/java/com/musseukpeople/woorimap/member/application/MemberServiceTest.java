@@ -9,12 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
+import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.member.exception.DuplicateEmailException;
 
 @SpringBootTest
 class MemberServiceTest {
-    
+
     @Autowired
     private MemberService memberService;
 
@@ -51,5 +52,19 @@ class MemberServiceTest {
         // then
         assertThatThrownBy(() -> memberService.createMember(duplicateEmailRequest))
             .isInstanceOf(DuplicateEmailException.class);
+    }
+
+    @DisplayName("이메일로 회원 찾기 성공")
+    @Test
+    void getMemberByEmail() {
+        // given
+        String email = "test@gmail.com";
+        Long memberId = memberService.createMember(new SignupRequest(email, "!@Hwan123", "우리맵"));
+
+        // when
+        Member member = memberService.getMemberByEmail(email);
+
+        // then
+        assertThat(member.getId()).isEqualTo(memberId);
     }
 }
