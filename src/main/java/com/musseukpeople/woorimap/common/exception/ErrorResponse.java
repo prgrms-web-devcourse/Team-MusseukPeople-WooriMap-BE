@@ -7,16 +7,19 @@ import org.springframework.validation.BindingResult;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorResponse {
 
-	private final String message;
-	private final String code;
+	private String message;
+	private String code;
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private final List<FieldError> errors;
+	private List<FieldError> errors;
 
 	private ErrorResponse(String message, String code, List<FieldError> errors) {
 		this.message = message;
