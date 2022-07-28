@@ -13,8 +13,8 @@ import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
 @RestController
 public class AuthController {
 
-	@PostMapping("api/signin")
-	public ResponseEntity<TokenResponse> signIn(@Valid @RequestBody SignInRequest signInRequest) {
-		return ResponseEntity.ok().build();
-	}
+    @PostMapping("api/signin")
+    public ResponseEntity<TokenResponse> signIn(@Valid @RequestBody SignInRequest signInRequest) {
+        return ResponseEntity.ok().build();
+    }
 }
