@@ -25,7 +25,7 @@ class CoupleTest {
 	}
 
 	@DisplayName("현재 이후 날짜로 인한 생성 실패")
-	@ParameterizedTest
+	@ParameterizedTest(name = "현재 날짜 + {0} 일")
 	@ValueSource(
 		ints = {1, 22, 333, 4444, 55555}
 	)
