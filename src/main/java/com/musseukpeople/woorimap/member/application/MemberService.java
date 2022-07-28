@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
@@ -37,7 +38,7 @@ public class MemberService {
 
 	private void validateDuplicateEmail(Email email) {
 		if (memberRepository.existsByEmail(email)) {
-			throw new DuplicateEmailException();
+			throw new DuplicateEmailException(email.getValue(), ErrorCode.DUPLICATE_EMAIL);
 		}
 	}
 

@@ -15,17 +15,19 @@ public enum ErrorCode {
 	METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "C002", " 메소드를 사용할 수 없습니다."),
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C003", " 서버 에러입니다."),
 	INVALID_TYPE_VALUE(HttpStatus.BAD_REQUEST, "C004", " 잘못된 타입입니다."),
-	HANDLE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "C005", " 접근 권한이 없습니다.");
+	HANDLE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "C005", " 접근 권한이 없습니다."),
 
 	//User
+	LOGIN_FAILED(HttpStatus.BAD_REQUEST, "U001", "이메일 또는 비밀번호가 일치하지 않습니다"),
+	DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "U002", "중복된 이메일입니다.");
 
 	//Couple
 
 	//Post
 
+	private final HttpStatus status;
 	private final String code;
 	private final String message;
-	private final HttpStatus status;
 
 	ErrorCode(HttpStatus status, String code, String message) {
 		this.status = status;

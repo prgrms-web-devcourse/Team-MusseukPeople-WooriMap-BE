@@ -9,6 +9,7 @@ import javax.persistence.Id;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.member.domain.vo.Email;
 import com.musseukpeople.woorimap.member.domain.vo.NickName;
 import com.musseukpeople.woorimap.member.domain.vo.Password;
@@ -50,7 +51,7 @@ public class Member {
 
 	public void checkPassword(PasswordEncoder passwordEncoder, String inputPassword) {
 		if (this.password.isNotSamePassword(passwordEncoder, inputPassword)) {
-			throw new LoginFailedException();
+			throw new LoginFailedException(ErrorCode.LOGIN_FAILED);
 		}
 	}
 }
