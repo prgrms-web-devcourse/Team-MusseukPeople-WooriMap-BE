@@ -18,18 +18,22 @@ public class ErrorResponse {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private final List<FieldError> errors;
 
-	private ErrorResponse(ErrorCode code, List<FieldError> errors) {
-		this.message = code.getMessage();
-		this.code = code.getCode();
+	private ErrorResponse(String message, String code, List<FieldError> errors) {
+		this.message = message;
+		this.code = code;
 		this.errors = errors;
 	}
 
-	public static ErrorResponse of(ErrorCode code, BindingResult bindingResult) {
-		return new ErrorResponse(code, FieldError.of(bindingResult));
+	public static ErrorResponse of(ErrorCode code) {
+		return new ErrorResponse(code.getMessage(), code.getCode(), null);
 	}
 
-	public static ErrorResponse of(ErrorCode code) {
-		return new ErrorResponse(code, null);
+	public static ErrorResponse of(ErrorCode code, String message) {
+		return new ErrorResponse(message, code.getCode(), null);
+	}
+
+	public static ErrorResponse of(ErrorCode code, BindingResult bindingResult) {
+		return new ErrorResponse(code.getMessage(), code.getCode(), FieldError.of(bindingResult));
 	}
 
 	@Getter
