@@ -40,7 +40,7 @@ public class Password {
 
     private static void validatePassword(String value) {
         checkArgument(MIN_LENGTH <= value.length() && value.length() <= MAX_LENGTH,
-            format("비밀번호는 {0}자 이상 {1}자 이하입니다. 현재 비밀번호 길이: {2}", MIN_LENGTH, MAX_LENGTH, value.length()));
+            format("비밀번호는 {0}자 이상 {1}자 이하입니다.", MIN_LENGTH, MAX_LENGTH));
         checkArgument(PASSWORD_FORMAT_PATTERN.matcher(value).matches(), "비밀번호는 대소문자, 숫자, 특수 문자를 포함해야 생성 가능합니다.");
     }
 
