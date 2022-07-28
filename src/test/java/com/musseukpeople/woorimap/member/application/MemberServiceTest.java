@@ -14,6 +14,7 @@ import com.musseukpeople.woorimap.member.exception.DuplicateEmailException;
 
 @SpringBootTest
 class MemberServiceTest {
+    
     @Autowired
     private MemberService memberService;
 

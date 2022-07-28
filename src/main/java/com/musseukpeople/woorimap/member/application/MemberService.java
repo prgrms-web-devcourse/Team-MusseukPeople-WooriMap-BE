@@ -41,5 +41,4 @@ public class MemberService {
             throw new DuplicateEmailException(email.getValue(), ErrorCode.DUPLICATE_EMAIL);
         }
     }
-
 }

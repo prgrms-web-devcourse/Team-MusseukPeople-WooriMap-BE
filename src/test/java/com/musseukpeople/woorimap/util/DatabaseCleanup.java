@@ -43,5 +43,4 @@ public class DatabaseCleanup implements InitializingBean {
 
         entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1;").executeUpdate();
     }
-
 }
