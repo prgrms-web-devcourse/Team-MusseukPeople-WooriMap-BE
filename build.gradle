@@ -1,5 +1,5 @@
-buildscript{
-    ext{
+buildscript {
+    ext {
         queryDslVersion = "5.0.0"
     }
 }
@@ -52,6 +52,9 @@ dependencies {
     // Guava
     implementation 'com.google.guava:guava:31.1-jre'
 
+    // Security
+    implementation 'org.springframework.security:spring-security-crypto:5.7.2'
+
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -62,15 +65,15 @@ tasks.named('test') {
 
 //querydsl
 def querydslDir = "$buildDir/generated/querydsl"
-querydsl{
+querydsl {
     jpa = true
     querydslSourcesDir = querydslDir
 }
 
-sourceSets{
+sourceSets {
     main.java.srcDir querydslDir
 }
 
-compileQuerydsl{
+compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
 }
