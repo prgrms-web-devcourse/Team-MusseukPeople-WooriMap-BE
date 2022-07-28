@@ -3,13 +3,17 @@ package com.musseukpeople.woorimap.member.domain;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.member.domain.vo.Email;
 import com.musseukpeople.woorimap.member.domain.vo.NickName;
 import com.musseukpeople.woorimap.member.domain.vo.Password;
@@ -41,6 +45,10 @@ public class Member {
     @Column
     private String imageUrl;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "couple_id")
+    private Couple couple;
+
     @Builder
     public Member(Email email, Password password, NickName nickName, String imageUrl) {
         this.email = email;
@@ -53,5 +61,13 @@ public class Member {
         if (this.password.isNotSamePassword(passwordEncoder, inputPassword)) {
             throw new LoginFailedException(ErrorCode.LOGIN_FAILED);
         }
+    }
+
+    public void changeCouple(Couple couple) {
+        this.couple = couple;
+    }
+
+    public void breakUp() {
+        this.couple = null;
     }
 }
