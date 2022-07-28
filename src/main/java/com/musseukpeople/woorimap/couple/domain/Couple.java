@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,19 +20,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Couple {
 
-	private static final LocalDate START_LIMIT_DATE = LocalDate.now().plusDays(1);
+    private static final LocalDate START_LIMIT_DATE = LocalDate.now().plusDays(1);
 
-	@Id
-	@GeneratedValue
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate startDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate startDate;
 
-	public Couple(LocalDate startDate) {
-		checkArgument(startDate.isBefore(START_LIMIT_DATE),
-			"현재 이후 날짜로 커플을 생성할 수 없습니다.");
+    public Couple(LocalDate startDate) {
+        checkArgument(startDate.isBefore(START_LIMIT_DATE),
+            "현재 이후 날짜로 커플을 생성할 수 없습니다.");
 
-		this.startDate = startDate;
-	}
+        this.startDate = startDate;
+    }
 }
