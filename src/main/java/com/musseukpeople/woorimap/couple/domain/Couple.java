@@ -13,12 +13,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Couple {
-
-    private static final LocalDate START_LIMIT_DATE = LocalDate.now().plusDays(1);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +25,7 @@ public class Couple {
     private LocalDate startDate;
 
     public Couple(LocalDate startDate) {
-        checkArgument(startDate.isBefore(START_LIMIT_DATE),
+        checkArgument(startDate.isBefore(LocalDate.now().plusDays(1)),
             "현재 이후 날짜로 커플을 생성할 수 없습니다.");
 
         this.startDate = startDate;
