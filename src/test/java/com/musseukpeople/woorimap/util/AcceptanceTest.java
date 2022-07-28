@@ -12,17 +12,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc
 public abstract class AcceptanceTest {
 
-	@Autowired
-	protected MockMvc mockMvc;
+    @Autowired
+    protected MockMvc mockMvc;
 
-	@Autowired
-	protected ObjectMapper objectMapper;
+    @Autowired
+    protected ObjectMapper objectMapper;
 
-	@Autowired
-	private DatabaseCleanup databaseCleanup;
+    @Autowired
+    private DatabaseCleanup databaseCleanup;
 
-	@AfterEach
-	void tearDown() {
-		databaseCleanup.execute();
-	}
+    @AfterEach
+    void tearDown() {
+        databaseCleanup.execute();
+    }
 }

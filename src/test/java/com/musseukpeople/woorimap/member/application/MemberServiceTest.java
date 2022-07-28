@@ -14,41 +14,41 @@ import com.musseukpeople.woorimap.member.exception.DuplicateEmailException;
 
 @SpringBootTest
 class MemberServiceTest {
-	@Autowired
-	private MemberService memberService;
+    @Autowired
+    private MemberService memberService;
 
-	@Autowired
-	private MemberRepository memberRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
-	@AfterEach
-	void tearDown() {
-		memberRepository.deleteAllInBatch();
-	}
+    @AfterEach
+    void tearDown() {
+        memberRepository.deleteAllInBatch();
+    }
 
-	@DisplayName("회원 생성 성공")
-	@Test
-	void createMember_success() {
-		// given
-		SignupRequest signupRequest = new SignupRequest("test@gmail.com", "!@Hwan123", "우리맵");
+    @DisplayName("회원 생성 성공")
+    @Test
+    void createMember_success() {
+        // given
+        SignupRequest signupRequest = new SignupRequest("test@gmail.com", "!@Hwan123", "우리맵");
 
-		// when
-		Long id = memberService.createMember(signupRequest);
+        // when
+        Long id = memberService.createMember(signupRequest);
 
-		// then
-		assertThat(id).isPositive();
-	}
+        // then
+        assertThat(id).isPositive();
+    }
 
-	@DisplayName("중복 이메일로 인한 회원 생성 실패")
-	@Test
-	void createMember_fail_duplicateEmail() {
-		// given
-		String email = "test@gmail.com";
-		memberService.createMember(new SignupRequest(email, "!@Hwan123", "우리맵"));
-		SignupRequest duplicateEmailRequest = new SignupRequest(email, "!@Test123", "우리맵");
+    @DisplayName("중복 이메일로 인한 회원 생성 실패")
+    @Test
+    void createMember_fail_duplicateEmail() {
+        // given
+        String email = "test@gmail.com";
+        memberService.createMember(new SignupRequest(email, "!@Hwan123", "우리맵"));
+        SignupRequest duplicateEmailRequest = new SignupRequest(email, "!@Test123", "우리맵");
 
-		// when
-		// then
-		assertThatThrownBy(() -> memberService.createMember(duplicateEmailRequest))
-			.isInstanceOf(DuplicateEmailException.class);
-	}
+        // when
+        // then
+        assertThatThrownBy(() -> memberService.createMember(duplicateEmailRequest))
+            .isInstanceOf(DuplicateEmailException.class);
+    }
 }

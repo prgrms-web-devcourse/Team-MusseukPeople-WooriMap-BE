@@ -20,26 +20,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberService {
 
-	private final MemberRepository memberRepository;
-	private final PasswordEncoder passwordEncoder;
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-	@Transactional
-	public Long createMember(SignupRequest signupRequest) {
-		Email email = new Email(signupRequest.getEmail());
-		validateDuplicateEmail(email);
+    @Transactional
+    public Long createMember(SignupRequest signupRequest) {
+        Email email = new Email(signupRequest.getEmail());
+        validateDuplicateEmail(email);
 
-		Member member = Member.builder()
-			.email(email)
-			.password(Password.encryptPassword(passwordEncoder, signupRequest.getPassword()))
-			.nickName(new NickName(signupRequest.getNickName()))
-			.build();
-		return memberRepository.save(member).getId();
-	}
+        Member member = Member.builder()
+            .email(email)
+            .password(Password.encryptPassword(passwordEncoder, signupRequest.getPassword()))
+            .nickName(new NickName(signupRequest.getNickName()))
+            .build();
+        return memberRepository.save(member).getId();
+    }
 
-	private void validateDuplicateEmail(Email email) {
-		if (memberRepository.existsByEmail(email)) {
-			throw new DuplicateEmailException(email.getValue(), ErrorCode.DUPLICATE_EMAIL);
-		}
-	}
+    private void validateDuplicateEmail(Email email) {
+        if (memberRepository.existsByEmail(email)) {
+            throw new DuplicateEmailException(email.getValue(), ErrorCode.DUPLICATE_EMAIL);
+        }
+    }
 
 }

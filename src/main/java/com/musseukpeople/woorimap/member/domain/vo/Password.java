@@ -21,30 +21,30 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class Password {
 
-	private static final String PASSWORD_FORMAT_REGEX = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W])).*";
-	private static final Pattern PASSWORD_FORMAT_PATTERN = Pattern.compile(PASSWORD_FORMAT_REGEX);
-	private static final int MIN_LENGTH = 8;
-	private static final int MAX_LENGTH = 20;
+    private static final String PASSWORD_FORMAT_REGEX = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W])).*";
+    private static final Pattern PASSWORD_FORMAT_PATTERN = Pattern.compile(PASSWORD_FORMAT_REGEX);
+    private static final int MIN_LENGTH = 8;
+    private static final int MAX_LENGTH = 20;
 
-	@Column(name = "password", nullable = false)
-	private String value;
+    @Column(name = "password", nullable = false)
+    private String value;
 
-	private Password(String value) {
-		this.value = value;
-	}
+    private Password(String value) {
+        this.value = value;
+    }
 
-	public static Password encryptPassword(PasswordEncoder passwordEncoder, String value) {
-		validatePassword(value);
-		return new Password(passwordEncoder.encode(value));
-	}
+    public static Password encryptPassword(PasswordEncoder passwordEncoder, String value) {
+        validatePassword(value);
+        return new Password(passwordEncoder.encode(value));
+    }
 
-	private static void validatePassword(String value) {
-		checkArgument(MIN_LENGTH <= value.length() && value.length() <= MAX_LENGTH,
-			format("비밀번호는 {0}자 이상 {1}자 이하입니다. 현재 비밀번호 길이: {2}", MIN_LENGTH, MAX_LENGTH, value.length()));
-		checkArgument(PASSWORD_FORMAT_PATTERN.matcher(value).matches(), "비밀번호는 대소문자, 숫자, 특수 문자를 포함해야 생성 가능합니다.");
-	}
+    private static void validatePassword(String value) {
+        checkArgument(MIN_LENGTH <= value.length() && value.length() <= MAX_LENGTH,
+            format("비밀번호는 {0}자 이상 {1}자 이하입니다. 현재 비밀번호 길이: {2}", MIN_LENGTH, MAX_LENGTH, value.length()));
+        checkArgument(PASSWORD_FORMAT_PATTERN.matcher(value).matches(), "비밀번호는 대소문자, 숫자, 특수 문자를 포함해야 생성 가능합니다.");
+    }
 
-	public boolean isNotSamePassword(PasswordEncoder passwordEncoder, String inputPassword) {
-		return !passwordEncoder.matches(inputPassword, this.value);
-	}
+    public boolean isNotSamePassword(PasswordEncoder passwordEncoder, String inputPassword) {
+        return !passwordEncoder.matches(inputPassword, this.value);
+    }
 }

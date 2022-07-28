@@ -25,33 +25,33 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Embedded
-	private Email email;
+    @Embedded
+    private Email email;
 
-	@Embedded
-	private Password password;
+    @Embedded
+    private Password password;
 
-	@Embedded
-	private NickName nickName;
+    @Embedded
+    private NickName nickName;
 
-	@Column
-	private String imageUrl;
+    @Column
+    private String imageUrl;
 
-	@Builder
-	public Member(Email email, Password password, NickName nickName, String imageUrl) {
-		this.email = email;
-		this.password = password;
-		this.nickName = nickName;
-		this.imageUrl = imageUrl;
-	}
+    @Builder
+    public Member(Email email, Password password, NickName nickName, String imageUrl) {
+        this.email = email;
+        this.password = password;
+        this.nickName = nickName;
+        this.imageUrl = imageUrl;
+    }
 
-	public void checkPassword(PasswordEncoder passwordEncoder, String inputPassword) {
-		if (this.password.isNotSamePassword(passwordEncoder, inputPassword)) {
-			throw new LoginFailedException(ErrorCode.LOGIN_FAILED);
-		}
-	}
+    public void checkPassword(PasswordEncoder passwordEncoder, String inputPassword) {
+        if (this.password.isNotSamePassword(passwordEncoder, inputPassword)) {
+            throw new LoginFailedException(ErrorCode.LOGIN_FAILED);
+        }
+    }
 }

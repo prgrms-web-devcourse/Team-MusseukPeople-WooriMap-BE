@@ -10,10 +10,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 public class HealthCheckController {
 
-	@Operation(summary = "헬스 체크", description = "서버 실행 여부를 확인합니다.")
-	@GetMapping("/health")
-	public String check() {
-		return "Check This Sound";
-	}
+    @Operation(summary = "헬스 체크", description = "서버 실행 여부를 확인합니다.")
+    @GetMapping("/health")
+    public String check() {
+        return "Check This Sound";
+    }
 
 }

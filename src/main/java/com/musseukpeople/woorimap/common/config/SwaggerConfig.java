@@ -11,17 +11,17 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 @Configuration
 public class SwaggerConfig {
 
-	@Bean
-	public OpenAPI openAPI() {
-		String securitySchemeName = "bearer";
-		return new OpenAPI()
-			.components(new Components()
-				.addSecuritySchemes(securitySchemeName, new SecurityScheme()
-					.name(securitySchemeName)
-					.type(SecurityScheme.Type.HTTP)
-					.scheme(securitySchemeName)
-					.bearerFormat("JWT")))
-			.info(new Info().title("WooriMap"));
-	}
+    @Bean
+    public OpenAPI openAPI() {
+        String securitySchemeName = "bearer";
+        return new OpenAPI()
+            .components(new Components()
+                .addSecuritySchemes(securitySchemeName, new SecurityScheme()
+                    .name(securitySchemeName)
+                    .type(SecurityScheme.Type.HTTP)
+                    .scheme(securitySchemeName)
+                    .bearerFormat("JWT")))
+            .info(new Info().title("WooriMap"));
+    }
 
 }
