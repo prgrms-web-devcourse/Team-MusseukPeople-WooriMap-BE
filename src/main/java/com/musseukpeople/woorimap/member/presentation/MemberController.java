@@ -12,14 +12,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.musseukpeople.woorimap.member.application.MemberService;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "멤버", description = "멤버 관련 API입니다.")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/members")
 public class MemberController {
 
 	private final MemberService memberService;
+
+	@Operation(summary = "멤버 회원 가입", description = "멤버 회원 가입 API입니다.")
 
 	@PostMapping("/signup")
 	public ResponseEntity<Void> signUp(@Valid @RequestBody SignupRequest signupRequest) {
