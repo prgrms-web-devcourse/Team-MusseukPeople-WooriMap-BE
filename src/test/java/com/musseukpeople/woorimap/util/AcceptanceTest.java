@@ -14,8 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musseukpeople.woorimap.common.exception.ErrorResponse;
+import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 
 @SpringBootTest
@@ -46,5 +48,11 @@ public abstract class AcceptanceTest {
 
     protected ErrorResponse getErrorResponse(MockHttpServletResponse response) throws IOException {
         return objectMapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
+    }
+
+    protected <T> T getResponseObject(MockHttpServletResponse response, Class<T> type) throws IOException {
+        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(ApiResponse.class, type);
+        ApiResponse<T> result = objectMapper.readValue(response.getContentAsString(), javaType);
+        return result.getData();
     }
 }

@@ -3,6 +3,7 @@ package com.musseukpeople.woorimap.auth.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,11 @@ class AuthServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @AfterEach
+    void tearDown() {
+        memberRepository.deleteAllInBatch();
+    }
 
     @DisplayName("로그인 성공")
     @Test

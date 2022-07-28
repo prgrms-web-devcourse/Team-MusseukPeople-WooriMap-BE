@@ -7,35 +7,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
+import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
+import com.musseukpeople.woorimap.util.AcceptanceTest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class AuthControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+class AuthControllerTest extends AcceptanceTest {
 
     @DisplayName("로그인 성공")
     @Test
     void signIn_success() throws Exception {
         // given
-        // 회원가입 이후
         String email = "woorimap@gmail.com";
         String password = "!Hwan123";
+        String nickName = "hwan";
+        회원가입(new SignupRequest(email, password, nickName));
         SignInRequest signInRequest = new SignInRequest(email, password);
 
         // when
@@ -46,13 +40,13 @@ class AuthControllerTest {
             .andReturn().getResponse();
 
         // then
-        TokenResponse tokenResponse = objectMapper.readValue(response.getContentAsString(), TokenResponse.class);
+        TokenResponse tokenResponse = getResponseObject(response, TokenResponse.class);
         assertAll(
             () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(tokenResponse.getAccessToken()).isNotBlank(),
             () -> assertThat(tokenResponse.getRefreshToken()).isNotBlank(),
-            () -> assertThat(tokenResponse.getMemberResponse().getEmail()).isEqualTo(email)
+            () -> assertThat(tokenResponse.getMember().getEmail()).isEqualTo(email),
+            () -> assertThat(tokenResponse.getMember().getNickName()).isEqualTo(nickName)
         );
     }
-
 }
