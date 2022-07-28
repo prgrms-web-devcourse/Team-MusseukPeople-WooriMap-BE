@@ -70,4 +70,8 @@ public class Member {
     public void breakUp() {
         this.couple = null;
     }
+
+    public boolean isCouple() {
+        return this.couple != null;
+    }
 }
