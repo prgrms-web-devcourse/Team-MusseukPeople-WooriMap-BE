@@ -12,6 +12,7 @@ import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.member.exception.DuplicateEmailException;
+import com.musseukpeople.woorimap.member.exception.NotFoundMemberException;
 
 @SpringBootTest
 class MemberServiceTest {
@@ -66,5 +67,18 @@ class MemberServiceTest {
 
         // then
         assertThat(member.getId()).isEqualTo(memberId);
+    }
+
+    @DisplayName("저장되지 않는 이메일로 인한 회원 찾기 실패")
+    @Test
+    void getMemberByEmail_notFoundEmail() {
+        // given
+        memberService.createMember(new SignupRequest("test@gmail.com", "!@Hwan123", "우리맵"));
+
+        // when
+        // then
+        assertThatThrownBy(() -> memberService.getMemberByEmail("tt@gmail.com"))
+            .isInstanceOf(NotFoundMemberException.class)
+            .hasMessageContaining("존재하지 않는 회원 이메일입니다.");
     }
 }
