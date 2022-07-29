@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
@@ -42,6 +43,14 @@ public abstract class AcceptanceTest {
         return mockMvc.perform(post("/api/members/signup")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(signupRequest)))
+            .andDo(print())
+            .andReturn().getResponse();
+    }
+
+    protected MockHttpServletResponse 로그인(SignInRequest signInRequest) throws Exception {
+        return mockMvc.perform(post("/api/signin")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(signInRequest)))
             .andDo(print())
             .andReturn().getResponse();
     }
