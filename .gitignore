@@ -19,3 +19,6 @@ out/
 ### log ###
 logs
 
+### Submodules ###
+src/main/resources/application-dev.yml
+

@@ -66,6 +66,14 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+processResources.dependsOn('copySubmodule')
+
+task copySubmodule(type: Copy) {
+    from 'src/main/resources/woorimap-config'
+    include '*.yml'
+    into './src/main/resources'
+}
+
 //querydsl
 def querydslDir = "$buildDir/generated/querydsl"
 querydsl {
