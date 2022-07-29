@@ -11,6 +11,17 @@ import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.presentation.AuthArgumentResolver;
 import com.musseukpeople.woorimap.auth.presentation.AuthInterceptor;
 
+import java.util.List;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.musseukpeople.woorimap.auth.application.JwtProvider;
+import com.musseukpeople.woorimap.auth.presentation.AuthArgumentResolver;
+import com.musseukpeople.woorimap.auth.presentation.AuthInterceptor;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -36,5 +47,17 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**")
             .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
             .exposedHeaders(HttpHeaders.LOCATION);
+    private final JwtProvider jwtProvider;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new AuthInterceptor(jwtProvider))
+            .addPathPatterns("/api/**")
+            .excludePathPatterns("/api/signin", "/api/members/signup");
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new AuthArgumentResolver(jwtProvider));
     }
 }
