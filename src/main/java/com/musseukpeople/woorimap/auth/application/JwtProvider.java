@@ -11,4 +11,6 @@ public interface JwtProvider {
     boolean validateToken(String token);
 
     Claims getClaims(String token);
+
+    String getClaimName();
 }

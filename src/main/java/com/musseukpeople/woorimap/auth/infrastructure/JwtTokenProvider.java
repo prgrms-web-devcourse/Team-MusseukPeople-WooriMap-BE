@@ -22,6 +22,8 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtTokenProvider implements JwtProvider {
 
+    private static final String COUPLE_CLAIM_NAME = "coupleId";
+    
     private final String issuer;
     private final Key secretKey;
     private final long accessTokenValidityInMilliseconds;
@@ -54,7 +56,7 @@ public class JwtTokenProvider implements JwtProvider {
 
         return Jwts.builder()
             .setSubject(payload)
-            .claim("coupleId", coupleId)
+            .claim(COUPLE_CLAIM_NAME, coupleId)
             .setIssuer(issuer)
             .setIssuedAt(now)
             .setExpiration(validity)
@@ -81,6 +83,11 @@ public class JwtTokenProvider implements JwtProvider {
         } catch (JwtException e) {
             throw new InvalidTokenException(token, ErrorCode.INVALID_TOKEN);
         }
+    }
+
+    @Override
+    public String getClaimName() {
+        return COUPLE_CLAIM_NAME;
     }
 
     private Jws<Claims> getClaimsJws(String token) {
