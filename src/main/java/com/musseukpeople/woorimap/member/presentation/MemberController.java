@@ -25,7 +25,6 @@ public class MemberController {
     private final MemberService memberService;
 
     @Operation(summary = "멤버 회원 가입", description = "멤버 회원 가입 API입니다.")
-
     @PostMapping("/signup")
     public ResponseEntity<Void> signUp(@Valid @RequestBody SignupRequest signupRequest) {
         memberService.createMember(signupRequest);
