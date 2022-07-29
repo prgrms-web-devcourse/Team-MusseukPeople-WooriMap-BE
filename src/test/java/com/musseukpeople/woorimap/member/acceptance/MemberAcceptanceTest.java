@@ -29,7 +29,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("중복된 이메일로 인한 회원가입 실패")
     @Test
-    void signup_fail_duplicateEmail() throws Exception {
+    void signup_duplicateEmail_fail() throws Exception {
         // given
         SignupRequest signupRequest = new SignupRequest("test@gmail.com", "!Hwan1234", "hwan");
         회원가입(signupRequest);

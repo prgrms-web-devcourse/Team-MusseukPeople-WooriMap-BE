@@ -8,8 +8,6 @@ import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -19,8 +17,6 @@ import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
 
-@SpringBootTest
-@AutoConfigureMockMvc
 class AuthControllerTest extends AcceptanceTest {
 
     @BeforeEach
@@ -52,7 +48,7 @@ class AuthControllerTest extends AcceptanceTest {
 
     @DisplayName("저장되지 않은 이메일로 인한 로그인 실패")
     @Test
-    void signIn_fail_invalidEmail() throws Exception {
+    void signIn_notFoundEmail_fail() throws Exception {
         // given
         String email = "invalid@gmail.com";
         String password = "!Hwan123";
@@ -66,7 +62,7 @@ class AuthControllerTest extends AcceptanceTest {
 
     @DisplayName("비밀번호 불일치로 인한 로그인 실패")
     @Test
-    void signIn_fail_invalidPassword() throws Exception {
+    void signIn_invalidPassword_fail() throws Exception {
         // given
         String email = "woorimap@gmail.com";
         String password = "invalidPassword";

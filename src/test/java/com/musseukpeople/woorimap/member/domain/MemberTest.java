@@ -54,7 +54,7 @@ class MemberTest {
 
     @DisplayName("일치하지 않는 비밀번호로 인한 실패")
     @Test
-    void checkPassword_fail_notMatchPassword() {
+    void checkPassword_notMatchPassword_fail() {
         // given
         Member member = Member.builder()
             .email(new Email("test@mail.com"))

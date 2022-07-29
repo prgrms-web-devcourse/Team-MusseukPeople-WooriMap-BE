@@ -25,7 +25,7 @@ class NickNameTest {
     @DisplayName("닉네임 생성 빈 값으로 인한 실패")
     @ParameterizedTest(name = "닉네임 : {0}")
     @NullAndEmptySource
-    void createNickName_fail_empty(String value) {
+    void createNickName_empty_fail(String value) {
         assertThatThrownBy(() -> new NickName(value))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("닉네임은 비어있을 수 없습니다.");
@@ -33,7 +33,7 @@ class NickNameTest {
 
     @DisplayName("닉네임 생성 글자 수 초과로 인한 실패")
     @Test
-    void createNickName_fail_overOrLessLength() {
+    void createNickName_overOrLessLength_fail() {
         // given
         String value = "willhwanmatooooo";
 

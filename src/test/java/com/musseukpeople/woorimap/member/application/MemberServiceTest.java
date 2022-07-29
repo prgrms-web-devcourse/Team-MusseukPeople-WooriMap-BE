@@ -43,7 +43,7 @@ class MemberServiceTest {
 
     @DisplayName("중복 이메일로 인한 회원 생성 실패")
     @Test
-    void createMember_fail_duplicateEmail() {
+    void createMember_duplicateEmail_fail() {
         // given
         String email = "test@gmail.com";
         memberService.createMember(new SignupRequest(email, "!@Hwan123", "우리맵"));
@@ -57,7 +57,7 @@ class MemberServiceTest {
 
     @DisplayName("이메일로 회원 찾기 성공")
     @Test
-    void getMemberByEmail() {
+    void getMemberByEmail_success() {
         // given
         String email = "test@gmail.com";
         Long memberId = memberService.createMember(new SignupRequest(email, "!@Hwan123", "우리맵"));
@@ -71,7 +71,7 @@ class MemberServiceTest {
 
     @DisplayName("저장되지 않는 이메일로 인한 회원 찾기 실패")
     @Test
-    void getMemberByEmail_notFoundEmail() {
+    void getMemberByEmail_notFoundEmail_fail() {
         // given
         memberService.createMember(new SignupRequest("test@gmail.com", "!@Hwan123", "우리맵"));
 

@@ -63,7 +63,7 @@ class JwtTokenProviderTest {
 
     @DisplayName("만료기간이 지남으로 인한 유효성 검증 실패")
     @Test
-    void validateToken_fail_overExpired() {
+    void validateToken_overExpired_fail() {
         // given
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(
             "test",
@@ -80,7 +80,7 @@ class JwtTokenProviderTest {
 
     @DisplayName("올바르지 않는 시그니처로 인한 유효성 검증 실패")
     @Test
-    void validateToken_fail_invalidSignature() {
+    void validateToken_invalidSignature_fail() {
         // given
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(
             "test",

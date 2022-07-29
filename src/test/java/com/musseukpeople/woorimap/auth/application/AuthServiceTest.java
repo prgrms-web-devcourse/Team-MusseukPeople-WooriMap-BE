@@ -59,7 +59,7 @@ class AuthServiceTest {
 
     @DisplayName("저장되지 않은 이메일로 인한 로그인 실패")
     @Test
-    void login_fail_notFoundEmail() {
+    void login_notFoundEmail_fail() {
         // given
         String email = "woorimap@gmail.com";
         String password = "!Hwan123";
@@ -74,7 +74,7 @@ class AuthServiceTest {
 
     @DisplayName("비밀번호 불일치로 인한 로그인 실패")
     @Test
-    void login_fail_invalidPassword() {
+    void login_invalidPassword_fail() {
         // given
         String email = "woorimap@gmail.com";
         Member member = new TMemberBuilder()
