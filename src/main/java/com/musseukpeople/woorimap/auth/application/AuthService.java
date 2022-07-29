@@ -20,7 +20,7 @@ public class AuthService {
     private final MemberService memberService;
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
 
     @Transactional
     public TokenResponse login(SignInRequest signInRequest) {
@@ -29,8 +29,8 @@ public class AuthService {
 
         Long memberId = member.getId();
         Long coupleId = member.isCouple() ? member.getCouple().getId() : null;
-        String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(memberId), coupleId);
-        String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(memberId));
+        String accessToken = jwtProvider.createAccessToken(String.valueOf(memberId), coupleId);
+        String refreshToken = jwtProvider.createRefreshToken(String.valueOf(memberId));
         tokenService.saveToken(refreshToken, memberId);
 
         return new TokenResponse(

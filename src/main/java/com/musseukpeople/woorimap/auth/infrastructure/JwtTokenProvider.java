@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.auth.application;
+package com.musseukpeople.woorimap.auth.infrastructure;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -7,6 +7,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 
@@ -19,7 +20,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Component
-public class JwtTokenProvider {
+public class JwtTokenProvider implements JwtProvider {
 
     private final String issuer;
     private final Key secretKey;
@@ -37,10 +38,12 @@ public class JwtTokenProvider {
         this.refreshTokenValidityInMilliseconds = refreshTokenValidityInMilliseconds;
     }
 
+    @Override
     public String createAccessToken(String payload, Long coupleId) {
         return createToken(payload, coupleId, accessTokenValidityInMilliseconds);
     }
 
+    @Override
     public String createRefreshToken(String payload) {
         return createToken(payload, null, refreshTokenValidityInMilliseconds);
     }
@@ -59,6 +62,7 @@ public class JwtTokenProvider {
             .compact();
     }
 
+    @Override
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = getClaimsJws(token);
@@ -68,6 +72,7 @@ public class JwtTokenProvider {
         }
     }
 
+    @Override
     public Claims getClaims(String token) {
         try {
             return getClaimsJws(token).getBody();
