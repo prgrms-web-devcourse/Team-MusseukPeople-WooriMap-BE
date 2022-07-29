@@ -18,9 +18,8 @@ public enum ErrorCode {
     HANDLE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "C005", " 접근 권한이 없습니다."),
 
     // User
-    LOGIN_FAILED(HttpStatus.BAD_REQUEST, "U001", "이메일 또는 비밀번호가 일치하지 않습니다"),
+    LOGIN_FAILED(HttpStatus.BAD_REQUEST, "U001", "이메일 또는 비밀번호가 일치하지 않습니다."),
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "U002", "중복된 이메일입니다."),
-    NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "U003", "가입되지 않은 사용자입니다."),
 
     // Auth
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "A001", "유효하지 않은 토큰입니다.");

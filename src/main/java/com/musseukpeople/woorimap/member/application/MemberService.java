@@ -12,7 +12,7 @@ import com.musseukpeople.woorimap.member.domain.vo.Email;
 import com.musseukpeople.woorimap.member.domain.vo.NickName;
 import com.musseukpeople.woorimap.member.domain.vo.Password;
 import com.musseukpeople.woorimap.member.exception.DuplicateEmailException;
-import com.musseukpeople.woorimap.member.exception.NotFoundMemberException;
+import com.musseukpeople.woorimap.member.exception.LoginFailedException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,7 +39,7 @@ public class MemberService {
 
     public Member getMemberByEmail(String email) {
         return memberRepository.findMemberByEmail(email)
-            .orElseThrow(() -> new NotFoundMemberException(ErrorCode.NOT_FOUND_MEMBER, email));
+            .orElseThrow(() -> new LoginFailedException(ErrorCode.LOGIN_FAILED));
     }
 
     private void validateDuplicateEmail(String email) {

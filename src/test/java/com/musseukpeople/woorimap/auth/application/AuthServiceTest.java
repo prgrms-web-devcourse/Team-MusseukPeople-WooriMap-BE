@@ -14,7 +14,6 @@ import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.member.exception.LoginFailedException;
-import com.musseukpeople.woorimap.member.exception.NotFoundMemberException;
 import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
 
 @SpringBootTest
@@ -65,8 +64,8 @@ class AuthServiceTest {
         // when
         // then
         assertThatThrownBy(() -> authService.login(signInRequest))
-            .isInstanceOf(NotFoundMemberException.class)
-            .hasMessageContaining("존재하지 않는 회원 이메일입니다.");
+            .isInstanceOf(LoginFailedException.class)
+            .hasMessageContaining("이메일 또는 비밀번호가 일치하지 않습니다.");
     }
 
     @DisplayName("비밀번호 불일치로 인한 로그인 실패")
