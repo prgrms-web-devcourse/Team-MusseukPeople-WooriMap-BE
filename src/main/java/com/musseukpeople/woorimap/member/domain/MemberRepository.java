@@ -1,10 +1,15 @@
 package com.musseukpeople.woorimap.member.domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
-import com.musseukpeople.woorimap.member.domain.vo.Email;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    boolean existsByEmail(Email email);
+    boolean existsByEmailValue(String email);
+
+    @Query("SELECT m FROM Member m LEFT JOIN FETCH m.couple WHERE m.email.value = :email")
+    Optional<Member> findMemberByEmail(@Param("email") String email);
 }

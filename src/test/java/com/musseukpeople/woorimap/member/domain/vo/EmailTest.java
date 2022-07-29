@@ -25,7 +25,7 @@ class EmailTest {
     @DisplayName("이메일 생성 빈 값으로 인한 실패")
     @ParameterizedTest(name = "이메일 : {0}")
     @NullAndEmptySource
-    void createEmail_fail_nullOrBlank(String value) {
+    void createEmail_nullOrBlank_fail(String value) {
         assertThatThrownBy(() -> new Email(value))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("이메일은 비어있을 수 없습니다.");
@@ -33,7 +33,7 @@ class EmailTest {
 
     @DisplayName("이메일 생성 최대 글자수 초과로 인한 실패")
     @Test
-    void createEmail_fail_overMaxLength() {
+    void createEmail_overMaxLength_fail() {
         // given
         String value = "test@gmail.com" + "a".repeat(37);
 
@@ -47,7 +47,7 @@ class EmailTest {
     @DisplayName("이메일 생성 이메일 형식 불일치로 인한 실패")
     @ParameterizedTest(name = "이메일 : {0}")
     @ValueSource(strings = {"test@nnnnn", "woorimap", "test@.com"})
-    void createEmail_fail_notCorrectEmail(String value) {
+    void createEmail_invalidEmail_fail(String value) {
         assertThatThrownBy(() -> new Email(value))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("올바른 이메일 형식이 아닙니다.");

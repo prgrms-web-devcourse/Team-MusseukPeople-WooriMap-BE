@@ -9,3 +9,11 @@ springdoc:
     tags-sorter: alpha
   api-docs:
     path: /api-docs/json
+
+jwt:
+  issuer: local
+  secret-key: twk4jbz8a6smC4u0Xv6KvQUImMfVZ16/SCR0uKJIv3g=
+  access-token:
+    expire-length: 3600000
+  refresh-token:
+    expire-length: 3600000

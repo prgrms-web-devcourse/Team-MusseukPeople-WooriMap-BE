@@ -29,7 +29,7 @@ class PasswordTest {
     @DisplayName("올바르지 않는 비밀번호 글자수로 인한 실패")
     @ParameterizedTest(name = "비밀번호 : {0}")
     @ValueSource(strings = {"!aAbc", "!aasd@asdsd12345678901d"})
-    void encryptPassword_fail_invalidLength(String value) {
+    void encryptPassword_invalidLength_fail(String value) {
         assertThatThrownBy(() -> Password.encryptPassword(passwordEncoder, value))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("자 이하입니다.");
@@ -40,7 +40,7 @@ class PasswordTest {
     @ValueSource(strings = {"gogosing", "GOGOSING", "123123213", "우리맵우리맵우리맵", "!!!!!!!!",
         "gogo1111", "GOGO1111", "!!!!aaaa", "!!!!GOGO", "1111AAAA", "1111!!!!",
         "aaaBBB!!!", "aaa111!!!", "AAA111!!!", "aaabbb111"})
-    void encryptPassword_fail_invalidValue(String value) {
+    void encryptPassword_invalidValue_fail(String value) {
         assertThatThrownBy(() -> Password.encryptPassword(passwordEncoder, value))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("비밀번호는 대소문자, 숫자, 특수 문자를 포함해야 생성 가능합니다.");
@@ -48,7 +48,7 @@ class PasswordTest {
 
     @DisplayName("암호화된 비밀번호와 평문 비밀번호가 일치하지 않는지 확인한다.")
     @Test
-    void isNotSamePassword() {
+    void isNotSamePassword_success() {
         // given
         String inputPassword = "!!Hwan1234";
 

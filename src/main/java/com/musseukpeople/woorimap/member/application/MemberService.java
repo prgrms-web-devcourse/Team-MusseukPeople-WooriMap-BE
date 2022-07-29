@@ -12,6 +12,8 @@ import com.musseukpeople.woorimap.member.domain.vo.Email;
 import com.musseukpeople.woorimap.member.domain.vo.NickName;
 import com.musseukpeople.woorimap.member.domain.vo.Password;
 import com.musseukpeople.woorimap.member.exception.DuplicateEmailException;
+import com.musseukpeople.woorimap.member.exception.LoginFailedException;
+import com.musseukpeople.woorimap.member.exception.NotFoundMemberException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,20 +27,30 @@ public class MemberService {
 
     @Transactional
     public Long createMember(SignupRequest signupRequest) {
-        Email email = new Email(signupRequest.getEmail());
+        String email = signupRequest.getEmail();
         validateDuplicateEmail(email);
 
         Member member = Member.builder()
-            .email(email)
+            .email(new Email(email))
             .password(Password.encryptPassword(passwordEncoder, signupRequest.getPassword()))
             .nickName(new NickName(signupRequest.getNickName()))
             .build();
         return memberRepository.save(member).getId();
     }
 
-    private void validateDuplicateEmail(Email email) {
-        if (memberRepository.existsByEmail(email)) {
-            throw new DuplicateEmailException(email.getValue(), ErrorCode.DUPLICATE_EMAIL);
+    public Member getMemberById(Long id) {
+        return memberRepository.findById(id)
+            .orElseThrow(() -> new NotFoundMemberException(ErrorCode.NOT_FOUND_MEMBER, id));
+    }
+
+    public Member getMemberByEmail(String email) {
+        return memberRepository.findMemberByEmail(email)
+            .orElseThrow(() -> new LoginFailedException(ErrorCode.LOGIN_FAILED));
+    }
+
+    private void validateDuplicateEmail(String email) {
+        if (memberRepository.existsByEmailValue(email)) {
+            throw new DuplicateEmailException(email, ErrorCode.DUPLICATE_EMAIL);
         }
     }
 }
