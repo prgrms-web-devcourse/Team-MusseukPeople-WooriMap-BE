@@ -14,6 +14,7 @@ import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.member.exception.LoginFailedException;
+import com.musseukpeople.woorimap.util.DatabaseCleanup;
 import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
 
 @SpringBootTest
@@ -25,9 +26,12 @@ class AuthServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private DatabaseCleanup databaseCleanup;
+
     @AfterEach
     void tearDown() {
-        memberRepository.deleteAllInBatch();
+        databaseCleanup.execute();
     }
 
     @DisplayName("로그인 성공")
