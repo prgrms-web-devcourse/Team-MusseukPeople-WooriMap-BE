@@ -13,6 +13,7 @@ import com.musseukpeople.woorimap.member.domain.vo.NickName;
 import com.musseukpeople.woorimap.member.domain.vo.Password;
 import com.musseukpeople.woorimap.member.exception.DuplicateEmailException;
 import com.musseukpeople.woorimap.member.exception.LoginFailedException;
+import com.musseukpeople.woorimap.member.exception.NotFoundMemberException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +36,11 @@ public class MemberService {
             .nickName(new NickName(signupRequest.getNickName()))
             .build();
         return memberRepository.save(member).getId();
+    }
+
+    public Member getMemberById(Long id) {
+        return memberRepository.findById(id)
+            .orElseThrow(() -> new NotFoundMemberException(ErrorCode.NOT_FOUND_MEMBER, id));
     }
 
     public Member getMemberByEmail(String email) {
