@@ -20,4 +20,9 @@ public class TokenService {
         Token token = new Token(refreshToken, memberId);
         tokenRepository.save(token);
     }
+
+    @Transactional
+    public void removeByMemberId(Long memberId) {
+        tokenRepository.deleteByMemberId(memberId);
+    }
 }
