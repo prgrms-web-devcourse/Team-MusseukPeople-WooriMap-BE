@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
-import com.musseukpeople.woorimap.auth.application.dto.response.MemberResponse;
+import com.musseukpeople.woorimap.auth.application.dto.response.LoginMemberResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
 import com.musseukpeople.woorimap.member.application.MemberService;
 import com.musseukpeople.woorimap.member.domain.Member;
@@ -32,11 +32,6 @@ public class AuthService {
         String accessToken = jwtProvider.createAccessToken(String.valueOf(memberId), coupleId);
         String refreshToken = jwtProvider.createRefreshToken(String.valueOf(memberId));
         tokenService.saveToken(refreshToken, memberId);
-
-        return new TokenResponse(
-            accessToken,
-            refreshToken,
-            new MemberResponse(member.getEmail().getValue(), member.getNickName().getValue())
-        );
+        return new TokenResponse(accessToken, refreshToken, LoginMemberResponse.from(member));
     }
 }
