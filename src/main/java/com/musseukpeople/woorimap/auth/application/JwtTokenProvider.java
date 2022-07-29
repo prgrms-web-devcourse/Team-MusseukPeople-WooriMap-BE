@@ -15,6 +15,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Component
@@ -54,7 +55,7 @@ public class JwtTokenProvider {
             .setIssuer(issuer)
             .setIssuedAt(now)
             .setExpiration(validity)
-            .signWith(secretKey)
+            .signWith(secretKey, SignatureAlgorithm.HS256)
             .compact();
     }
 

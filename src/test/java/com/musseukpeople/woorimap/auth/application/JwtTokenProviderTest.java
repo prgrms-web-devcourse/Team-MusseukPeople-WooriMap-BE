@@ -24,10 +24,10 @@ class JwtTokenProviderTest {
         String memberId = "1";
         Long coupleId = 1L;
         String accessToken = PROVIDER.createAccessToken(memberId, coupleId);
-        System.out.println(accessToken);
 
         // when
         Claims claims = PROVIDER.getClaims(accessToken);
+
         // then
         assertAll(
             () -> assertThat(claims.getSubject()).isEqualTo(memberId),
