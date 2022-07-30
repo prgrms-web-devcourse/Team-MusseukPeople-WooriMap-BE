@@ -7,16 +7,17 @@
         <if condition='"${spring.profiles.active}".contains("dev")'>
             <then>
                 <logGroupName>Woorimap-dev</logGroupName>
+                <logStreamUuidPrefix>dev-log/</logStreamUuidPrefix>
             </then>
         </if>
 
         <if condition='"${spring.profiles.active}".contains("prod")'>
             <then>
                 <logGroupName>Woorimap-prod</logGroupName>
+                <logStreamUuidPrefix>prod-log/</logStreamUuidPrefix>
             </then>
         </if>
         <logRegion>ap-northeast-2</logRegion>
-        <logStreamUuidPrefix>wooriMap-log/</logStreamUuidPrefix>
         <maxBatchLogEvents>50</maxBatchLogEvents>
         <maxFlushTimeMillis>30000</maxFlushTimeMillis>
         <maxBlockTimeMillis>5000</maxBlockTimeMillis>
