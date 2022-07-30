@@ -34,4 +34,9 @@ public class AuthService {
         tokenService.saveToken(refreshToken, memberId);
         return new TokenResponse(accessToken, refreshToken, LoginMemberResponse.from(member));
     }
+
+    @Transactional
+    public void logout(Long memberId) {
+        tokenService.removeByMemberId(memberId);
+    }
 }

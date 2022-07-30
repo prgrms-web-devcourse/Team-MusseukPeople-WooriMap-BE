@@ -40,11 +40,7 @@ class AuthServiceTest {
         // given
         String email = "woorimap@gmail.com";
         String password = "!Hwan123";
-        Member member = new TMemberBuilder()
-            .email(email)
-            .password(password)
-            .build();
-        memberRepository.save(member);
+        saveMember(email, password);
         SignInRequest signInRequest = new SignInRequest(email, password);
 
         // when
@@ -77,11 +73,7 @@ class AuthServiceTest {
     void login_invalidPassword_fail() {
         // given
         String email = "woorimap@gmail.com";
-        Member member = new TMemberBuilder()
-            .email(email)
-            .password("!Hwan123")
-            .build();
-        memberRepository.save(member);
+        saveMember(email, "!Hwan123");
         SignInRequest signInRequest = new SignInRequest(email, "!Test123");
 
         // when
@@ -89,5 +81,13 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.login(signInRequest))
             .isInstanceOf(LoginFailedException.class)
             .hasMessageContaining("이메일 또는 비밀번호가 일치하지 않습니다");
+    }
+
+    private void saveMember(String email, String password) {
+        Member member = new TMemberBuilder()
+            .email(email)
+            .password(password)
+            .build();
+        memberRepository.save(member);
     }
 }

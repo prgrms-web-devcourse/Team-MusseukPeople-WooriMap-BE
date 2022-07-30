@@ -2,12 +2,14 @@ package com.musseukpeople.woorimap.auth.presentation;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -72,6 +74,23 @@ class AuthControllerTest extends AcceptanceTest {
 
         // then
         로그인_실패(response);
+    }
+
+    @DisplayName("로그아웃 성공")
+    @Test
+    void logout_success() throws Exception {
+        // given
+        String email = "woorimap@gmail.com";
+        String password = "!Hwan123";
+        String accessToken = 로그인_토큰(new SignInRequest(email, password));
+
+        // when
+        MockHttpServletResponse response = mockMvc.perform(post("/api/signout")
+                .header(HttpHeaders.AUTHORIZATION, accessToken))
+            .andReturn().getResponse();
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private void 로그인_실패(MockHttpServletResponse response) throws IOException {

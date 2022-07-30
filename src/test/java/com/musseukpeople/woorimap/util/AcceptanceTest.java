@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
+import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
 import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
@@ -53,6 +54,11 @@ public abstract class AcceptanceTest {
                 .content(objectMapper.writeValueAsString(signInRequest)))
             .andDo(print())
             .andReturn().getResponse();
+    }
+
+    protected String 로그인_토큰(SignInRequest signInRequest) throws Exception {
+        MockHttpServletResponse response = 로그인(signInRequest);
+        return "Bearer" + getResponseObject(response, TokenResponse.class).getAccessToken();
     }
 
     protected ErrorResponse getErrorResponse(MockHttpServletResponse response) throws IOException {
