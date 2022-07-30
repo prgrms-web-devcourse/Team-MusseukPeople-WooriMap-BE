@@ -85,7 +85,7 @@ class AuthControllerTest extends AcceptanceTest {
         String accessToken = 로그인_토큰(new SignInRequest(email, password));
 
         // when
-        MockHttpServletResponse response = mockMvc.perform(post("/api/logout")
+        MockHttpServletResponse response = mockMvc.perform(post("/api/signout")
                 .header(HttpHeaders.AUTHORIZATION, accessToken))
             .andReturn().getResponse();
 
