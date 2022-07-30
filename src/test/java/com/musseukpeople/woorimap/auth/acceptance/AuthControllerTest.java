@@ -11,10 +11,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
+import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
+import com.musseukpeople.woorimap.auth.presentation.dto.request.RefreshTokenRequest;
 import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
@@ -91,6 +94,29 @@ class AuthControllerTest extends AcceptanceTest {
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("토큰 재발급 성공")
+    @Test
+    void refreshAccessToken_success() throws Exception {
+        // given
+        MockHttpServletResponse loginResponse = 로그인(new SignInRequest("woorimap@gmail.com", "!Hwan123"));
+        TokenResponse tokenResponse = getResponseObject(loginResponse, TokenResponse.class);
+        RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(tokenResponse.getRefreshToken());
+
+        // when
+        MockHttpServletResponse response = mockMvc.perform(post("/api/tokens")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenResponse.getAccessToken())
+                .content(objectMapper.writeValueAsString(refreshTokenRequest)))
+            .andReturn().getResponse();
+
+        // then
+        AccessTokenResponse accessTokenResponse = getResponseObject(response, AccessTokenResponse.class);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(accessTokenResponse.getAccessToken()).isNotNull()
+        );
     }
 
     private void 로그인_실패(MockHttpServletResponse response) throws IOException {
