@@ -22,7 +22,7 @@
     </springProfile>
 
     <springProfile name="prod,dev">
-        <property name="LOG_PATH" value="./logs"/>
+        <property name="LOG_PATH" value="/var/log"/>
         <include resource="appender/info-file-appender.xml"/>
         <include resource="appender/warn-file-appender.xml"/>
         <include resource="appender/error-file-appender.xml"/>
