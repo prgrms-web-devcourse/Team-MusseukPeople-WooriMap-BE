@@ -4,11 +4,14 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.musseukpeople.woorimap.auth.domain.login.Login;
+import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.member.application.MemberService;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 
@@ -29,5 +32,11 @@ public class MemberController {
     public ResponseEntity<Void> signUp(@Valid @RequestBody SignupRequest signupRequest) {
         memberService.createMember(signupRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @Operation(summary = "멤버 회원 탈퇴", description = "멤버 회원 탈퇴 API입니다.")
+    @DeleteMapping
+    public ResponseEntity<Void> withdrawal(@Login LoginMember loginMember) {
+        return ResponseEntity.noContent().build();
     }
 }
