@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.inviteCode.application;
+package com.musseukpeople.woorimap.invitecode.application;
 
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -6,9 +6,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.musseukpeople.woorimap.inviteCode.application.dto.response.InviteCodeResponse;
-import com.musseukpeople.woorimap.inviteCode.domain.InviteCode;
-import com.musseukpeople.woorimap.inviteCode.domain.InviteCodeRepository;
+import com.musseukpeople.woorimap.invitecode.application.dto.response.InviteCodeResponse;
+import com.musseukpeople.woorimap.invitecode.domain.InviteCode;
+import com.musseukpeople.woorimap.invitecode.domain.InviteCodeRepository;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.inviteCode.application.dto.response;
+package com.musseukpeople.woorimap.invitecode.application.dto.response;
 
 import lombok.AccessLevel;
 import lombok.Getter;

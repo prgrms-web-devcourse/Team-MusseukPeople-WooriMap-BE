@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.inviteCode.application;
+package com.musseukpeople.woorimap.invitecode.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.musseukpeople.woorimap.inviteCode.application.dto.response.InviteCodeResponse;
-import com.musseukpeople.woorimap.inviteCode.domain.InviteCode;
-import com.musseukpeople.woorimap.inviteCode.domain.InviteCodeRepository;
+import com.musseukpeople.woorimap.invitecode.application.dto.response.InviteCodeResponse;
+import com.musseukpeople.woorimap.invitecode.domain.InviteCode;
+import com.musseukpeople.woorimap.invitecode.domain.InviteCodeRepository;
 
 @SpringBootTest
 class InviteCodeServiceTest {

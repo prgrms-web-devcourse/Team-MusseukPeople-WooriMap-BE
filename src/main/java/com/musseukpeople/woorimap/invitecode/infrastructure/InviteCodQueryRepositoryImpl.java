@@ -1,13 +1,13 @@
-package com.musseukpeople.woorimap.inviteCode.infrastructure;
+package com.musseukpeople.woorimap.invitecode.infrastructure;
 
-import static com.musseukpeople.woorimap.inviteCode.domain.QInviteCode.*;
+import static com.musseukpeople.woorimap.invitecode.domain.QInviteCode.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import com.musseukpeople.woorimap.inviteCode.domain.InviteCode;
+import com.musseukpeople.woorimap.invitecode.domain.InviteCode;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 

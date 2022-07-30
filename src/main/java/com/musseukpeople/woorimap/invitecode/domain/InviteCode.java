@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.inviteCode.domain;
+package com.musseukpeople.woorimap.invitecode.domain;
 
 import static com.google.common.base.Preconditions.*;
 

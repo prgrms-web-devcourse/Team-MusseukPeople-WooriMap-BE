@@ -1,8 +1,8 @@
-package com.musseukpeople.woorimap.inviteCode.domain;
+package com.musseukpeople.woorimap.invitecode.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.musseukpeople.woorimap.inviteCode.infrastructure.InviteCodQueryRepository;
+import com.musseukpeople.woorimap.invitecode.infrastructure.InviteCodQueryRepository;
 
 public interface InviteCodeRepository extends JpaRepository<InviteCode, String>, InviteCodQueryRepository {
 }
