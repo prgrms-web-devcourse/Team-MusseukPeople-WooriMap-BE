@@ -1,0 +1,26 @@
+<included>
+    <appender name="CLOUDWATCH_LOG" class="ca.pjer.logback.AwsLogsAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+
+        <if condition='"${spring.profiles.active}".contains("dev")'>
+            <then>
+                <logGroupName>Woorimap-dev</logGroupName>
+            </then>
+        </if>
+
+        <if condition='"${spring.profiles.active}".contains("prod")'>
+            <then>
+                <logGroupName>Woorimap-prod</logGroupName>
+            </then>
+        </if>
+        <logRegion>ap-northeast-2</logRegion>
+        <logStreamUuidPrefix>wooriMap-log/</logStreamUuidPrefix>
+        <maxBatchLogEvents>50</maxBatchLogEvents>
+        <maxFlushTimeMillis>30000</maxFlushTimeMillis>
+        <maxBlockTimeMillis>5000</maxBlockTimeMillis>
+        <retentionTimeDays>0</retentionTimeDays>
+        <retentionTimeDays>0</retentionTimeDays>
+    </appender>
+</included>
