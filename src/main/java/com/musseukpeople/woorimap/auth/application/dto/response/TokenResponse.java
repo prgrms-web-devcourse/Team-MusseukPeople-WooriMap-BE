@@ -16,11 +16,11 @@ public class TokenResponse {
     private String refreshToken;
 
     @Schema(description = "멤버 정보")
-    private MemberResponse member;
+    private LoginMemberResponse member;
 
-    public TokenResponse(String accessToken, String refreshToken, MemberResponse memberResponse) {
+    public TokenResponse(String accessToken, String refreshToken, LoginMemberResponse loginMemberResponse) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        this.member = memberResponse;
+        this.member = loginMemberResponse;
     }
 }
