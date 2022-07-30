@@ -23,8 +23,8 @@ public enum ErrorCode {
     NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "U003", "존재하지 않는 사용자입니다."),
 
     // Auth
-    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "A001", "유효하지 않은 토큰입니다."),
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "A002", "로그인이 필요합니다.");
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A001", "유효하지 않은 토큰입니다."),
+    NOT_FOUND_TOKEN(HttpStatus.UNAUTHORIZED, "A002", "로그인이 필요합니다.");
 
     // Couple
 
