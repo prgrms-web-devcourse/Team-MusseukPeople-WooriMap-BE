@@ -53,8 +53,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void withdrawal_success() throws Exception {
         // given
-        String email = "woorimap@gmail.com";
-        String password = "!Hwan123";
+        String email = "test@gmail.com";
+        String password = "!Hwan1234";
+        회원가입(new SignupRequest(email, password, "hwan"));
         String accessToken = 로그인_토큰(new SignInRequest(email, password));
 
         // when

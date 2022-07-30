@@ -37,6 +37,7 @@ public class MemberController {
     @Operation(summary = "멤버 회원 탈퇴", description = "멤버 회원 탈퇴 API입니다.")
     @DeleteMapping
     public ResponseEntity<Void> withdrawal(@Login LoginMember loginMember) {
+        memberService.removeMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }
