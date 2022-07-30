@@ -10,7 +10,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
@@ -55,8 +54,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         String email = "test@gmail.com";
         String password = "!Hwan1234";
-        회원가입(new SignupRequest(email, password, "hwan"));
-        String accessToken = 로그인_토큰(new SignInRequest(email, password));
+        String accessToken = 회원가입_토큰(new SignupRequest(email, password, "hwan"));
 
         // when
         MockHttpServletResponse response = mockMvc.perform(delete("/api/members")
