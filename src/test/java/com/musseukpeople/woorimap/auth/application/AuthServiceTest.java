@@ -4,13 +4,17 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.musseukpeople.woorimap.auth.application.dto.request.RefreshTokenRequest;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
+import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
+import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.member.exception.LoginFailedException;
@@ -20,14 +24,19 @@ import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
 @SpringBootTest
 class AuthServiceTest {
 
+    private final String email = "woorimap@gmail.com";
+    private final String password = "!Hwan123";
     @Autowired
     private AuthService authService;
-
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
     private DatabaseCleanup databaseCleanup;
+
+    @BeforeEach
+    void setUp() {
+        saveMember(email, password);
+    }
 
     @AfterEach
     void tearDown() {
@@ -38,9 +47,6 @@ class AuthServiceTest {
     @Test
     void login_success() {
         // given
-        String email = "woorimap@gmail.com";
-        String password = "!Hwan123";
-        saveMember(email, password);
         SignInRequest signInRequest = new SignInRequest(email, password);
 
         // when
@@ -57,9 +63,8 @@ class AuthServiceTest {
     @Test
     void login_notFoundEmail_fail() {
         // given
-        String email = "woorimap@gmail.com";
-        String password = "!Hwan123";
-        SignInRequest signInRequest = new SignInRequest(email, password);
+        String notFoundEmail = "invalid@gmail.com";
+        SignInRequest signInRequest = new SignInRequest(notFoundEmail, password);
 
         // when
         // then
@@ -72,9 +77,8 @@ class AuthServiceTest {
     @Test
     void login_invalidPassword_fail() {
         // given
-        String email = "woorimap@gmail.com";
-        saveMember(email, "!Hwan123");
-        SignInRequest signInRequest = new SignInRequest(email, "!Test123");
+        String invalidPassword = "!Test123";
+        SignInRequest signInRequest = new SignInRequest(email, invalidPassword);
 
         // when
         // then
@@ -83,11 +87,60 @@ class AuthServiceTest {
             .hasMessageContaining("이메일 또는 비밀번호가 일치하지 않습니다");
     }
 
+    @DisplayName("토큰 재발급 성공")
+    @Test
+    void refreshAccessToken_success() {
+        // given
+        TokenResponse tokenResponse = login(email, password);
+        String accessToken = tokenResponse.getAccessToken();
+        RefreshTokenRequest refreshToken = new RefreshTokenRequest(tokenResponse.getRefreshToken());
+
+        // when
+        AccessTokenResponse accessTokenResponse = authService.refreshAccessToken(accessToken, refreshToken);
+
+        // then
+        assertThat(accessTokenResponse.getAccessToken()).isNotNull();
+    }
+
+    @DisplayName("유효하지 않는 accessToken으로 인한 재발급 실패")
+    @Test
+    void refreshAccessToken_invalidAccessToken_fail() {
+        // given
+        TokenResponse tokenResponse = login(email, password);
+        String invalidAccessToken = tokenResponse.getAccessToken() + "invalid";
+        RefreshTokenRequest refreshToken = new RefreshTokenRequest(tokenResponse.getRefreshToken());
+
+        // when
+        // then
+        assertThatThrownBy(() -> authService.refreshAccessToken(invalidAccessToken, refreshToken))
+            .isInstanceOf(InvalidTokenException.class)
+            .hasMessageContaining("유효하지 않은 토큰입니다.");
+    }
+
+    @DisplayName("유효하지 않는 accessToken으로 인한 재발급 실패")
+    @Test
+    void refreshAccessToken_invalidRefreshToken_fail() {
+        // given
+        TokenResponse tokenResponse = login(email, password);
+        String invalidAccessToken = tokenResponse.getAccessToken();
+        RefreshTokenRequest invalidRefreshToken = new RefreshTokenRequest(tokenResponse.getRefreshToken() + "invalid");
+
+        // when
+        // then
+        assertThatThrownBy(() -> authService.refreshAccessToken(invalidAccessToken, invalidRefreshToken))
+            .isInstanceOf(InvalidTokenException.class)
+            .hasMessageContaining("유효하지 않은 토큰입니다.");
+    }
+
     private void saveMember(String email, String password) {
         Member member = new TMemberBuilder()
             .email(email)
             .password(password)
             .build();
         memberRepository.save(member);
+    }
+
+    private TokenResponse login(String email, String password) {
+        return authService.login(new SignInRequest(email, password));
     }
 }

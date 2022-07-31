@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.musseukpeople.woorimap.auth.application.AuthService;
+import com.musseukpeople.woorimap.auth.application.dto.request.RefreshTokenRequest;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
@@ -17,7 +18,6 @@ import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.auth.exception.UnauthorizedException;
 import com.musseukpeople.woorimap.auth.infrastructure.AuthorizationExtractor;
-import com.musseukpeople.woorimap.auth.presentation.dto.request.RefreshTokenRequest;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 
@@ -50,8 +50,13 @@ public class AuthController {
     @PostMapping("/tokens")
     public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(HttpServletRequest httpServletRequest,
                                                                                @Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
-        String accessToken = AuthorizationExtractor.extract(httpServletRequest)
+        String accessToken = getAccessTokenByRequest(httpServletRequest);
+        AccessTokenResponse refreshAccessToken = authService.refreshAccessToken(accessToken, refreshTokenRequest);
+        return ResponseEntity.ok(new ApiResponse<>(refreshAccessToken));
+    }
+
+    private String getAccessTokenByRequest(HttpServletRequest httpServletRequest) {
+        return AuthorizationExtractor.extract(httpServletRequest)
             .orElseThrow(() -> new UnauthorizedException(ErrorCode.NOT_FOUND_TOKEN));
-        return ResponseEntity.ok().build();
     }
 }

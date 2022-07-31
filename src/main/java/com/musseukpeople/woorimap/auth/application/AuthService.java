@@ -4,12 +4,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.musseukpeople.woorimap.auth.application.dto.request.RefreshTokenRequest;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
+import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.LoginMemberResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
+import com.musseukpeople.woorimap.auth.domain.Token;
+import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
+import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.member.application.MemberService;
 import com.musseukpeople.woorimap.member.domain.Member;
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -38,5 +44,26 @@ public class AuthService {
     @Transactional
     public void logout(Long memberId) {
         tokenService.removeByMemberId(memberId);
+    }
+
+    public AccessTokenResponse refreshAccessToken(String accessToken, RefreshTokenRequest refreshTokenRequest) {
+        String refreshToken = refreshTokenRequest.getRefreshToken();
+        if (!jwtProvider.validateToken(refreshToken)) {
+            throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
+        }
+
+        Claims claims = jwtProvider.getClaims(accessToken);
+        String memberId = claims.getSubject();
+        Token token = tokenService.getTokenByMemberId(Long.parseLong(memberId));
+        if (token.isNotSameToken(refreshToken)) {
+            throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
+        }
+
+        String newAccessToken = createNewAccessToken(claims);
+        return new AccessTokenResponse(newAccessToken);
+    }
+
+    private String createNewAccessToken(Claims claims) {
+        return jwtProvider.createAccessToken(claims.getSubject(), claims.get(jwtProvider.getClaimName(), Long.class));
     }
 }
