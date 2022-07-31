@@ -56,9 +56,9 @@ public class AuthService {
 
         Claims claims = jwtProvider.getClaims(accessToken);
         String memberId = claims.getSubject();
-        String findRefreshToken = tokenService.getTokenByMemberId(memberId);
-        if (!findRefreshToken.equals(refreshToken)) {
-            throw new InvalidTokenException(findRefreshToken, ErrorCode.INVALID_TOKEN);
+        Token findRefreshToken = tokenService.getTokenByMemberId(memberId);
+        if (findRefreshToken.isNotSame(refreshToken)) {
+            throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
         }
 
         String newAccessToken = createNewAccessToken(claims);

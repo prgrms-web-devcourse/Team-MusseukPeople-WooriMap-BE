@@ -24,11 +24,11 @@ public class TokenService {
 
     @Transactional
     public void removeByMemberId(Long memberId) {
-        tokenRepository.deleteByMemberId(String.valueOf(memberId));
+        tokenRepository.deleteById(String.valueOf(memberId));
     }
 
-    public String getTokenByMemberId(String memberId) {
-        return tokenRepository.findRefreshTokenByMemberId(memberId)
+    public Token getTokenByMemberId(String memberId) {
+        return tokenRepository.findById(memberId)
             .orElseThrow(() -> new InvalidTokenException(null, ErrorCode.INVALID_TOKEN));
     }
 }
