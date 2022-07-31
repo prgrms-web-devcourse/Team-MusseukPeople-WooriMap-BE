@@ -53,4 +53,9 @@ public class MemberService {
             throw new DuplicateEmailException(email, ErrorCode.DUPLICATE_EMAIL);
         }
     }
+
+    @Transactional
+    public void removeMember(Long memberId) {
+        memberRepository.deleteById(memberId);
+    }
 }

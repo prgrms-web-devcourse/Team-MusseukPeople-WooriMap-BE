@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.auth.presentation;
+package com.musseukpeople.woorimap.auth.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -96,7 +96,7 @@ class AuthControllerTest extends AcceptanceTest {
     private void 로그인_실패(MockHttpServletResponse response) throws IOException {
         ErrorResponse errorResponse = getErrorResponse(response);
         assertAll(
-            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
             () -> assertThat(errorResponse.getMessage()).isEqualTo("이메일 또는 비밀번호가 일치하지 않습니다."),
             () -> assertThat(errorResponse.getCode()).isEqualTo("U001")
         );

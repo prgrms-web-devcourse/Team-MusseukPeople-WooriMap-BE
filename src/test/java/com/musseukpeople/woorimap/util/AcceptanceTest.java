@@ -48,6 +48,11 @@ public abstract class AcceptanceTest {
             .andReturn().getResponse();
     }
 
+    protected String 회원가입_토큰(SignupRequest signupRequest) throws Exception {
+        회원가입(signupRequest);
+        return 로그인_토큰(new SignInRequest(signupRequest.getEmail(), signupRequest.getPassword()));
+    }
+
     protected MockHttpServletResponse 로그인(SignInRequest signInRequest) throws Exception {
         return mockMvc.perform(post("/api/signin")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
-    
+
     private final JwtProvider jwtProvider;
 
     @Override
@@ -28,7 +28,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         String accessToken = AuthorizationExtractor.extract(request)
-            .orElseThrow(() -> new UnauthorizedException(ErrorCode.UNAUTHORIZED));
+            .orElseThrow(() -> new UnauthorizedException(ErrorCode.NOT_FOUND_TOKEN));
         validateAccessToken(accessToken);
         return true;
     }
