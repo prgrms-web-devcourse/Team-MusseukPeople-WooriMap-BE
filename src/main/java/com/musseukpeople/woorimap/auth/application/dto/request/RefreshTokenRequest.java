@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.auth.presentation.dto.request;
+package com.musseukpeople.woorimap.auth.application.dto.request;
 
 import lombok.AccessLevel;
 import lombok.Getter;
