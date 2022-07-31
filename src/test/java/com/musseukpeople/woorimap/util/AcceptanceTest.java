@@ -58,7 +58,7 @@ public abstract class AcceptanceTest {
     }
 
     protected MockHttpServletResponse 로그인(SignInRequest signInRequest) throws Exception {
-        return mockMvc.perform(post("/api/signin")
+        return mockMvc.perform(post("/api/auth/signin")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(signInRequest)))
             .andDo(print())

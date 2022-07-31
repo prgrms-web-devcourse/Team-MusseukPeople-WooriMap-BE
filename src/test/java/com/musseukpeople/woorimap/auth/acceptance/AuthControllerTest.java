@@ -88,7 +88,7 @@ class AuthControllerTest extends AcceptanceTest {
         String accessToken = 로그인_토큰(new SignInRequest(email, password));
 
         // when
-        MockHttpServletResponse response = mockMvc.perform(post("/api/signout")
+        MockHttpServletResponse response = mockMvc.perform(post("/api/auth/signout")
                 .header(HttpHeaders.AUTHORIZATION, accessToken))
             .andReturn().getResponse();
 
@@ -146,7 +146,7 @@ class AuthControllerTest extends AcceptanceTest {
     }
 
     private MockHttpServletResponse 토큰_재발급_요청(String accessToken, String refreshToken) throws Exception {
-        return mockMvc.perform(post("/api/tokens")
+        return mockMvc.perform(post("/api/auth/token")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .content(objectMapper.writeValueAsString(new RefreshTokenRequest(refreshToken))))
