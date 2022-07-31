@@ -18,18 +18,17 @@ public class TokenService {
     private final TokenRepository tokenRepository;
 
     @Transactional
-    public void saveToken(String refreshToken, Long memberId) {
-        Token token = new Token(refreshToken, memberId);
+    public void saveToken(Token token) {
         tokenRepository.save(token);
     }
 
     @Transactional
     public void removeByMemberId(Long memberId) {
-        tokenRepository.deleteByMemberId(memberId);
+        tokenRepository.deleteByMemberId(String.valueOf(memberId));
     }
 
-    public Token getTokenByMemberId(Long memberId) {
-        return tokenRepository.findByMemberId(memberId)
+    public String getTokenByMemberId(String memberId) {
+        return tokenRepository.findRefreshTokenByMemberId(memberId)
             .orElseThrow(() -> new InvalidTokenException(null, ErrorCode.INVALID_TOKEN));
     }
 }

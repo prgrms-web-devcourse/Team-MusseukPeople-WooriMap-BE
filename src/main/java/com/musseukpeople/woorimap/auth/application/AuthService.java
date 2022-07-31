@@ -33,11 +33,13 @@ public class AuthService {
         Member member = memberService.getMemberByEmail(signInRequest.getEmail());
         member.checkPassword(passwordEncoder, signInRequest.getPassword());
 
-        Long memberId = member.getId();
+        String memberId = String.valueOf(member.getId());
         Long coupleId = member.isCouple() ? member.getCouple().getId() : null;
-        String accessToken = jwtProvider.createAccessToken(String.valueOf(memberId), coupleId);
-        String refreshToken = jwtProvider.createRefreshToken(String.valueOf(memberId));
-        tokenService.saveToken(refreshToken, memberId);
+        String accessToken = jwtProvider.createAccessToken(memberId, coupleId);
+        String refreshToken = jwtProvider.createRefreshToken(memberId);
+
+        Token token = new Token(memberId, refreshToken, jwtProvider.getRefreshTokenExpiredTime());
+        tokenService.saveToken(token);
         return new TokenResponse(accessToken, refreshToken, LoginMemberResponse.from(member));
     }
 
@@ -54,9 +56,9 @@ public class AuthService {
 
         Claims claims = jwtProvider.getClaims(accessToken);
         String memberId = claims.getSubject();
-        Token token = tokenService.getTokenByMemberId(Long.parseLong(memberId));
-        if (token.isNotSameToken(refreshToken)) {
-            throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
+        String findRefreshToken = tokenService.getTokenByMemberId(memberId);
+        if (!findRefreshToken.equals(refreshToken)) {
+            throw new InvalidTokenException(findRefreshToken, ErrorCode.INVALID_TOKEN);
         }
 
         String newAccessToken = createNewAccessToken(claims);
