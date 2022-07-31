@@ -22,3 +22,14 @@ jwt:
   refresh-token:
     expire-length: 3600000
 
+cloud:
+  aws:
+    credentials:
+      access-key: test
+      secret-key: test
+    s3:
+      bucket: test
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
