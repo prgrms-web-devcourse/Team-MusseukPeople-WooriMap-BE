@@ -47,6 +47,7 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "엑세스 토큰 재발급", description = "엑세스 토큰을 재발급 받습니다.")
     @PostMapping("/tokens")
     public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(HttpServletRequest httpServletRequest,
                                                                                @Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
