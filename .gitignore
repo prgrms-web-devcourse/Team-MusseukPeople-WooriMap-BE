@@ -22,3 +22,6 @@ logs
 ### Submodules ###
 src/main/resources/application-dev.yml
 
+### .env ###
+.env
+
