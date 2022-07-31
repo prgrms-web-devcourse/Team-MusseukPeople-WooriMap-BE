@@ -60,6 +60,15 @@ dependencies {
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // AWS CloudWatch
+    implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
+
+    // AWS
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    // Logback에서의 if, else문 사용
+    implementation group: 'org.codehaus.janino', name: 'janino', version: '3.0.7'
 }
 
 tasks.named('test') {

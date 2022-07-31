@@ -27,11 +27,13 @@
         <include resource="appender/warn-file-appender.xml"/>
         <include resource="appender/error-file-appender.xml"/>
         <include resource="appender/sql-file-appender.xml"/>
+        <include resource="appender/cloudwatch-appender.xml"/>
         <root level="INFO">
             <appender-ref ref="CONSOLE_APPENDER"/>
             <appender-ref ref="INFO_FILE"/>
             <appender-ref ref="WARN_FILE"/>
             <appender-ref ref="ERROR_FILE"/>
+            <appender-ref ref="CLOUDWATCH_LOG"/>
         </root>
 
         <logger name="org.hibernate.SQL" level="DEBUG">
