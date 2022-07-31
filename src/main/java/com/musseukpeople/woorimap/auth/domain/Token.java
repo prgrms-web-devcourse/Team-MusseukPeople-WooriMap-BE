@@ -22,7 +22,7 @@ public class Token {
     @Column(nullable = false, unique = true)
     private String refreshToken;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long memberId;
 
     public Token(String refreshToken, Long memberId) {
