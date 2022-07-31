@@ -23,8 +23,8 @@ public class TokenService {
     }
 
     @Transactional
-    public void removeByMemberId(Long memberId) {
-        tokenRepository.deleteById(String.valueOf(memberId));
+    public void removeByMemberId(String memberId) {
+        tokenRepository.deleteById(memberId);
     }
 
     public Token getTokenByMemberId(String memberId) {

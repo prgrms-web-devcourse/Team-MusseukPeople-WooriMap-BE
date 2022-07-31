@@ -45,7 +45,7 @@ public class AuthService {
 
     @Transactional
     public void logout(Long memberId) {
-        tokenService.removeByMemberId(memberId);
+        tokenService.removeByMemberId(String.valueOf(memberId));
     }
 
     public AccessTokenResponse refreshAccessToken(String accessToken, RefreshTokenRequest refreshTokenRequest) {
