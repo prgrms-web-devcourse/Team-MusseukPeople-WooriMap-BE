@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.auth.domain.Token;
 import com.musseukpeople.woorimap.auth.domain.TokenRepository;
+import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
+import com.musseukpeople.woorimap.common.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,5 +26,10 @@ public class TokenService {
     @Transactional
     public void removeByMemberId(Long memberId) {
         tokenRepository.deleteByMemberId(memberId);
+    }
+
+    public Token getTokenByMemberId(Long memberId) {
+        return tokenRepository.findByMemberId(memberId)
+            .orElseThrow(() -> new InvalidTokenException(null, ErrorCode.INVALID_TOKEN));
     }
 }
