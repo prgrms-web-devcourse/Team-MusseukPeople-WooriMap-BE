@@ -13,3 +13,12 @@ services:
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
+  redis:
+    image: redis:alpine
+    command: redis-server --port 6379
+    container_name: redis
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    ports:
+      - 6379:6379
