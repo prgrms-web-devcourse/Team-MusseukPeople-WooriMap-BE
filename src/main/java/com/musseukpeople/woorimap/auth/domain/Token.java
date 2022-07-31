@@ -29,4 +29,8 @@ public class Token {
         this.refreshToken = refreshToken;
         this.memberId = memberId;
     }
+
+    public boolean isNotSameToken(String refreshToken) {
+        return !this.refreshToken.equals(refreshToken);
+    }
 }
