@@ -23,7 +23,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtTokenProvider implements JwtProvider {
 
     private static final String COUPLE_CLAIM_NAME = "coupleId";
-    
+
     private final String issuer;
     private final Key secretKey;
     private final long accessTokenValidityInMilliseconds;
@@ -88,6 +88,11 @@ public class JwtTokenProvider implements JwtProvider {
     @Override
     public String getClaimName() {
         return COUPLE_CLAIM_NAME;
+    }
+
+    @Override
+    public long getRefreshTokenExpiredTime() {
+        return refreshTokenValidityInMilliseconds;
     }
 
     private Jws<Claims> getClaimsJws(String token) {
