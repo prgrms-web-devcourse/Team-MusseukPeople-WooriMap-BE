@@ -127,7 +127,7 @@ class AuthControllerTest extends AcceptanceTest {
         토큰_재발급_실패(response);
     }
 
-    @DisplayName("유요하지 않은 refreshToken으로 인한 토큰 재발급 실패")
+    @DisplayName("유효하지 않은 refreshToken으로 인한 토큰 재발급 실패")
     @Test
     void refreshAccessToken_invalidRefreshToken_fail() throws Exception {
         TokenResponse tokenResponse = 로그인_모든_토큰("woorimap@gmail.com", "!Hwan123");

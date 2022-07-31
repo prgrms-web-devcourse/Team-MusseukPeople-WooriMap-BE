@@ -26,6 +26,10 @@ import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 @AutoConfigureMockMvc
 public abstract class AcceptanceTest {
 
+    static {
+        System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");
+    }
+
     @Autowired
     protected MockMvc mockMvc;
 
