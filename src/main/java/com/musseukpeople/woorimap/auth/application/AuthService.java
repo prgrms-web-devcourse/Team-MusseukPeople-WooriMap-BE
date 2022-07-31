@@ -36,7 +36,7 @@ public class AuthService {
         String memberId = String.valueOf(member.getId());
         Long coupleId = member.isCouple() ? member.getCouple().getId() : null;
         String accessToken = jwtProvider.createAccessToken(memberId, coupleId);
-        String refreshToken = jwtProvider.createRefreshToken(memberId);
+        String refreshToken = jwtProvider.createRefreshToken();
 
         Token token = new Token(memberId, refreshToken, jwtProvider.getRefreshTokenExpiredTime());
         tokenService.saveToken(token);

@@ -6,7 +6,7 @@ public interface JwtProvider {
 
     String createAccessToken(String payload, Long coupleId);
 
-    String createRefreshToken(String payload);
+    String createRefreshToken();
 
     boolean validateToken(String token);
 

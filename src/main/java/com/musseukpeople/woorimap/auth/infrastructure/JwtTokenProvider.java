@@ -3,6 +3,7 @@ package com.musseukpeople.woorimap.auth.infrastructure;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -46,8 +47,8 @@ public class JwtTokenProvider implements JwtProvider {
     }
 
     @Override
-    public String createRefreshToken(String payload) {
-        return createToken(payload, null, refreshTokenValidityInMilliseconds);
+    public String createRefreshToken() {
+        return createToken(UUID.randomUUID().toString(), null, refreshTokenValidityInMilliseconds);
     }
 
     private String createToken(String payload, Long coupleId, long validityInMilliseconds) {
