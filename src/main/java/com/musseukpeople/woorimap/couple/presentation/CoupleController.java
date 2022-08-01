@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,13 @@ import lombok.RequiredArgsConstructor;
 public class CoupleController {
 
     private final CoupleFacade coupleFacade;
+
+    @Operation(summary = "커플 해제", description = "커플 해제 API입니다.")
+    @DeleteMapping
+    public ResponseEntity<Void> deleteCouple(@Login LoginMember member) {
+        coupleFacade.removeCouple(member.getCoupleId());
+        return ResponseEntity.noContent().build();
+    }
 
     @Operation(summary = "커플 초대 코드 생성", description = "커플 초대 코드 생성 API입니다.")
     @PostMapping("/invite")
