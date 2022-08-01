@@ -10,9 +10,9 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.musseukpeople.woorimap.auth.application.JwtProvider;
-import com.musseukpeople.woorimap.auth.presentation.AuthArgumentResolver;
 import com.musseukpeople.woorimap.auth.presentation.AuthInterceptor;
-import com.musseukpeople.woorimap.auth.presentation.TokensArgumentResolver;
+import com.musseukpeople.woorimap.auth.presentation.resolver.AuthArgumentResolver;
+import com.musseukpeople.woorimap.auth.presentation.resolver.TokensArgumentResolver;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.auth.presentation;
+package com.musseukpeople.woorimap.auth.presentation.resolver;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,8 +10,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.musseukpeople.woorimap.auth.exception.UnauthorizedException;
 import com.musseukpeople.woorimap.auth.infrastructure.AuthorizationExtractor;
-import com.musseukpeople.woorimap.auth.presentation.dto.RequestTokens;
-import com.musseukpeople.woorimap.auth.presentation.dto.Tokens;
 import com.musseukpeople.woorimap.auth.presentation.util.CookieUtil;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 

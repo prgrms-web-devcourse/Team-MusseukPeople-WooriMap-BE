@@ -18,9 +18,9 @@ import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenRespo
 import com.musseukpeople.woorimap.auth.application.dto.response.LoginResponseDto;
 import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
-import com.musseukpeople.woorimap.auth.presentation.dto.RequestTokens;
-import com.musseukpeople.woorimap.auth.presentation.dto.Tokens;
 import com.musseukpeople.woorimap.auth.presentation.dto.response.LoginResponse;
+import com.musseukpeople.woorimap.auth.presentation.resolver.RequestTokens;
+import com.musseukpeople.woorimap.auth.presentation.resolver.Tokens;
 import com.musseukpeople.woorimap.auth.presentation.util.CookieUtil;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 

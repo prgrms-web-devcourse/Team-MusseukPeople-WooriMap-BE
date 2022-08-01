@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.auth.presentation;
+package com.musseukpeople.woorimap.auth.presentation.resolver;
 
 import static org.assertj.core.api.Assertions.*;
 

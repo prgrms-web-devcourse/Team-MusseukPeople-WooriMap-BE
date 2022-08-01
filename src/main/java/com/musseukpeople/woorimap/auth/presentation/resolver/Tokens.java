@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.auth.presentation.dto;
+package com.musseukpeople.woorimap.auth.presentation.resolver;
 
 import lombok.Getter;
 
