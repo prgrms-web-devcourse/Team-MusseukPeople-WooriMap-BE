@@ -3,14 +3,18 @@ package com.musseukpeople.woorimap.couple.domain;
 import static com.google.common.base.Preconditions.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.musseukpeople.woorimap.common.model.BaseEntity;
+import com.musseukpeople.woorimap.member.domain.Member;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,10 +25,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Couple extends BaseEntity {
 
+    @OneToMany(mappedBy = "couple")
+    private final List<Member> members = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private LocalDate startDate;
 
@@ -38,5 +43,18 @@ public class Couple extends BaseEntity {
 
         this.id = id;
         this.startDate = startDate;
+    }
+
+    public void addMember(Member member) {
+        this.members.add(member);
+
+        if (member.getCouple() != this) {
+            member.changeCouple(this);
+        }
+    }
+
+    public void clearMembers() {
+        this.members.forEach(member -> member.changeCouple(null));
+        this.members.clear();
     }
 }
