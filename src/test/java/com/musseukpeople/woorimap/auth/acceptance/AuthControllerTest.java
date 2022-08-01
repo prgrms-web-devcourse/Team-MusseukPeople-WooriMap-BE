@@ -11,9 +11,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import com.musseukpeople.woorimap.auth.application.dto.request.RefreshTokenRequest;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
+import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
 import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
@@ -93,12 +96,77 @@ class AuthControllerTest extends AcceptanceTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("토큰 재발급 성공")
+    @Test
+    void refreshAccessToken_success() throws Exception {
+        // given
+        TokenResponse tokenResponse = 로그인_모든_토큰("woorimap@gmail.com", "!Hwan123");
+
+        // when
+        MockHttpServletResponse response = 토큰_재발급_요청(tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
+
+        // then
+        AccessTokenResponse accessTokenResponse = getResponseObject(response, AccessTokenResponse.class);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(accessTokenResponse.getAccessToken()).isNotNull()
+        );
+    }
+
+    @DisplayName("유효하지 않은 accessToken으로 인한 토큰 재발급 실패")
+    @Test
+    void refreshAccessToken_invalidAccessToken_fail() throws Exception {
+        // given
+        TokenResponse tokenResponse = 로그인_모든_토큰("woorimap@gmail.com", "!Hwan123");
+
+        // when
+        MockHttpServletResponse response = 토큰_재발급_요청(tokenResponse.getAccessToken() + "invalid",
+            tokenResponse.getRefreshToken());
+
+        // then
+        토큰_재발급_실패(response);
+    }
+
+    @DisplayName("유효하지 않은 refreshToken으로 인한 토큰 재발급 실패")
+    @Test
+    void refreshAccessToken_invalidRefreshToken_fail() throws Exception {
+        TokenResponse tokenResponse = 로그인_모든_토큰("woorimap@gmail.com", "!Hwan123");
+
+        // when
+        MockHttpServletResponse response = 토큰_재발급_요청(tokenResponse.getAccessToken(),
+            tokenResponse.getRefreshToken() + "invalid");
+
+        // then
+        토큰_재발급_실패(response);
+    }
+
+    private TokenResponse 로그인_모든_토큰(String email, String password) throws Exception {
+        SignInRequest signInRequest = new SignInRequest(email, password);
+        return getResponseObject(로그인(signInRequest), TokenResponse.class);
+    }
+
+    private MockHttpServletResponse 토큰_재발급_요청(String accessToken, String refreshToken) throws Exception {
+        return mockMvc.perform(post("/api/tokens")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .content(objectMapper.writeValueAsString(new RefreshTokenRequest(refreshToken))))
+            .andReturn().getResponse();
+    }
+
     private void 로그인_실패(MockHttpServletResponse response) throws IOException {
         ErrorResponse errorResponse = getErrorResponse(response);
         assertAll(
             () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
             () -> assertThat(errorResponse.getMessage()).isEqualTo("이메일 또는 비밀번호가 일치하지 않습니다."),
             () -> assertThat(errorResponse.getCode()).isEqualTo("U001")
+        );
+    }
+
+    private void 토큰_재발급_실패(MockHttpServletResponse response) throws IOException {
+        ErrorResponse errorResponse = getErrorResponse(response);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+            () -> assertThat(errorResponse.getMessage()).isEqualTo("유효하지 않은 토큰입니다.")
         );
     }
 }
