@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.application.dto.request.RefreshTokenRequest;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
@@ -38,8 +39,8 @@ public class AuthService {
         String accessToken = jwtProvider.createAccessToken(memberId, coupleId);
         String refreshToken = jwtProvider.createRefreshToken();
 
-        Token token = new Token(memberId, refreshToken, jwtProvider.getRefreshTokenExpiredTime());
-        tokenService.saveToken(token);
+        TokenDto tokenDto = new TokenDto(memberId, refreshToken, jwtProvider.getRefreshTokenExpiredTime());
+        tokenService.saveToken(tokenDto);
         return new TokenResponse(accessToken, refreshToken, LoginMemberResponse.from(member));
     }
 
@@ -55,14 +56,18 @@ public class AuthService {
         }
 
         Claims claims = jwtProvider.getClaims(accessToken);
-        String memberId = claims.getSubject();
-        Token findRefreshToken = tokenService.getTokenByMemberId(memberId);
+        Token findRefreshToken = getRefreshToken(claims);
         if (findRefreshToken.isNotSame(refreshToken)) {
             throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
         }
 
         String newAccessToken = createNewAccessToken(claims);
         return new AccessTokenResponse(newAccessToken);
+    }
+
+    private Token getRefreshToken(Claims claims) {
+        String memberId = claims.getSubject();
+        return tokenService.getTokenByMemberId(memberId);
     }
 
     private String createNewAccessToken(Claims claims) {
