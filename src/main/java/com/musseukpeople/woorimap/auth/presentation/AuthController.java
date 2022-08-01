@@ -19,8 +19,8 @@ import com.musseukpeople.woorimap.auth.application.dto.response.LoginResponseDto
 import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.auth.presentation.dto.response.LoginResponse;
+import com.musseukpeople.woorimap.auth.presentation.resolver.JwtToken;
 import com.musseukpeople.woorimap.auth.presentation.resolver.RequestTokens;
-import com.musseukpeople.woorimap.auth.presentation.resolver.Tokens;
 import com.musseukpeople.woorimap.auth.presentation.util.CookieUtil;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 
@@ -54,10 +54,10 @@ public class AuthController {
 
     @Operation(summary = "엑세스 토큰 재발급", description = "엑세스 토큰을 재발급 받습니다.")
     @PostMapping("/token")
-    public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(@RequestTokens Tokens tokens) {
+    public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(@RequestTokens JwtToken jwtToken) {
         AccessTokenResponse accessToken = authService.refreshAccessToken(
-            tokens.getAccessToken(),
-            tokens.getRefreshToken()
+            jwtToken.getAccessToken(),
+            jwtToken.getRefreshToken()
         );
         return ResponseEntity.ok(new ApiResponse<>(accessToken));
     }

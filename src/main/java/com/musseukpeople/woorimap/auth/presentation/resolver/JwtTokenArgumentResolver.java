@@ -13,7 +13,7 @@ import com.musseukpeople.woorimap.auth.infrastructure.AuthorizationExtractor;
 import com.musseukpeople.woorimap.auth.presentation.util.CookieUtil;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 
-public class TokensArgumentResolver implements HandlerMethodArgumentResolver {
+public class JwtTokenArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -26,7 +26,7 @@ public class TokensArgumentResolver implements HandlerMethodArgumentResolver {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String accessToken = getAccessTokenByRequest(request);
         String refreshToken = CookieUtil.getTokenCookieValue(request);
-        return new Tokens(accessToken, refreshToken);
+        return new JwtToken(accessToken, refreshToken);
     }
 
     private String getAccessTokenByRequest(HttpServletRequest httpServletRequest) {
