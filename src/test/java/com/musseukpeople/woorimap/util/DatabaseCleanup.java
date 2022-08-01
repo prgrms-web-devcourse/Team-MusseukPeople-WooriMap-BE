@@ -38,6 +38,9 @@ public class DatabaseCleanup implements InitializingBean {
 
         for (String tableName : tableNames) {
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
+            if (tableName.equals("invite_code")) {
+                continue;
+            }
             entityManager.createNativeQuery("ALTER TABLE " + tableName + " AUTO_INCREMENT = 1").executeUpdate();
         }
 
