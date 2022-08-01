@@ -18,4 +18,8 @@ public class CoupleFacade {
     public InviteCodeResponse createInviteCode(Long inviterId, LocalDateTime expireDate) {
         return inviteCodeService.createInviteCode(inviterId, expireDate);
     }
+
+    public void removeCouple(Long coupleId) {
+        coupleService.removeCouple(coupleId);
+    }
 }
