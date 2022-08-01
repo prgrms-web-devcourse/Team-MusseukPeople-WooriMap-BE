@@ -1,6 +1,7 @@
 package com.musseukpeople.woorimap.auth.presentation.dto.response;
 
 import com.musseukpeople.woorimap.auth.application.dto.response.LoginMemberResponse;
+import com.musseukpeople.woorimap.auth.application.dto.response.LoginResponseDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -20,6 +21,13 @@ public class LoginResponse {
     public LoginResponse(String accessToken, LoginMemberResponse loginMemberResponse) {
         this.accessToken = accessToken;
         this.member = loginMemberResponse;
+    }
+
+    public static LoginResponse from(LoginResponseDto loginResponseDto) {
+        return new LoginResponse(
+            loginResponseDto.getAccessToken().getValue(),
+            loginResponseDto.getMember()
+        );
     }
 }
 

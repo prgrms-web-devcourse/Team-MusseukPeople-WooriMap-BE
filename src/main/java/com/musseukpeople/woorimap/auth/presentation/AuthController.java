@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
+    private static final String COOKIE_NAME = "refreshToken";
 
     private final AuthService authService;
 
@@ -44,11 +44,9 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LoginResponse>> signIn(@Valid @RequestBody SignInRequest signInRequest,
                                                              HttpServletResponse response) {
         LoginResponseDto loginResponseDto = authService.login(signInRequest);
-        ResponseCookie cookie = CookieUtil.createTokenCookie(REFRESH_TOKEN_COOKIE_NAME,
-            loginResponseDto.getRefreshToken());
+        ResponseCookie cookie = CookieUtil.createTokenCookie(COOKIE_NAME, loginResponseDto.getRefreshToken());
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-        return ResponseEntity.ok(new ApiResponse<>(
-            new LoginResponse(loginResponseDto.getAccessToken().getValue(), loginResponseDto.getMember())));
+        return ResponseEntity.ok(new ApiResponse<>(LoginResponse.from(loginResponseDto)));
     }
 
     @Operation(summary = "로그아웃", description = "로그아웃 API입니다.")
@@ -62,7 +60,7 @@ public class AuthController {
     @PostMapping("/token")
     public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(HttpServletRequest httpServletRequest) {
         String accessToken = getAccessTokenByRequest(httpServletRequest);
-        String refreshToken = CookieUtil.getCookieValue(httpServletRequest, REFRESH_TOKEN_COOKIE_NAME);
+        String refreshToken = CookieUtil.getCookieValue(httpServletRequest, COOKIE_NAME);
         AccessTokenResponse refreshAccessToken = authService.refreshAccessToken(accessToken, refreshToken);
         return ResponseEntity.ok(new ApiResponse<>(refreshAccessToken));
     }
