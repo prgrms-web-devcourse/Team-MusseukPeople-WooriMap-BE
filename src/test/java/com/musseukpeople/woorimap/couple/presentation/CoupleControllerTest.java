@@ -13,21 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import com.musseukpeople.woorimap.auth.application.AuthService;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
-import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
 import com.musseukpeople.woorimap.invitecode.application.dto.response.InviteCodeResponse;
 import com.musseukpeople.woorimap.invitecode.domain.InviteCode;
 import com.musseukpeople.woorimap.invitecode.domain.InviteCodeRepository;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
-import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
-import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
 
 class CoupleControllerTest extends AcceptanceTest {
-
-    @Autowired
-    private AuthService authService;
 
     @Autowired
     private InviteCodeRepository inviteCodeRepository;
@@ -36,11 +29,11 @@ class CoupleControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void login() throws Exception {
-        Member member = new TMemberBuilder().build();
-        회원가입(new SignupRequest(member.getEmail().getValue(), "Aaaaa11!!",
-            member.getNickName().getValue()));
-        TokenResponse tokenResponse = authService.login(new SignInRequest(member.getEmail().getValue(), "Aaaaa11!!"));
-        accessToken = "Bearer " + tokenResponse.getAccessToken();
+        String email = "test@gmail.com";
+        String password = "!Test1234";
+        String nickName = "test";
+        회원가입(new SignupRequest(email, password, nickName));
+        accessToken = 로그인_토큰(new SignInRequest(email, password));
     }
 
     @DisplayName("커플 초대 코드 생성 API 성공")
