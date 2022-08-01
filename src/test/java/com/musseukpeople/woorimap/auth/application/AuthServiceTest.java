@@ -8,10 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.musseukpeople.woorimap.auth.application.dto.request.RefreshTokenRequest;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
-import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
+import com.musseukpeople.woorimap.auth.application.dto.response.LoginResponseDto;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.member.application.MemberService;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
@@ -40,12 +39,12 @@ class AuthServiceTest extends IntegrationTest {
         SignInRequest signInRequest = new SignInRequest(email, password);
 
         // when
-        TokenResponse tokenResponse = authService.login(signInRequest);
+        LoginResponseDto loginResponseDto = authService.login(signInRequest);
 
         // then
         assertAll(
-            () -> assertThat(tokenResponse.getAccessToken()).isNotBlank(),
-            () -> assertThat(tokenResponse.getRefreshToken()).isNotBlank()
+            () -> assertThat(loginResponseDto.getAccessToken().getValue()).isNotBlank(),
+            () -> assertThat(loginResponseDto.getRefreshToken().getValue()).isNotBlank()
         );
     }
 
@@ -81,9 +80,9 @@ class AuthServiceTest extends IntegrationTest {
     @Test
     void refreshAccessToken_success() {
         // given
-        TokenResponse tokenResponse = login(email, password);
-        String accessToken = tokenResponse.getAccessToken();
-        RefreshTokenRequest refreshToken = new RefreshTokenRequest(tokenResponse.getRefreshToken());
+        LoginResponseDto loginResponseDto = login(email, password);
+        String accessToken = loginResponseDto.getAccessToken().getValue();
+        String refreshToken = loginResponseDto.getRefreshToken().getValue();
 
         // when
         AccessTokenResponse accessTokenResponse = authService.refreshAccessToken(accessToken, refreshToken);
@@ -96,9 +95,9 @@ class AuthServiceTest extends IntegrationTest {
     @Test
     void refreshAccessToken_invalidAccessToken_fail() {
         // given
-        TokenResponse tokenResponse = login(email, password);
-        String invalidAccessToken = tokenResponse.getAccessToken() + "invalid";
-        RefreshTokenRequest refreshToken = new RefreshTokenRequest(tokenResponse.getRefreshToken());
+        LoginResponseDto loginResponseDto = login(email, password);
+        String invalidAccessToken = loginResponseDto.getAccessToken().getValue() + "invalid";
+        String refreshToken = loginResponseDto.getRefreshToken().getValue();
 
         // when
         // then
@@ -107,22 +106,22 @@ class AuthServiceTest extends IntegrationTest {
             .hasMessageContaining("유효하지 않은 토큰입니다.");
     }
 
-    @DisplayName("유효하지 않는 accessToken으로 인한 재발급 실패")
+    @DisplayName("유효하지 않는 refreshToken으로 인한 재발급 실패")
     @Test
     void refreshAccessToken_invalidRefreshToken_fail() {
         // given
-        TokenResponse tokenResponse = login(email, password);
-        String invalidAccessToken = tokenResponse.getAccessToken();
-        RefreshTokenRequest invalidRefreshToken = new RefreshTokenRequest(tokenResponse.getRefreshToken() + "invalid");
+        LoginResponseDto loginResponseDto = login(email, password);
+        String accessToken = loginResponseDto.getAccessToken().getValue();
+        String invalidRefreshToken = loginResponseDto.getRefreshToken().getValue() + "invalid";
 
         // when
         // then
-        assertThatThrownBy(() -> authService.refreshAccessToken(invalidAccessToken, invalidRefreshToken))
+        assertThatThrownBy(() -> authService.refreshAccessToken(accessToken, invalidRefreshToken))
             .isInstanceOf(InvalidTokenException.class)
             .hasMessageContaining("유효하지 않은 토큰입니다.");
     }
 
-    private TokenResponse login(String email, String password) {
+    private LoginResponseDto login(String email, String password) {
         return authService.login(new SignInRequest(email, password));
     }
 }

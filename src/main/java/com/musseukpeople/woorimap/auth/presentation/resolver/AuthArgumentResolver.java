@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.auth.presentation;
+package com.musseukpeople.woorimap.auth.presentation.resolver;
 
 import javax.servlet.http.HttpServletRequest;
 

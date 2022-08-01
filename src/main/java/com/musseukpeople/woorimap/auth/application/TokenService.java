@@ -19,8 +19,8 @@ public class TokenService {
     private final TokenRepository tokenRepository;
 
     @Transactional
-    public void saveToken(TokenDto tokenDto) {
-        Token token = new Token(tokenDto.getId(), tokenDto.getRefreshToken(), tokenDto.getExpiredTime());
+    public void saveToken(String memberId, TokenDto tokenDto) {
+        Token token = new Token(memberId, tokenDto.getValue(), tokenDto.getExpiredTime());
         tokenRepository.save(token);
     }
 

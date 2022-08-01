@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import java.io.IOException;
 
+import javax.servlet.http.Cookie;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,10 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import com.musseukpeople.woorimap.auth.application.dto.request.RefreshTokenRequest;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
-import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
+import com.musseukpeople.woorimap.auth.presentation.dto.response.LoginResponse;
 import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
@@ -41,13 +42,14 @@ class AuthControllerTest extends AcceptanceTest {
         MockHttpServletResponse response = 로그인(signInRequest);
 
         // then
-        TokenResponse tokenResponse = getResponseObject(response, TokenResponse.class);
+        LoginResponse loginResponse = getResponseObject(response, LoginResponse.class);
         assertAll(
             () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(tokenResponse.getAccessToken()).isNotBlank(),
-            () -> assertThat(tokenResponse.getRefreshToken()).isNotBlank(),
-            () -> assertThat(tokenResponse.getMember().getEmail()).isEqualTo("woorimap@gmail.com"),
-            () -> assertThat(tokenResponse.getMember().getNickName()).isEqualTo("hwan")
+            () -> assertThat(response.getCookie("refreshToken")).isNotNull(),
+            () -> assertThat(loginResponse.getAccessToken()).isNotBlank(),
+            () -> assertThat(loginResponse.getMember().getEmail()).isEqualTo("woorimap@gmail.com"),
+            () -> assertThat(loginResponse.getMember().getNickName()).isEqualTo("hwan"),
+            () -> assertThat(loginResponse.getMember().isCouple()).isFalse()
         );
     }
 
@@ -100,10 +102,12 @@ class AuthControllerTest extends AcceptanceTest {
     @Test
     void refreshAccessToken_success() throws Exception {
         // given
-        TokenResponse tokenResponse = 로그인_모든_토큰("woorimap@gmail.com", "!Hwan123");
+        MockHttpServletResponse loginResponse = 로그인(new SignInRequest("woorimap@gmail.com", "!Hwan123"));
+        String accessToken = getAccessToken(loginResponse);
+        String refreshToken = getRefreshToken(loginResponse);
 
         // when
-        MockHttpServletResponse response = 토큰_재발급_요청(tokenResponse.getAccessToken(), tokenResponse.getRefreshToken());
+        MockHttpServletResponse response = 토큰_재발급_요청(accessToken, refreshToken);
 
         // then
         AccessTokenResponse accessTokenResponse = getResponseObject(response, AccessTokenResponse.class);
@@ -117,11 +121,12 @@ class AuthControllerTest extends AcceptanceTest {
     @Test
     void refreshAccessToken_invalidAccessToken_fail() throws Exception {
         // given
-        TokenResponse tokenResponse = 로그인_모든_토큰("woorimap@gmail.com", "!Hwan123");
+        MockHttpServletResponse loginResponse = 로그인(new SignInRequest("woorimap@gmail.com", "!Hwan123"));
+        String accessToken = getAccessToken(loginResponse);
+        String refreshToken = getRefreshToken(loginResponse);
 
         // when
-        MockHttpServletResponse response = 토큰_재발급_요청(tokenResponse.getAccessToken() + "invalid",
-            tokenResponse.getRefreshToken());
+        MockHttpServletResponse response = 토큰_재발급_요청(accessToken + "invalid", refreshToken);
 
         // then
         토큰_재발급_실패(response);
@@ -130,26 +135,22 @@ class AuthControllerTest extends AcceptanceTest {
     @DisplayName("유효하지 않은 refreshToken으로 인한 토큰 재발급 실패")
     @Test
     void refreshAccessToken_invalidRefreshToken_fail() throws Exception {
-        TokenResponse tokenResponse = 로그인_모든_토큰("woorimap@gmail.com", "!Hwan123");
+        MockHttpServletResponse loginResponse = 로그인(new SignInRequest("woorimap@gmail.com", "!Hwan123"));
+        String accessToken = getAccessToken(loginResponse);
+        String refreshToken = getRefreshToken(loginResponse);
 
         // when
-        MockHttpServletResponse response = 토큰_재발급_요청(tokenResponse.getAccessToken(),
-            tokenResponse.getRefreshToken() + "invalid");
+        MockHttpServletResponse response = 토큰_재발급_요청(accessToken, refreshToken + "invalid");
 
         // then
         토큰_재발급_실패(response);
-    }
-
-    private TokenResponse 로그인_모든_토큰(String email, String password) throws Exception {
-        SignInRequest signInRequest = new SignInRequest(email, password);
-        return getResponseObject(로그인(signInRequest), TokenResponse.class);
     }
 
     private MockHttpServletResponse 토큰_재발급_요청(String accessToken, String refreshToken) throws Exception {
         return mockMvc.perform(post("/api/auth/token")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .content(objectMapper.writeValueAsString(new RefreshTokenRequest(refreshToken))))
+                .cookie(new Cookie("refreshToken", refreshToken)))
             .andReturn().getResponse();
     }
 
@@ -168,5 +169,13 @@ class AuthControllerTest extends AcceptanceTest {
             () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
             () -> assertThat(errorResponse.getMessage()).isEqualTo("유효하지 않은 토큰입니다.")
         );
+    }
+
+    private String getRefreshToken(MockHttpServletResponse response) {
+        return response.getCookie("refreshToken").getValue();
+    }
+
+    private String getAccessToken(MockHttpServletResponse loginResponse) throws IOException {
+        return getResponseObject(loginResponse, LoginResponse.class).getAccessToken();
     }
 }

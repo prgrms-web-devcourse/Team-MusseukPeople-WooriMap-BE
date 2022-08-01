@@ -5,13 +5,11 @@ import lombok.Getter;
 @Getter
 public class TokenDto {
 
-    private final String id;
-    private final String refreshToken;
+    private final String value;
     private final long expiredTime;
 
-    public TokenDto(String id, String refreshToken, long expiredTime) {
-        this.id = id;
-        this.refreshToken = refreshToken;
+    public TokenDto(String value, long expiredTime) {
+        this.value = value;
         this.expiredTime = expiredTime;
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.musseukpeople.woorimap.auth.application.JwtProvider;
+import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 
@@ -42,13 +43,15 @@ public class JwtTokenProvider implements JwtProvider {
     }
 
     @Override
-    public String createAccessToken(String payload, Long coupleId) {
-        return createToken(payload, coupleId, accessTokenValidityInMilliseconds);
+    public TokenDto createAccessToken(String payload, Long coupleId) {
+        String token = createToken(payload, coupleId, accessTokenValidityInMilliseconds);
+        return new TokenDto(token, accessTokenValidityInMilliseconds);
     }
 
     @Override
-    public String createRefreshToken() {
-        return createToken(UUID.randomUUID().toString(), null, refreshTokenValidityInMilliseconds);
+    public TokenDto createRefreshToken() {
+        String token = createToken(UUID.randomUUID().toString(), null, refreshTokenValidityInMilliseconds);
+        return new TokenDto(token, refreshTokenValidityInMilliseconds);
     }
 
     private String createToken(String payload, Long coupleId, long validityInMilliseconds) {
@@ -89,11 +92,6 @@ public class JwtTokenProvider implements JwtProvider {
     @Override
     public String getClaimName() {
         return COUPLE_CLAIM_NAME;
-    }
-
-    @Override
-    public long getRefreshTokenExpiredTime() {
-        return refreshTokenValidityInMilliseconds;
     }
 
     private Jws<Claims> getClaimsJws(String token) {

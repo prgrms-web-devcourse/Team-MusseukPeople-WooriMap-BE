@@ -17,12 +17,20 @@ public class LoginMemberResponse {
     @Schema(description = "닉네임")
     private String nickName;
 
-    public LoginMemberResponse(String email, String nickName) {
+    @Schema(description = "커플 유무")
+    private boolean isCouple;
+
+    public LoginMemberResponse(String email, String nickName, boolean isCouple) {
         this.email = email;
         this.nickName = nickName;
+        this.isCouple = isCouple;
     }
 
     public static LoginMemberResponse from(Member member) {
-        return new LoginMemberResponse(member.getEmail().getValue(), member.getNickName().getValue());
+        return new LoginMemberResponse(
+            member.getEmail().getValue(),
+            member.getNickName().getValue(),
+            member.isCouple()
+        );
     }
 }
