@@ -28,10 +28,6 @@ public class InviteCode {
     @Column(nullable = false)
     private LocalDateTime expireDate;
 
-    public InviteCode(String code, Long inviterId) {
-        this(code, inviterId, LocalDateTime.now().plusDays(1));
-    }
-
     public InviteCode(String code, Long inviterId, LocalDateTime expireDate) {
         validateCode(code);
         this.code = code;
