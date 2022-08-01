@@ -27,9 +27,14 @@ public class Couple {
     private LocalDate startDate;
 
     public Couple(LocalDate startDate) {
+        this(null, startDate);
+    }
+
+    public Couple(Long id, LocalDate startDate) {
         checkArgument(startDate.isBefore(LocalDate.now().plusDays(1)),
             "현재 이후 날짜로 커플을 생성할 수 없습니다.");
 
+        this.id = id;
         this.startDate = startDate;
     }
 }
