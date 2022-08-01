@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.musseukpeople.woorimap.auth.application.AuthService;
+import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.LoginResponseDto;
@@ -44,8 +45,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LoginResponse>> signIn(@Valid @RequestBody SignInRequest signInRequest,
                                                              HttpServletResponse response) {
         LoginResponseDto loginResponseDto = authService.login(signInRequest);
-        ResponseCookie cookie = CookieUtil.createTokenCookie(COOKIE_NAME, loginResponseDto.getRefreshToken());
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        setTokenCookie(response, loginResponseDto.getRefreshToken());
         return ResponseEntity.ok(new ApiResponse<>(LoginResponse.from(loginResponseDto)));
     }
 
@@ -58,9 +58,9 @@ public class AuthController {
 
     @Operation(summary = "엑세스 토큰 재발급", description = "엑세스 토큰을 재발급 받습니다.")
     @PostMapping("/token")
-    public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(HttpServletRequest httpServletRequest) {
-        String accessToken = getAccessTokenByRequest(httpServletRequest);
-        String refreshToken = CookieUtil.getCookieValue(httpServletRequest, COOKIE_NAME);
+    public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(HttpServletRequest request) {
+        String accessToken = getAccessTokenByRequest(request);
+        String refreshToken = CookieUtil.getCookieValue(request, COOKIE_NAME);
         AccessTokenResponse refreshAccessToken = authService.refreshAccessToken(accessToken, refreshToken);
         return ResponseEntity.ok(new ApiResponse<>(refreshAccessToken));
     }
@@ -68,5 +68,10 @@ public class AuthController {
     private String getAccessTokenByRequest(HttpServletRequest httpServletRequest) {
         return AuthorizationExtractor.extract(httpServletRequest)
             .orElseThrow(() -> new UnauthorizedException(ErrorCode.NOT_FOUND_TOKEN));
+    }
+
+    private void setTokenCookie(HttpServletResponse response, TokenDto tokenDto) {
+        ResponseCookie cookie = CookieUtil.createTokenCookie(COOKIE_NAME, tokenDto);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }
