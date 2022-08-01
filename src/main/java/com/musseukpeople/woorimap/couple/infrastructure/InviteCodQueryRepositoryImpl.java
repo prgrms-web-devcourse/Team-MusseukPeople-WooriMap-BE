@@ -1,6 +1,6 @@
 package com.musseukpeople.woorimap.couple.infrastructure;
 
-import static com.musseukpeople.woorimap.invitecode.domain.QInviteCode.*;
+import static com.musseukpeople.woorimap.couple.domain.QInviteCode.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
