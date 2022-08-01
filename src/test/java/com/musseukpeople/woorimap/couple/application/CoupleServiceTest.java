@@ -9,13 +9,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
+import com.musseukpeople.woorimap.util.IntegrationTest;
 
-@SpringBootTest
-class CoupleServiceTest {
+class CoupleServiceTest extends IntegrationTest {
 
     private static final Long COUPLE_ID = 1L;
     private static final LocalDate COUPLE_START_DATE = LocalDate.of(2022, 1, 1);
