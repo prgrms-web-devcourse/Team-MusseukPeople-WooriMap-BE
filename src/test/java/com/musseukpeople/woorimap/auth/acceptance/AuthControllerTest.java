@@ -47,7 +47,8 @@ class AuthControllerTest extends AcceptanceTest {
             () -> assertThat(tokenResponse.getAccessToken()).isNotBlank(),
             () -> assertThat(tokenResponse.getRefreshToken()).isNotBlank(),
             () -> assertThat(tokenResponse.getMember().getEmail()).isEqualTo("woorimap@gmail.com"),
-            () -> assertThat(tokenResponse.getMember().getNickName()).isEqualTo("hwan")
+            () -> assertThat(tokenResponse.getMember().getNickName()).isEqualTo("hwan"),
+            () -> assertThat(tokenResponse.getMember().isCouple()).isFalse()
         );
     }
 
