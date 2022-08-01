@@ -15,7 +15,8 @@ import com.musseukpeople.woorimap.couple.domain.InviteCode;
 import com.musseukpeople.woorimap.couple.domain.InviteCodeRepository;
 import com.musseukpeople.woorimap.util.RepositoryTest;
 
-class InviteCodQueryRepositoryTest extends RepositoryTest {
+@RepositoryTest
+class InviteCodQueryRepositoryTest {
 
     private static final LocalDateTime EXPIRE_DATE = LocalDateTime.now().plusDays(1);
     private static final String INVITE_CODE = "1234567";
