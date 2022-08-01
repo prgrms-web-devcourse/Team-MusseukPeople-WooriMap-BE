@@ -4,11 +4,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.musseukpeople.woorimap.auth.application.dto.request.RefreshTokenRequest;
+import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.LoginMemberResponse;
-import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
+import com.musseukpeople.woorimap.auth.application.dto.response.LoginResponseDto;
 import com.musseukpeople.woorimap.auth.domain.Token;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
@@ -29,17 +29,17 @@ public class AuthService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public TokenResponse login(SignInRequest signInRequest) {
+    public LoginResponseDto login(SignInRequest signInRequest) {
         Member member = memberService.getMemberByEmail(signInRequest.getEmail());
         member.checkPassword(passwordEncoder, signInRequest.getPassword());
 
         String memberId = String.valueOf(member.getId());
         Long coupleId = member.isCouple() ? member.getCouple().getId() : null;
-        String accessToken = jwtProvider.createAccessToken(memberId, coupleId);
-        String refreshToken = jwtProvider.createRefreshToken();
+        TokenDto accessToken = jwtProvider.createAccessToken(memberId, coupleId);
+        TokenDto refreshToken = jwtProvider.createRefreshToken();
 
-        tokenService.saveToken(memberId, refreshToken, jwtProvider.getRefreshTokenExpiredTime());
-        return new TokenResponse(accessToken, refreshToken, LoginMemberResponse.from(member));
+        tokenService.saveToken(memberId, refreshToken);
+        return new LoginResponseDto(accessToken, refreshToken, LoginMemberResponse.from(member));
     }
 
     @Transactional
@@ -47,8 +47,7 @@ public class AuthService {
         tokenService.removeByMemberId(String.valueOf(memberId));
     }
 
-    public AccessTokenResponse refreshAccessToken(String accessToken, RefreshTokenRequest refreshTokenRequest) {
-        String refreshToken = refreshTokenRequest.getRefreshToken();
+    public AccessTokenResponse refreshAccessToken(String accessToken, String refreshToken) {
         if (!jwtProvider.validateToken(refreshToken)) {
             throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
         }
@@ -69,6 +68,7 @@ public class AuthService {
     }
 
     private String createNewAccessToken(Claims claims) {
-        return jwtProvider.createAccessToken(claims.getSubject(), claims.get(jwtProvider.getClaimName(), Long.class));
+        return jwtProvider.createAccessToken(claims.getSubject(), claims.get(jwtProvider.getClaimName(), Long.class))
+            .getValue();
     }
 }
