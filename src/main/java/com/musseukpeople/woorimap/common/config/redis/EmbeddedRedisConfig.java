@@ -30,7 +30,7 @@ public class EmbeddedRedisConfig {
     private static final String BIN_SH_OPTION_WINDOW_ONE = "/y";
     private static final String BIN_SH_OPTION_WINDOW_TWO = "/c";
     private static final String COMMAND = "netstat -nat | grep LISTEN|grep %d";
-    private static final String COMMAND_WINDOW = "netstat -nao | find \"LISTEN\" | find %d";
+    private static final String COMMAND_WINDOW = "netstat -nao | findstr %d";
     private static final int START_PORT = 10000;
     private static final int END_PORT = 65535;
 
@@ -48,6 +48,10 @@ public class EmbeddedRedisConfig {
     public void redisServer() throws IOException {
         int port = isRedisRunning() ? findAvailablePort() : redisPort;
         redisServer = new RedisServer(port);
+        redisServer = RedisServer.builder()
+            .port(port)
+            .setting("maxmemory 128M")
+            .build();
         redisServer.start();
     }
 
