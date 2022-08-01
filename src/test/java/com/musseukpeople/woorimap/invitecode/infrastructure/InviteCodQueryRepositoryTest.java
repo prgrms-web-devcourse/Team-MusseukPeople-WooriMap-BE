@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,7 @@ import com.musseukpeople.woorimap.util.RepositoryTest;
 
 class InviteCodQueryRepositoryTest extends RepositoryTest {
 
+    private static final LocalDateTime EXPIRE_DATE = LocalDateTime.now().plusDays(1);
     private static final String INVITE_CODE = "1234567";
     private static final Long INVITER_ID = 1L;
 
@@ -26,12 +26,7 @@ class InviteCodQueryRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void before() {
-        inviteCodeRepository.save(new InviteCode(INVITE_CODE, INVITER_ID));
-    }
-
-    @AfterEach
-    void cleanup() {
-        inviteCodeRepository.deleteAllInBatch();
+        inviteCodeRepository.save(new InviteCode(INVITE_CODE, INVITER_ID, EXPIRE_DATE));
     }
 
     @DisplayName("초대자 아이디로 초대링크 검색 성공")

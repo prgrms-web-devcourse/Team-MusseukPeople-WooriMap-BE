@@ -18,6 +18,7 @@ import com.musseukpeople.woorimap.invitecode.domain.InviteCodeRepository;
 @SpringBootTest
 class InviteCodeServiceTest {
 
+    private static final LocalDateTime EXPIRE_DATE = LocalDateTime.now().plusDays(1);
     private static final String INVITE_CODE = "1234567";
     private static final Long INVITER_ID = 1L;
 
@@ -36,7 +37,7 @@ class InviteCodeServiceTest {
     @Test
     void createInviteCode_success() {
         //given
-        InviteCodeResponse inviteCode = inviteCodeService.createInviteCode(INVITER_ID);
+        InviteCodeResponse inviteCode = inviteCodeService.createInviteCode(INVITER_ID, EXPIRE_DATE);
 
         //when
         InviteCode findInviteCode = inviteCodeRepository.findById(inviteCode.getCode()).get();
@@ -57,7 +58,7 @@ class InviteCodeServiceTest {
         inviteCodeRepository.save(new InviteCode(INVITE_CODE, INVITER_ID, overExpireDate));
 
         //when
-        InviteCodeResponse inviteCode = inviteCodeService.createInviteCode(INVITER_ID);
+        InviteCodeResponse inviteCode = inviteCodeService.createInviteCode(INVITER_ID, EXPIRE_DATE);
 
         //then
         assertThat(inviteCode.getCode()).isNotEqualTo(INVITE_CODE);
@@ -67,10 +68,10 @@ class InviteCodeServiceTest {
     @Test
     void createInviteCode_getCode_success() {
         //given
-        inviteCodeRepository.save(new InviteCode(INVITE_CODE, INVITER_ID));
+        inviteCodeRepository.save(new InviteCode(INVITE_CODE, INVITER_ID, EXPIRE_DATE));
 
         //when
-        InviteCodeResponse inviteCode = inviteCodeService.createInviteCode(INVITER_ID);
+        InviteCodeResponse inviteCode = inviteCodeService.createInviteCode(INVITER_ID, EXPIRE_DATE);
 
         //then
         assertThat(inviteCode.getCode()).isEqualTo(INVITE_CODE);

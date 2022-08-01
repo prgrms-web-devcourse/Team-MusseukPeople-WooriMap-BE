@@ -11,6 +11,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class InviteCodeTest {
 
+    private static final LocalDateTime EXPIRE_DATE = LocalDateTime.now().plusDays(1);
+
     @DisplayName("초대 코드 생성 성공")
     @ParameterizedTest(name = "초대 코드: {0}")
     @ValueSource(
@@ -19,7 +21,7 @@ class InviteCodeTest {
     void construct_success(String code) {
         //given
         //when
-        InviteCode inviteCode = new InviteCode(code, 1L);
+        InviteCode inviteCode = new InviteCode(code, 1L, EXPIRE_DATE);
         //then
         assertAll(
             () -> assertThat(inviteCode.getCode()).hasSize(7),
@@ -35,7 +37,7 @@ class InviteCodeTest {
     void construct_lengthNot7_fail(String failCode) {
         //given
         //when
-        assertThatThrownBy(() -> new InviteCode(failCode, 1L))
+        assertThatThrownBy(() -> new InviteCode(failCode, 1L, EXPIRE_DATE))
 
             //then
             .isInstanceOf(IllegalArgumentException.class)
@@ -47,10 +49,10 @@ class InviteCodeTest {
     @ValueSource(
         strings = {"12b4c6a", "abcdefg", "123456!", "!@#$%^&"}
     )
-    void name(String failCode) {
+    void construct_notNumber_fail(String failCode) {
         //given
         //when
-        assertThatThrownBy(() -> new InviteCode(failCode, 1L))
+        assertThatThrownBy(() -> new InviteCode(failCode, 1L, EXPIRE_DATE))
 
             //then
             .isInstanceOf(IllegalArgumentException.class)
