@@ -14,6 +14,11 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL5Dialect
 
+  redis:
+    host: localhost
+    password: test
+    port: 6379
+
 jwt:
   issuer: test
   secret-key: twk4jbz8a6smC4u0Xv6KvQUImMfVZ16/SCR0uKJIv3g=

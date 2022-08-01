@@ -1,12 +1,6 @@
 package com.musseukpeople.woorimap.auth.domain;
 
-import java.util.Optional;
+import org.springframework.data.repository.CrudRepository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
-public interface TokenRepository extends JpaRepository<Token, Long> {
-
-    Optional<Token> findByMemberId(Long memberId);
-
-    void deleteByMemberId(Long memberId);
+public interface TokenRepository extends CrudRepository<Token, String> {
 }

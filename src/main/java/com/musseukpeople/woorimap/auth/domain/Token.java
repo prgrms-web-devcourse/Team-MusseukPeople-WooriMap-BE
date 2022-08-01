@@ -1,36 +1,35 @@
 package com.musseukpeople.woorimap.auth.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RedisHash("token")
 public class Token {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, unique = true)
+    private String id;
     private String refreshToken;
 
-    @Column(nullable = false, unique = true)
-    private Long memberId;
+    @TimeToLive(unit = TimeUnit.MILLISECONDS)
+    private long expiredTime;
 
-    public Token(String refreshToken, Long memberId) {
+    public Token(String id, String refreshToken, long expiredTime) {
+        this.id = id;
         this.refreshToken = refreshToken;
-        this.memberId = memberId;
+        this.expiredTime = expiredTime;
     }
 
-    public boolean isNotSameToken(String refreshToken) {
-        return !this.refreshToken.equals(refreshToken);
+    public boolean isNotSame(String refreshToken) {
+        return !Objects.equals(this.refreshToken, refreshToken);
     }
 }

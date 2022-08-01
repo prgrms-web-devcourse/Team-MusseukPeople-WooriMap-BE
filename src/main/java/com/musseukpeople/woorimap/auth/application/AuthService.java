@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.application.dto.request.RefreshTokenRequest;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
@@ -33,17 +34,19 @@ public class AuthService {
         Member member = memberService.getMemberByEmail(signInRequest.getEmail());
         member.checkPassword(passwordEncoder, signInRequest.getPassword());
 
-        Long memberId = member.getId();
+        String memberId = String.valueOf(member.getId());
         Long coupleId = member.isCouple() ? member.getCouple().getId() : null;
-        String accessToken = jwtProvider.createAccessToken(String.valueOf(memberId), coupleId);
-        String refreshToken = jwtProvider.createRefreshToken(String.valueOf(memberId));
-        tokenService.saveToken(refreshToken, memberId);
+        String accessToken = jwtProvider.createAccessToken(memberId, coupleId);
+        String refreshToken = jwtProvider.createRefreshToken();
+
+        TokenDto tokenDto = new TokenDto(memberId, refreshToken, jwtProvider.getRefreshTokenExpiredTime());
+        tokenService.saveToken(tokenDto);
         return new TokenResponse(accessToken, refreshToken, LoginMemberResponse.from(member));
     }
 
     @Transactional
     public void logout(Long memberId) {
-        tokenService.removeByMemberId(memberId);
+        tokenService.removeByMemberId(String.valueOf(memberId));
     }
 
     public AccessTokenResponse refreshAccessToken(String accessToken, RefreshTokenRequest refreshTokenRequest) {
@@ -53,14 +56,18 @@ public class AuthService {
         }
 
         Claims claims = jwtProvider.getClaims(accessToken);
-        String memberId = claims.getSubject();
-        Token token = tokenService.getTokenByMemberId(Long.parseLong(memberId));
-        if (token.isNotSameToken(refreshToken)) {
+        Token findRefreshToken = getRefreshToken(claims);
+        if (findRefreshToken.isNotSame(refreshToken)) {
             throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
         }
 
         String newAccessToken = createNewAccessToken(claims);
         return new AccessTokenResponse(newAccessToken);
+    }
+
+    private Token getRefreshToken(Claims claims) {
+        String memberId = claims.getSubject();
+        return tokenService.getTokenByMemberId(memberId);
     }
 
     private String createNewAccessToken(Claims claims) {

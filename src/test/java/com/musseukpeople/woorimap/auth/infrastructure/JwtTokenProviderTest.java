@@ -39,14 +39,13 @@ class JwtTokenProviderTest {
     @Test
     void createRefreshToken_success() {
         // given
-        String memberId = "1";
-        String refreshToken = PROVIDER.createRefreshToken(memberId);
+        String refreshToken = PROVIDER.createRefreshToken();
 
         // when
         String payload = PROVIDER.getClaims(refreshToken).getSubject();
 
         // then
-        assertThat(payload).isEqualTo(memberId);
+        assertThat(payload).isNotNull();
     }
 
     @DisplayName("토큰 유효성 검증 성공")

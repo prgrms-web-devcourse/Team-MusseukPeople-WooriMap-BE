@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(name = "인증", description = "인증 관련 API입니다.")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -42,13 +42,13 @@ public class AuthController {
 
     @Operation(summary = "로그아웃", description = "로그아웃 API입니다.")
     @PostMapping("/signout")
-    public ResponseEntity<Void> logout(@Login LoginMember loginMember) {
+    public ResponseEntity<Void> signout(@Login LoginMember loginMember) {
         authService.logout(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "엑세스 토큰 재발급", description = "엑세스 토큰을 재발급 받습니다.")
-    @PostMapping("/tokens")
+    @PostMapping("/token")
     public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(HttpServletRequest httpServletRequest,
                                                                                @Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         String accessToken = getAccessTokenByRequest(httpServletRequest);

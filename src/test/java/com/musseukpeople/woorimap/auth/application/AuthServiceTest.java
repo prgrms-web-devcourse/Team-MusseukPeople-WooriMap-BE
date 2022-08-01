@@ -3,44 +3,34 @@ package com.musseukpeople.woorimap.auth.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import com.musseukpeople.woorimap.auth.application.dto.request.RefreshTokenRequest;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.TokenResponse;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
-import com.musseukpeople.woorimap.member.domain.Member;
-import com.musseukpeople.woorimap.member.domain.MemberRepository;
+import com.musseukpeople.woorimap.member.application.MemberService;
+import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.member.exception.LoginFailedException;
-import com.musseukpeople.woorimap.util.DatabaseCleanup;
-import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
+import com.musseukpeople.woorimap.util.IntegrationTest;
 
-@SpringBootTest
-class AuthServiceTest {
+class AuthServiceTest extends IntegrationTest {
 
     private final String email = "woorimap@gmail.com";
     private final String password = "!Hwan123";
     @Autowired
     private AuthService authService;
+
     @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private DatabaseCleanup databaseCleanup;
+    private MemberService memberService;
 
     @BeforeEach
     void setUp() {
-        saveMember(email, password);
-    }
-
-    @AfterEach
-    void tearDown() {
-        databaseCleanup.execute();
+        memberService.createMember(new SignupRequest(email, password, "test"));
     }
 
     @DisplayName("로그인 성공")
@@ -130,14 +120,6 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.refreshAccessToken(invalidAccessToken, invalidRefreshToken))
             .isInstanceOf(InvalidTokenException.class)
             .hasMessageContaining("유효하지 않은 토큰입니다.");
-    }
-
-    private void saveMember(String email, String password) {
-        Member member = new TMemberBuilder()
-            .email(email)
-            .password(password)
-            .build();
-        memberRepository.save(member);
     }
 
     private TokenResponse login(String email, String password) {

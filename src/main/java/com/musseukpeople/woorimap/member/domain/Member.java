@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.common.model.BaseEntity;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.member.domain.vo.Email;
 import com.musseukpeople.woorimap.member.domain.vo.NickName;
@@ -27,7 +28,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
