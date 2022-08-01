@@ -11,33 +11,34 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class CoupleTest {
 
-	@DisplayName("커플 생성 성공")
-	@Test
-	void construct_success() {
-		//given
-		LocalDate startDate = LocalDate.now();
+    @DisplayName("커플 생성 성공")
+    @Test
+    void construct_success() {
+        //given
+        LocalDate startDate = LocalDate.now();
 
-		//when
-		Couple couple = new Couple(startDate);
+        //when
+        Couple couple = new Couple(startDate);
 
-		//then
-		System.out.println(couple.getStartDate());
-	}
+        //then
+        System.out.println(couple.getStartDate());
+        assertThat(couple.getStartDate()).isEqualTo(startDate);
+    }
 
-	@DisplayName("현재 이후 날짜로 인한 생성 실패")
-	@ParameterizedTest(name = "현재 날짜 + {0} 일")
-	@ValueSource(
-		ints = {1, 22, 333, 4444, 55555}
-	)
-	void couple_afterNowDate_fail(int plusDateCount) {
-		//given
-		LocalDate afterNowDate = LocalDate.now().plusDays(plusDateCount);
+    @DisplayName("현재 이후 날짜로 인한 생성 실패")
+    @ParameterizedTest(name = "현재 날짜 + {0} 일")
+    @ValueSource(
+        ints = {1, 22, 333, 4444, 55555}
+    )
+    void couple_afterNowDate_fail(int plusDateCount) {
+        //given
+        LocalDate afterNowDate = LocalDate.now().plusDays(plusDateCount);
 
-		//when
-		assertThatThrownBy(() -> new Couple(afterNowDate))
+        //when
+        assertThatThrownBy(() -> new Couple(afterNowDate))
 
-			//then
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage("현재 이후 날짜로 커플을 생성할 수 없습니다.");
-	}
+            //then
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("현재 이후 날짜로 커플을 생성할 수 없습니다.");
+    }
 }
