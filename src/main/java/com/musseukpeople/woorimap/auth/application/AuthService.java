@@ -4,7 +4,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.application.dto.request.RefreshTokenRequest;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
@@ -39,8 +38,7 @@ public class AuthService {
         String accessToken = jwtProvider.createAccessToken(memberId, coupleId);
         String refreshToken = jwtProvider.createRefreshToken();
 
-        TokenDto tokenDto = new TokenDto(memberId, refreshToken, jwtProvider.getRefreshTokenExpiredTime());
-        tokenService.saveToken(tokenDto);
+        tokenService.saveToken(memberId, refreshToken, jwtProvider.getRefreshTokenExpiredTime());
         return new TokenResponse(accessToken, refreshToken, LoginMemberResponse.from(member));
     }
 
