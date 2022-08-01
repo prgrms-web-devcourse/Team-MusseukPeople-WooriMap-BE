@@ -84,10 +84,9 @@ class CoupleControllerTest extends AcceptanceTest {
     }
 
     private MockHttpServletResponse createInviteCodeApi() throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(post("/api/couples/invite")
+        return mockMvc.perform(post("/api/couples/invite")
                 .header(HttpHeaders.AUTHORIZATION, accessToken))
             .andDo(print())
             .andReturn().getResponse();
-        return response;
     }
 }
