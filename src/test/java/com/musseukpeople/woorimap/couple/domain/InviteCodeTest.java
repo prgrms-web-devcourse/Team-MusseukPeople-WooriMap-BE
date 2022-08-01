@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.invitecode.domain;
+package com.musseukpeople.woorimap.couple.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;

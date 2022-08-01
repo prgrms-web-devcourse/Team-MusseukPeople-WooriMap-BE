@@ -1,10 +1,10 @@
-package com.musseukpeople.woorimap.invitecode.infrastructure;
+package com.musseukpeople.woorimap.couple.infrastructure;
 
 import java.security.SecureRandom;
 
 import org.springframework.stereotype.Component;
 
-import com.musseukpeople.woorimap.invitecode.application.CodeGenerator;
+import com.musseukpeople.woorimap.couple.application.CodeGenerator;
 
 @Component
 public class RandomCodeGenerator implements CodeGenerator {

@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.invitecode.application;
+package com.musseukpeople.woorimap.couple.application;
 
 public interface CodeGenerator {
 

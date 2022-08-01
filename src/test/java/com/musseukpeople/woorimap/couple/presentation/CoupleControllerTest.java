@@ -14,9 +14,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
-import com.musseukpeople.woorimap.invitecode.application.dto.response.InviteCodeResponse;
-import com.musseukpeople.woorimap.invitecode.domain.InviteCode;
-import com.musseukpeople.woorimap.invitecode.domain.InviteCodeRepository;
+import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
+import com.musseukpeople.woorimap.couple.domain.InviteCode;
+import com.musseukpeople.woorimap.couple.domain.InviteCodeRepository;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
 

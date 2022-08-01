@@ -1,13 +1,13 @@
-package com.musseukpeople.woorimap.invitecode.application;
+package com.musseukpeople.woorimap.couple.application;
 
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.musseukpeople.woorimap.invitecode.application.dto.response.InviteCodeResponse;
-import com.musseukpeople.woorimap.invitecode.domain.InviteCode;
-import com.musseukpeople.woorimap.invitecode.domain.InviteCodeRepository;
+import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
+import com.musseukpeople.woorimap.couple.domain.InviteCode;
+import com.musseukpeople.woorimap.couple.domain.InviteCodeRepository;
 
 import lombok.RequiredArgsConstructor;
 

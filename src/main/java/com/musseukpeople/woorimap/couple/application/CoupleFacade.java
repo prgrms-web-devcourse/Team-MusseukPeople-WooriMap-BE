@@ -4,8 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 
-import com.musseukpeople.woorimap.invitecode.application.InviteCodeService;
-import com.musseukpeople.woorimap.invitecode.application.dto.response.InviteCodeResponse;
+import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
 
 import lombok.RequiredArgsConstructor;
 

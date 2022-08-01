@@ -12,7 +12,7 @@ import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.couple.application.CoupleFacade;
-import com.musseukpeople.woorimap.invitecode.application.dto.response.InviteCodeResponse;
+import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

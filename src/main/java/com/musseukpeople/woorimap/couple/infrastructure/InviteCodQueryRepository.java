@@ -1,8 +1,8 @@
-package com.musseukpeople.woorimap.invitecode.infrastructure;
+package com.musseukpeople.woorimap.couple.infrastructure;
 
 import java.util.Optional;
 
-import com.musseukpeople.woorimap.invitecode.domain.InviteCode;
+import com.musseukpeople.woorimap.couple.domain.InviteCode;
 
 public interface InviteCodQueryRepository {
 
