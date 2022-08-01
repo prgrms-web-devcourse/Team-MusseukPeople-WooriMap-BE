@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
+
 import io.jsonwebtoken.Claims;
 
 class JwtTokenProviderTest {
@@ -23,10 +25,10 @@ class JwtTokenProviderTest {
         // given
         String memberId = "1";
         Long coupleId = 1L;
-        String accessToken = PROVIDER.createAccessToken(memberId, coupleId);
+        TokenDto accessToken = PROVIDER.createAccessToken(memberId, coupleId);
 
         // when
-        Claims claims = PROVIDER.getClaims(accessToken);
+        Claims claims = PROVIDER.getClaims(accessToken.getValue());
 
         // then
         assertAll(
@@ -39,10 +41,10 @@ class JwtTokenProviderTest {
     @Test
     void createRefreshToken_success() {
         // given
-        String refreshToken = PROVIDER.createRefreshToken();
+        TokenDto refreshToken = PROVIDER.createRefreshToken();
 
         // when
-        String payload = PROVIDER.getClaims(refreshToken).getSubject();
+        String payload = PROVIDER.getClaims(refreshToken.getValue()).getSubject();
 
         // then
         assertThat(payload).isNotNull();
@@ -52,12 +54,13 @@ class JwtTokenProviderTest {
     @Test
     void validateToken_success() {
         // given
-        String token = PROVIDER.createAccessToken("1", null);
+        TokenDto token = PROVIDER.createAccessToken("1", null);
 
         // when
+        boolean result = PROVIDER.validateToken(token.getValue());
 
         // then
-        assertThat(PROVIDER.validateToken(token)).isTrue();
+        assertThat(result).isTrue();
     }
 
     @DisplayName("만료기간이 지남으로 인한 유효성 검증 실패")
@@ -70,11 +73,13 @@ class JwtTokenProviderTest {
             0,
             0
         );
-        String token = jwtTokenProvider.createAccessToken("1", null);
+        TokenDto token = jwtTokenProvider.createAccessToken("1", null);
 
         // when
+        boolean result = PROVIDER.validateToken(token.getValue());
+
         // then
-        assertThat(PROVIDER.validateToken(token)).isFalse();
+        assertThat(result).isFalse();
     }
 
     @DisplayName("올바르지 않는 시그니처로 인한 유효성 검증 실패")
@@ -87,10 +92,12 @@ class JwtTokenProviderTest {
             60000,
             60000
         );
-        String token = PROVIDER.createAccessToken("1", null);
+        TokenDto token = jwtTokenProvider.createAccessToken("1", null);
 
         // when
+        boolean result = PROVIDER.validateToken(token.getValue());
+
         // then
-        assertThat(jwtTokenProvider.validateToken(token)).isFalse();
+        assertThat(result).isFalse();
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.auth.exception.UnauthorizedException;
 import com.musseukpeople.woorimap.auth.infrastructure.JwtTokenProvider;
@@ -36,9 +37,9 @@ class AuthInterceptorTest {
     @Test
     void preHandle_success() {
         // given
-        String token = PROVIDER.createAccessToken("1", null);
+        TokenDto token = PROVIDER.createAccessToken("1", null);
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token.getValue());
 
         // when
         boolean result = authInterceptor.preHandle(request, new MockHttpServletResponse(), null);

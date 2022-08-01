@@ -3,6 +3,7 @@ package com.musseukpeople.woorimap.auth.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.domain.Token;
 import com.musseukpeople.woorimap.auth.domain.TokenRepository;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
@@ -18,8 +19,8 @@ public class TokenService {
     private final TokenRepository tokenRepository;
 
     @Transactional
-    public void saveToken(String memberId, String refreshToken, long refreshTokenExpiredTime) {
-        Token token = new Token(memberId, refreshToken, refreshTokenExpiredTime);
+    public void saveToken(String memberId, TokenDto tokenDto) {
+        Token token = new Token(memberId, tokenDto.getValue(), tokenDto.getExpiredTime());
         tokenRepository.save(token);
     }
 

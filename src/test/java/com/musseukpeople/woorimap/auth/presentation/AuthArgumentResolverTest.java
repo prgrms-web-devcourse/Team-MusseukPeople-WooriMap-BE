@@ -10,6 +10,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 
+import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.auth.infrastructure.JwtTokenProvider;
 
@@ -33,9 +34,9 @@ class AuthArgumentResolverTest {
     @Test
     void resolveArgument_success() {
         // given
-        String token = PROVIDER.createAccessToken("1", null);
+        TokenDto token = PROVIDER.createAccessToken("1", null);
         MockHttpServletRequest servletRequest = new MockHttpServletRequest();
-        servletRequest.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        servletRequest.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token.getValue());
         NativeWebRequest request = new ServletWebRequest(servletRequest);
 
         // when
