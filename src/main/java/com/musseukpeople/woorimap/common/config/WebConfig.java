@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.presentation.AuthArgumentResolver;
 import com.musseukpeople.woorimap.auth.presentation.AuthInterceptor;
+import com.musseukpeople.woorimap.auth.presentation.TokensArgumentResolver;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,5 +41,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new AuthArgumentResolver(jwtProvider));
+        resolvers.add(new TokensArgumentResolver());
     }
 }

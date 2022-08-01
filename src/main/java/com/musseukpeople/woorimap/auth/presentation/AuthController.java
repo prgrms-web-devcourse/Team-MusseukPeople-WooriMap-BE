@@ -1,6 +1,5 @@
 package com.musseukpeople.woorimap.auth.presentation;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -19,11 +18,10 @@ import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenRespo
 import com.musseukpeople.woorimap.auth.application.dto.response.LoginResponseDto;
 import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
-import com.musseukpeople.woorimap.auth.exception.UnauthorizedException;
-import com.musseukpeople.woorimap.auth.infrastructure.AuthorizationExtractor;
+import com.musseukpeople.woorimap.auth.presentation.dto.RequestTokens;
+import com.musseukpeople.woorimap.auth.presentation.dto.Tokens;
 import com.musseukpeople.woorimap.auth.presentation.dto.response.LoginResponse;
 import com.musseukpeople.woorimap.auth.presentation.util.CookieUtil;
-import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,8 +33,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
-    private static final String COOKIE_NAME = "refreshToken";
 
     private final AuthService authService;
 
@@ -58,20 +54,16 @@ public class AuthController {
 
     @Operation(summary = "엑세스 토큰 재발급", description = "엑세스 토큰을 재발급 받습니다.")
     @PostMapping("/token")
-    public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(HttpServletRequest request) {
-        String accessToken = getAccessTokenByRequest(request);
-        String refreshToken = CookieUtil.getCookieValue(request, COOKIE_NAME);
-        AccessTokenResponse refreshAccessToken = authService.refreshAccessToken(accessToken, refreshToken);
-        return ResponseEntity.ok(new ApiResponse<>(refreshAccessToken));
-    }
-
-    private String getAccessTokenByRequest(HttpServletRequest httpServletRequest) {
-        return AuthorizationExtractor.extract(httpServletRequest)
-            .orElseThrow(() -> new UnauthorizedException(ErrorCode.NOT_FOUND_TOKEN));
+    public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(@RequestTokens Tokens tokens) {
+        AccessTokenResponse accessToken = authService.refreshAccessToken(
+            tokens.getAccessToken(),
+            tokens.getRefreshToken()
+        );
+        return ResponseEntity.ok(new ApiResponse<>(accessToken));
     }
 
     private void setTokenCookie(HttpServletResponse response, TokenDto tokenDto) {
-        ResponseCookie cookie = CookieUtil.createTokenCookie(COOKIE_NAME, tokenDto);
+        ResponseCookie cookie = CookieUtil.createTokenCookie(tokenDto);
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }

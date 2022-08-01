@@ -18,8 +18,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CookieUtil {
 
-    public static ResponseCookie createTokenCookie(String cookieName, TokenDto tokenDto) {
-        return ResponseCookie.from(cookieName, tokenDto.getValue())
+    private static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
+
+    public static ResponseCookie createTokenCookie(TokenDto tokenDto) {
+        return ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, tokenDto.getValue())
             .path("/")
             .httpOnly(true)
             .secure(true)
@@ -28,9 +30,9 @@ public class CookieUtil {
             .build();
     }
 
-    public static String getCookieValue(HttpServletRequest request, String cookieName) {
+    public static String getTokenCookieValue(HttpServletRequest request) {
         Cookie findCookie = Arrays.stream(request.getCookies())
-            .filter(cookie -> cookie.getName().equals(cookieName))
+            .filter(cookie -> cookie.getName().equals(REFRESH_TOKEN_COOKIE_NAME))
             .findAny()
             .orElseThrow(() -> new UnauthorizedException(ErrorCode.NOT_FOUND_TOKEN));
         return findCookie.getValue();
