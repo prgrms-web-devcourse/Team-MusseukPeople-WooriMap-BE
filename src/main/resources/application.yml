@@ -2,10 +2,6 @@ spring:
   profiles:
     active: local
 
-  redis:
-    host: localhost
-    port: 6379
-
 springdoc:
   swagger-ui:
     path: /api-docs

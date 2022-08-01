@@ -16,6 +16,7 @@ spring:
 
   redis:
     host: localhost
+    password: test
     port: 6379
 
 jwt:

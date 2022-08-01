@@ -3,8 +3,7 @@ package com.musseukpeople.woorimap.auth.domain;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import javax.persistence.Id;
-
+import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 
