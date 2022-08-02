@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.musseukpeople.woorimap.auth.aop.LoginRequired;
 import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.member.application.MemberService;
@@ -35,6 +36,7 @@ public class MemberController {
     }
 
     @Operation(summary = "멤버 회원 탈퇴", description = "멤버 회원 탈퇴 API입니다.")
+    @LoginRequired
     @DeleteMapping
     public ResponseEntity<Void> withdrawal(@Login LoginMember loginMember) {
         memberService.removeMember(loginMember.getId());

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.musseukpeople.woorimap.auth.aop.LoginRequired;
 import com.musseukpeople.woorimap.auth.application.AuthService;
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
@@ -46,6 +47,7 @@ public class AuthController {
     }
 
     @Operation(summary = "로그아웃", description = "로그아웃 API입니다.")
+    @LoginRequired
     @PostMapping("/signout")
     public ResponseEntity<Void> signout(@Login LoginMember loginMember) {
         authService.logout(loginMember.getId());
