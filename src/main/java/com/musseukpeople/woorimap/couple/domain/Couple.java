@@ -3,17 +3,17 @@ package com.musseukpeople.woorimap.couple.domain;
 import static com.google.common.base.Preconditions.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import com.musseukpeople.woorimap.common.model.BaseEntity;
+import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.member.domain.Member;
 
 import lombok.AccessLevel;
@@ -32,30 +32,24 @@ public class Couple extends BaseEntity {
     @Column(nullable = false)
     private LocalDate startDate;
 
-    @OneToMany(mappedBy = "couple")
-    private List<Member> members = new ArrayList<>();
+    @Embedded
+    private CoupleMembers coupleMembers;
 
-    public Couple(LocalDate startDate) {
-        this(null, startDate);
+    public Couple(LocalDate startDate, CoupleMembers coupleMembers) {
+        this(null, startDate, coupleMembers);
     }
 
-    public Couple(Long id, LocalDate startDate) {
+    public Couple(Long id, LocalDate startDate, CoupleMembers coupleMembers) {
         checkArgument(startDate.isBefore(LocalDate.now().plusDays(1)),
             "현재 이후 날짜로 커플을 생성할 수 없습니다.");
 
         this.id = id;
         this.startDate = startDate;
+        this.coupleMembers = coupleMembers;
+        addMembers(this.coupleMembers.getMembers());
     }
 
-    public Couple(Long id, LocalDate startDate, Member inviter, Member receiver) {
-        this(id, startDate);
-        addMember(inviter);
-        addMember(receiver);
-    }
-
-    public void addMember(Member member) {
-        this.members.add(member);
-
-        member.changeCouple(this);
+    private void addMembers(List<Member> members) {
+        members.forEach(member -> member.changeCouple(this));
     }
 }
