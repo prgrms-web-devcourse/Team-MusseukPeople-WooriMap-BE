@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -15,11 +14,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
+import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
-import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.couple.domain.InviteCode;
 import com.musseukpeople.woorimap.couple.domain.InviteCodeRepository;
@@ -51,11 +51,51 @@ class CoupleControllerTest extends AcceptanceTest {
         accessToken = 로그인_토큰(new SignInRequest(email, password));
     }
 
+    @DisplayName("커플 맺기 API 성공")
+    @Test
+    void createCouple_success() throws Exception {
+        //given
+        String rEmail = "receiver@gmail.com";
+        String rPassword = "!Recevier123";
+        String rNickName = "receiver";
+        String inviteCode = createInviteCodeApi(accessToken).getContentAsString().replaceAll("[^0-9]", "");
+        회원가입(new SignupRequest(rEmail, rPassword, rNickName));
+        String receiverToken = 로그인_토큰(new SignInRequest(rEmail, rPassword));
+        CreateCoupleRequest createCoupleRequest = new CreateCoupleRequest(inviteCode);
+
+        //when
+        mockMvc.perform(post("/api/couples")
+                .header(HttpHeaders.AUTHORIZATION, receiverToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createCoupleRequest)))
+
+            //then
+            .andExpect(status().isOk())
+            .andDo(print());
+    }
+
+    @DisplayName("자기 자신은 커플로 맺을 수 없다.")
+    @Test
+    void createCouple_selfCreate_fail() throws Exception {
+        //given
+        String inviteCode = createInviteCodeApi(accessToken).getContentAsString().replaceAll("[^0-9]", "");
+        CreateCoupleRequest createCoupleRequest = new CreateCoupleRequest(inviteCode);
+
+        //when
+        mockMvc.perform(post("/api/couples")
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createCoupleRequest)))
+            //then
+            .andExpect(status().isBadRequest())
+            .andDo(print());
+    }
+
     @DisplayName("커플 초대 코드 생성 API 성공")
     @Test
     void inviteCodeCreate_success() throws Exception {
         //given
-        MockHttpServletResponse response = createInviteCodeApi();
+        MockHttpServletResponse response = createInviteCodeApi(accessToken);
 
         //when
         InviteCodeResponse code = getResponseObject(response, InviteCodeResponse.class);
@@ -68,8 +108,8 @@ class CoupleControllerTest extends AcceptanceTest {
     @Test
     void inviteCodeGet_notOverExpireDate_success() throws Exception {
         //given
-        MockHttpServletResponse firstResponse = createInviteCodeApi();
-        MockHttpServletResponse secondResponse = createInviteCodeApi();
+        MockHttpServletResponse firstResponse = createInviteCodeApi(accessToken);
+        MockHttpServletResponse secondResponse = createInviteCodeApi(accessToken);
 
         //when
         InviteCodeResponse code1 = getResponseObject(firstResponse, InviteCodeResponse.class);
@@ -84,14 +124,14 @@ class CoupleControllerTest extends AcceptanceTest {
     void inviteCodeCreate_overExpireDate_success() throws Exception {
         //given
         InviteCode savedCode = inviteCodeRepository.findById(
-            getResponseObject(createInviteCodeApi(), InviteCodeResponse.class).getCode()).get();
+            getResponseObject(createInviteCodeApi(accessToken), InviteCodeResponse.class).getCode()).get();
         inviteCodeRepository.save(
             new InviteCode(savedCode.getCode(), savedCode.getInviterId(), LocalDateTime.now().minusDays(10)));
 
         String savedInviteCode = savedCode.getCode();
 
         //when
-        MockHttpServletResponse newResponse = createInviteCodeApi();
+        MockHttpServletResponse newResponse = createInviteCodeApi(accessToken);
         InviteCodeResponse newInviteCode = getResponseObject(newResponse, InviteCodeResponse.class);
 
         //then
@@ -102,9 +142,8 @@ class CoupleControllerTest extends AcceptanceTest {
     @Test
     void removeCouple_success() throws Exception {
         //given
-        makeCoupleAndAddMember();
+        커플_맺기(accessToken);
         accessToken = 로그인_토큰(new SignInRequest(email, password));
-
         //when
         mockMvc.perform(delete("/api/couples")
                 .header(HttpHeaders.AUTHORIZATION, accessToken))
@@ -121,19 +160,11 @@ class CoupleControllerTest extends AcceptanceTest {
         );
     }
 
-    private MockHttpServletResponse createInviteCodeApi() throws Exception {
+    private MockHttpServletResponse createInviteCodeApi(String accessToken) throws Exception {
         return mockMvc.perform(post("/api/couples/invite")
                 .header(HttpHeaders.AUTHORIZATION, accessToken))
             .andExpect(status().isCreated())
             .andDo(print())
             .andReturn().getResponse();
-    }
-
-    private void makeCoupleAndAddMember() {
-        Couple couple = new Couple(LocalDate.of(2022, 1, 1));
-        Member member = memberRepository.findMemberByEmail(email).get();
-        couple.addMember(member);
-        coupleRepository.save(couple);
-        memberRepository.save(member);
     }
 }
