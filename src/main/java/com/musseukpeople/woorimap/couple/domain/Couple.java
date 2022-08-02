@@ -47,6 +47,12 @@ public class Couple extends BaseEntity {
         this.startDate = startDate;
     }
 
+    public Couple(Long id, LocalDate startDate, Member inviter, Member receiver) {
+        this(id, startDate);
+        addMember(inviter);
+        addMember(receiver);
+    }
+
     public void addMember(Member member) {
         this.members.add(member);
 
