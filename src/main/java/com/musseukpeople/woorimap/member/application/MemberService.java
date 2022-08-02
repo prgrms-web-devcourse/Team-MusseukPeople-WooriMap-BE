@@ -58,4 +58,9 @@ public class MemberService {
     public void removeMember(Long memberId) {
         memberRepository.deleteById(memberId);
     }
+
+    @Transactional
+    public void breakUpMembersByCoupleId(Long coupleId) {
+        memberRepository.updateCoupleIdSetNull(coupleId);
+    }
 }
