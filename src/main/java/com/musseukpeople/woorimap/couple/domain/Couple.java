@@ -48,13 +48,6 @@ public class Couple extends BaseEntity {
     public void addMember(Member member) {
         this.members.add(member);
 
-        if (member.getCouple() != this) {
-            member.changeCouple(this);
-        }
-    }
-
-    public void clearMembers() {
-        this.members.forEach(member -> member.changeCouple(null));
-        this.members.clear();
+        member.changeCouple(this);
     }
 }
