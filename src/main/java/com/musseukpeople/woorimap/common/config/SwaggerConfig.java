@@ -7,7 +7,6 @@ import org.springframework.http.HttpHeaders;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
@@ -25,7 +24,6 @@ public class SwaggerConfig {
                     .bearerFormat("JWT")
                     .in(SecurityScheme.In.HEADER)
                     .name(HttpHeaders.AUTHORIZATION)))
-            .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
             .info(new Info().title("WooriMap"));
     }
 

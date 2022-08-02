@@ -8,6 +8,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import com.google.common.base.Strings;
+import com.musseukpeople.woorimap.auth.aop.MemberAuthorityContext;
 import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtProvider jwtProvider;
+    private final MemberAuthorityContext memberAuthorityContext;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -33,10 +36,14 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
-        String accessToken = AuthorizationExtractor.extract(httpServletRequest)
-            .orElseThrow(() -> new InvalidTokenException(null, ErrorCode.INVALID_TOKEN));
+        String accessToken = AuthorizationExtractor.extract(httpServletRequest);
+        if (Strings.isNullOrEmpty(accessToken)) {
+            return new LoginMember(LoginMember.Authority.ANONYMOUS);
+        }
 
-        return getLoginMember(accessToken);
+        LoginMember loginMember = getLoginMember(accessToken);
+        memberAuthorityContext.setAuthority(loginMember.getAuthority());
+        return loginMember;
     }
 
     private LoginMember getLoginMember(String accessToken) {

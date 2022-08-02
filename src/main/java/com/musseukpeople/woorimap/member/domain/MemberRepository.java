@@ -16,5 +16,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Member m SET m.couple = null WHERE m.couple.id = :coupleId")
-    void updateCoupleIdSetNull(Long coupleId);
+    void updateCoupleIdSetNull(@Param("coupleId") Long coupleId);
 }

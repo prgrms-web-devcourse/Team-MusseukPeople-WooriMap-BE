@@ -8,6 +8,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import com.google.common.base.Strings;
 import com.musseukpeople.woorimap.auth.exception.UnauthorizedException;
 import com.musseukpeople.woorimap.auth.infrastructure.AuthorizationExtractor;
 import com.musseukpeople.woorimap.auth.presentation.util.CookieUtil;
@@ -30,7 +31,10 @@ public class JwtTokenArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private String getAccessTokenByRequest(HttpServletRequest httpServletRequest) {
-        return AuthorizationExtractor.extract(httpServletRequest)
-            .orElseThrow(() -> new UnauthorizedException(ErrorCode.NOT_FOUND_TOKEN));
+        String token = AuthorizationExtractor.extract(httpServletRequest);
+        if (Strings.isNullOrEmpty(token)) {
+            throw new UnauthorizedException(ErrorCode.NOT_FOUND_TOKEN);
+        }
+        return token;
     }
 }

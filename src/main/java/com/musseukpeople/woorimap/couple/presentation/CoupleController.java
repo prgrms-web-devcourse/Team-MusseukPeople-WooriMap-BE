@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.musseukpeople.woorimap.auth.aop.OnlyCouple;
+import com.musseukpeople.woorimap.auth.aop.OnlySolo;
 import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
@@ -28,6 +30,7 @@ public class CoupleController {
     private final CoupleFacade coupleFacade;
 
     @Operation(summary = "커플 해제", description = "커플 해제 API입니다.")
+    @OnlyCouple
     @DeleteMapping
     public ResponseEntity<Void> deleteCouple(@Login LoginMember member) {
         coupleFacade.removeCouple(member.getCoupleId());
@@ -35,6 +38,7 @@ public class CoupleController {
     }
 
     @Operation(summary = "커플 초대 코드 생성", description = "커플 초대 코드 생성 API입니다.")
+    @OnlySolo
     @PostMapping("/invite")
     public ResponseEntity<ApiResponse<InviteCodeResponse>> createInviteCode(@Login LoginMember member) {
         LocalDateTime expireDate = LocalDateTime.now().plusDays(1);
