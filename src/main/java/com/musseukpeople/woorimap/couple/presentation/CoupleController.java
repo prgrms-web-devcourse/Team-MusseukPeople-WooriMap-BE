@@ -34,6 +34,7 @@ public class CoupleController {
     private final CoupleFacade coupleFacade;
 
     @Operation(summary = "커플 맺기", description = "커플 맺기 API입니다.")
+    @OnlySolo
     @PostMapping
     public ResponseEntity<Void> createCouple(
         @Valid @RequestBody CreateCoupleRequest createCoupleRequest,
