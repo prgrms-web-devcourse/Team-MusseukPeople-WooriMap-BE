@@ -2,8 +2,6 @@ package com.musseukpeople.woorimap.auth.infrastructure;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -20,12 +18,10 @@ class AuthorizationExtractorTest {
         request.addHeader(HttpHeaders.AUTHORIZATION, headerToken);
 
         // when
-        Optional<String> token = AuthorizationExtractor.extract(request);
+        String token = AuthorizationExtractor.extract(request);
 
         // then
-        assertThat(token).isNotEmpty()
-            .get()
-            .isEqualTo("token");
+        assertThat(token).isEqualTo("token");
     }
 
     @DisplayName("헤더에 값이 없음으로 인한 추출 실패")
@@ -35,9 +31,9 @@ class AuthorizationExtractorTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
         // when
-        Optional<String> token = AuthorizationExtractor.extract(request);
+        String token = AuthorizationExtractor.extract(request);
 
         // then
-        assertThat(token).isEmpty();
+        assertThat(token).isNull();
     }
 }

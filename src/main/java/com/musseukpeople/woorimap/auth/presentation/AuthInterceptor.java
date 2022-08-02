@@ -9,6 +9,7 @@ import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.google.common.base.Strings;
 import com.musseukpeople.woorimap.auth.aop.LoginRequired;
 import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
@@ -31,8 +32,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String accessToken = AuthorizationExtractor.extract(request)
-            .orElseThrow(() -> new UnauthorizedException(ErrorCode.NOT_FOUND_TOKEN));
+        String accessToken = AuthorizationExtractor.extract(request);
         validateAccessToken(accessToken);
         return true;
     }
@@ -46,6 +46,10 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     private void validateAccessToken(String accessToken) {
+        if (Strings.isNullOrEmpty(accessToken)) {
+            throw new UnauthorizedException(ErrorCode.NOT_FOUND_TOKEN);
+        }
+
         if (!jwtProvider.validateToken(accessToken)) {
             throw new InvalidTokenException(accessToken, ErrorCode.INVALID_TOKEN);
         }
