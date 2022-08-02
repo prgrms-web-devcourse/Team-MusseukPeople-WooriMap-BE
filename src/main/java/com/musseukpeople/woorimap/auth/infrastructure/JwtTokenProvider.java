@@ -84,7 +84,7 @@ public class JwtTokenProvider implements JwtProvider {
             return getClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
-        } catch (JwtException e) {
+        } catch (JwtException | IllegalArgumentException e) {
             throw new InvalidTokenException(token, ErrorCode.INVALID_TOKEN);
         }
     }
