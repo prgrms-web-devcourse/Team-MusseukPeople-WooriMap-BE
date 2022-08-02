@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
 import com.musseukpeople.woorimap.couple.domain.InviteCode;
 import com.musseukpeople.woorimap.couple.domain.InviteCodeRepository;
+import com.musseukpeople.woorimap.couple.exception.NotFoundInviteCodeException;
 import com.musseukpeople.woorimap.util.IntegrationTest;
 
 class InviteCodeServiceTest extends IntegrationTest {
@@ -74,5 +75,32 @@ class InviteCodeServiceTest extends IntegrationTest {
 
         //then
         assertThat(inviteCode.getCode()).isEqualTo(INVITE_CODE);
+    }
+
+    @DisplayName("초대 코드로 InviterId를 가지고 올 수 있다.")
+    @Test
+    void getInviterId_success() {
+        //given
+        inviteCodeRepository.save(new InviteCode(INVITE_CODE, INVITER_ID, EXPIRE_DATE));
+
+        //when
+        Long inviterId = inviteCodeService.getInviterIdByInviteCode(INVITE_CODE);
+
+        //then
+        assertThat(inviterId).isEqualTo(INVITER_ID);
+    }
+
+    @DisplayName("초대 코드가 존재하지 않아 가져올 수 없다.")
+    @Test
+    void getInviterId_notSaved_fail() {
+        //given
+        String notSavedCode = "7894561";
+        inviteCodeRepository.save(new InviteCode(INVITE_CODE, INVITER_ID, EXPIRE_DATE));
+
+        //when
+        assertThatThrownBy(() -> inviteCodeService.getInviterIdByInviteCode(notSavedCode))
+
+            //then
+            .isInstanceOf(NotFoundInviteCodeException.class);
     }
 }
