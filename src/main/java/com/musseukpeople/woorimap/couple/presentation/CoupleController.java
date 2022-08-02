@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.musseukpeople.woorimap.auth.aop.OnlyCouple;
 import com.musseukpeople.woorimap.auth.aop.OnlySolo;
 import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
@@ -29,6 +30,7 @@ public class CoupleController {
     private final CoupleFacade coupleFacade;
 
     @Operation(summary = "커플 해제", description = "커플 해제 API입니다.")
+    @OnlyCouple
     @DeleteMapping
     public ResponseEntity<Void> deleteCouple(@Login LoginMember member) {
         coupleFacade.removeCouple(member.getCoupleId());

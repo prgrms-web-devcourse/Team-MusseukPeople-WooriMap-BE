@@ -1,6 +1,7 @@
 package com.musseukpeople.woorimap.couple.presentation;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -9,7 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,9 +48,6 @@ class CoupleControllerTest extends AcceptanceTest {
     @BeforeEach
     void login() throws Exception {
         회원가입(new SignupRequest(email, password, nickName));
-        
-        makeCoupleAndAddMember();
-
         accessToken = 로그인_토큰(new SignInRequest(email, password));
     }
 
@@ -105,6 +102,9 @@ class CoupleControllerTest extends AcceptanceTest {
     @Test
     void removeCouple_success() throws Exception {
         //given
+        makeCoupleAndAddMember();
+        accessToken = 로그인_토큰(new SignInRequest(email, password));
+
         //when
         mockMvc.perform(delete("/api/couples")
                 .header(HttpHeaders.AUTHORIZATION, accessToken))
@@ -115,7 +115,7 @@ class CoupleControllerTest extends AcceptanceTest {
 
         Optional<Member> foundMember = memberRepository.findMemberByEmail(email);
 
-        Assertions.assertAll(
+        assertAll(
             () -> assertThat(foundMember).isPresent(),
             () -> assertThat(foundMember.get().isCouple()).isFalse()
         );
