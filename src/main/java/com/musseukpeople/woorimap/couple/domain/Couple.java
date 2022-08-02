@@ -25,13 +25,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Couple extends BaseEntity {
 
-    @OneToMany(mappedBy = "couple")
-    private final List<Member> members = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private LocalDate startDate;
+
+    @OneToMany(mappedBy = "couple")
+    private List<Member> members = new ArrayList<>();
 
     public Couple(LocalDate startDate) {
         this(null, startDate);
