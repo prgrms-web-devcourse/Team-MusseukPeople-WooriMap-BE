@@ -27,6 +27,12 @@ public class InviteCodQueryRepositoryImpl implements InviteCodQueryRepository {
             .fetchOne());
     }
 
+    @Override
+    public void deleteByTwoMemberId(Long inviterId, Long receiverId) {
+        jpaQueryFactory.delete(inviteCode)
+            .where(inviteCode.inviterId.in(inviterId, receiverId));
+    }
+
     private BooleanExpression inviterIdEq(Long inviterId) {
         return inviteCode.inviterId.eq(inviterId);
     }
