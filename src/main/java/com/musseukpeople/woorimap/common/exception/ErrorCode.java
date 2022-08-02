@@ -27,7 +27,11 @@ public enum ErrorCode {
     NOT_FOUND_TOKEN(HttpStatus.UNAUTHORIZED, "A002", "로그인이 필요합니다."),
 
     // Couple
-    NOT_FOUND_COUPLE(HttpStatus.NOT_FOUND, "CP001", "존재하지 않는 커플입니다.");
+    NOT_FOUND_COUPLE(HttpStatus.NOT_FOUND, "CP001", "존재하지 않는 커플입니다."),
+    NOT_CREATE_COUPLE(HttpStatus.BAD_REQUEST, "CP002", "커플 맺기 실패했습니다"),
+
+    // InviteCode
+    NOT_FOUND_INVITE_CODE(HttpStatus.NOT_FOUND, "I001", "존재하지 않는 코드입니다.");
 
     // Post
 
