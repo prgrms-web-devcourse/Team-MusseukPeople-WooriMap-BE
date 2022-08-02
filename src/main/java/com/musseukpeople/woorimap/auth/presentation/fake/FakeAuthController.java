@@ -124,15 +124,19 @@ public class FakeAuthController {
         private String accessToken;
         private String refreshToken;
 
-        public FakeTokenDto(String accessToken, String refreshToken) {
+        private LoginMemberResponse member;
+
+        public FakeTokenDto(String accessToken, String refreshToken, LoginMemberResponse member) {
             this.accessToken = accessToken;
             this.refreshToken = refreshToken;
+            this.member = member;
         }
 
         public static FakeTokenDto from(LoginResponseDto loginResponseDto) {
             return new FakeTokenDto(
                 loginResponseDto.getAccessToken().getValue(),
-                loginResponseDto.getRefreshToken().getValue()
+                loginResponseDto.getRefreshToken().getValue(),
+                loginResponseDto.getMember()
             );
         }
     }
