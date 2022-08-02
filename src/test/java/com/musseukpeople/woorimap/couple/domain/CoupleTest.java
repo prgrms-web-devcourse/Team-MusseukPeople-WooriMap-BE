@@ -3,13 +3,22 @@ package com.musseukpeople.woorimap.couple.domain;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
+import com.musseukpeople.woorimap.member.domain.Member;
+import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
+
 class CoupleTest {
+
+    private static final Member INVITER = new TMemberBuilder().email("inviter1@gmail.com").build();
+    private static final Member RECEIVER = new TMemberBuilder().email("receiver1@gmail.com").build();
+    private static final CoupleMembers coupleMembers = new CoupleMembers(List.of(INVITER, RECEIVER));
 
     @DisplayName("커플 생성 성공")
     @Test
@@ -18,7 +27,7 @@ class CoupleTest {
         LocalDate startDate = LocalDate.now();
 
         //when
-        Couple couple = new Couple(startDate);
+        Couple couple = new Couple(startDate, coupleMembers);
 
         //then
         System.out.println(couple.getStartDate());
@@ -35,7 +44,7 @@ class CoupleTest {
         LocalDate afterNowDate = LocalDate.now().plusDays(plusDateCount);
 
         //when
-        assertThatThrownBy(() -> new Couple(afterNowDate))
+        assertThatThrownBy(() -> new Couple(afterNowDate, coupleMembers))
 
             //then
             .isInstanceOf(IllegalArgumentException.class)
