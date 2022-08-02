@@ -5,8 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@LoginRequired
-@Target(ElementType.METHOD)
+@Target(value = {ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface OnlyCouple {
+public @interface LoginRequired {
 }
