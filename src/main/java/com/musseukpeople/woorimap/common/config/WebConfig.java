@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.musseukpeople.woorimap.auth.aop.MemberAuthorityContext;
 import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.presentation.AuthInterceptor;
 import com.musseukpeople.woorimap.auth.presentation.resolver.AuthArgumentResolver;
@@ -23,6 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
     private static final String ALLOWED_METHOD_NAMES = "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH";
 
     private final JwtProvider jwtProvider;
+    private final MemberAuthorityContext memberAuthorityContext;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -40,7 +42,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new AuthArgumentResolver(jwtProvider));
+        resolvers.add(new AuthArgumentResolver(jwtProvider, memberAuthorityContext));
         resolvers.add(new JwtTokenArgumentResolver());
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 
+import com.musseukpeople.woorimap.auth.aop.MemberAuthorityContext;
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.auth.infrastructure.JwtTokenProvider;
@@ -24,10 +25,11 @@ class AuthArgumentResolverTest {
     );
 
     private AuthArgumentResolver authArgumentResolver;
+    private MemberAuthorityContext memberAuthorityContext;
 
     @BeforeEach
     void setUp() {
-        authArgumentResolver = new AuthArgumentResolver(PROVIDER);
+        authArgumentResolver = new AuthArgumentResolver(PROVIDER, memberAuthorityContext);
     }
 
     @DisplayName("Argument 변환 성공")
