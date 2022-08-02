@@ -1,6 +1,8 @@
 package com.musseukpeople.woorimap.auth.presentation.resolver;
 
+import static com.musseukpeople.woorimap.auth.domain.login.LoginMember.Authority.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,16 +27,35 @@ class AuthArgumentResolverTest {
     );
 
     private AuthArgumentResolver authArgumentResolver;
-    private MemberAuthorityContext memberAuthorityContext;
 
     @BeforeEach
     void setUp() {
-        authArgumentResolver = new AuthArgumentResolver(PROVIDER, memberAuthorityContext);
+        authArgumentResolver = new AuthArgumentResolver(PROVIDER, new MemberAuthorityContext());
     }
 
-    @DisplayName("Argument 변환 성공")
+    @DisplayName("커플일 시 커플 권한으로 변환 성공")
     @Test
-    void resolveArgument_success() {
+    void resolveArgument_couple_success() {
+        // given
+        TokenDto token = PROVIDER.createAccessToken("1", 1L);
+        MockHttpServletRequest servletRequest = new MockHttpServletRequest();
+        servletRequest.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token.getValue());
+        NativeWebRequest request = new ServletWebRequest(servletRequest);
+
+        // when
+        Object result = authArgumentResolver.resolveArgument(null, null, request, null);
+
+        // then
+
+        assertAll(
+            () -> assertThat(result).isInstanceOf(LoginMember.class),
+            () -> assertThat(((LoginMember)result).getAuthority()).isEqualTo(COUPLE)
+        );
+    }
+
+    @DisplayName("솔로일 시 솔로 권한으로 변환 성공")
+    @Test
+    void resolveArgument_solo_success() {
         // given
         TokenDto token = PROVIDER.createAccessToken("1", null);
         MockHttpServletRequest servletRequest = new MockHttpServletRequest();
@@ -45,6 +66,28 @@ class AuthArgumentResolverTest {
         Object result = authArgumentResolver.resolveArgument(null, null, request, null);
 
         // then
-        assertThat(result).isInstanceOf(LoginMember.class);
+
+        assertAll(
+            () -> assertThat(result).isInstanceOf(LoginMember.class),
+            () -> assertThat(((LoginMember)result).getAuthority()).isEqualTo(SOLO)
+        );
+    }
+
+    @DisplayName("로그인을 하지 않았을 시 익명 권한으로 변환 성공")
+    @Test
+    void resolveArgument_anonymous_success() {
+        // given
+        MockHttpServletRequest servletRequest = new MockHttpServletRequest();
+        NativeWebRequest request = new ServletWebRequest(servletRequest);
+
+        // when
+        Object result = authArgumentResolver.resolveArgument(null, null, request, null);
+
+        // then
+
+        assertAll(
+            () -> assertThat(result).isInstanceOf(LoginMember.class),
+            () -> assertThat(((LoginMember)result).getAuthority()).isEqualTo(ANONYMOUS)
+        );
     }
 }
