@@ -9,14 +9,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
 import com.musseukpeople.woorimap.couple.domain.InviteCode;
 import com.musseukpeople.woorimap.couple.domain.InviteCodeRepository;
+import com.musseukpeople.woorimap.util.IntegrationTest;
 
-@SpringBootTest
-class InviteCodeServiceTest {
+class InviteCodeServiceTest extends IntegrationTest {
 
     private static final LocalDateTime EXPIRE_DATE = LocalDateTime.now().plusDays(1);
     private static final String INVITE_CODE = "1234567";

@@ -3,14 +3,18 @@ package com.musseukpeople.woorimap.couple.domain;
 import static com.google.common.base.Preconditions.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.musseukpeople.woorimap.common.model.BaseEntity;
+import com.musseukpeople.woorimap.member.domain.Member;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -28,6 +32,9 @@ public class Couple extends BaseEntity {
     @Column(nullable = false)
     private LocalDate startDate;
 
+    @OneToMany(mappedBy = "couple")
+    private List<Member> members = new ArrayList<>();
+
     public Couple(LocalDate startDate) {
         this(null, startDate);
     }
@@ -38,5 +45,17 @@ public class Couple extends BaseEntity {
 
         this.id = id;
         this.startDate = startDate;
+    }
+
+    public Couple(Long id, LocalDate startDate, Member inviter, Member receiver) {
+        this(id, startDate);
+        addMember(inviter);
+        addMember(receiver);
+    }
+
+    public void addMember(Member member) {
+        this.members.add(member);
+
+        member.changeCouple(this);
     }
 }
