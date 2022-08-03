@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AuthService {
+public class AuthFacade {
 
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;
