@@ -51,9 +51,13 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private final List<PostImage> postImages = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private final List<PostTag> postTags = new ArrayList<>();
+
     @Builder
     public Post(Long id, Couple couple, String title, String content,
-                BigDecimal latitude, BigDecimal longitude, List<PostImage> postImages) {
+                BigDecimal latitude, BigDecimal longitude,
+                List<PostImage> postImages, List<PostTag> postTags) {
         this.id = id;
         this.couple = couple;
         this.title = title;
@@ -61,6 +65,7 @@ public class Post extends BaseEntity {
         this.latitude = latitude;
         this.longitude = longitude;
         addPostImages(postImages);
+        addPostTags(postTags);
     }
 
     public Post(Long id) {
@@ -68,14 +73,26 @@ public class Post extends BaseEntity {
     }
 
     public void addPostImages(List<PostImage> postImages) {
-        postImages.forEach(this::addPostImages);
+        postImages.forEach(this::addPostImage);
     }
 
-    public void addPostImages(PostImage postImage) {
+    public void addPostImage(PostImage postImage) {
         if (postImage.getPost() != this) {
             postImage.setPost(this);
         }
 
         this.getPostImages().add(postImage);
+    }
+
+    public void addPostTags(List<PostTag> postTags) {
+        postTags.forEach(this::addPostTag);
+    }
+
+    public void addPostTag(PostTag postTags) {
+        if (postTags.getPost() != this) {
+            postTags.setPost(this);
+        }
+
+        this.getPostTags().add(postTags);
     }
 }

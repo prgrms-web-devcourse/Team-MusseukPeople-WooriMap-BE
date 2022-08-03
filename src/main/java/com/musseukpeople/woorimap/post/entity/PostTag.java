@@ -8,8 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.musseukpeople.woorimap.tag.entity.Tag;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,11 +25,13 @@ public class PostTag {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Tag tag;
+    private Long tagId;
 
-    public PostTag(Post post, Tag tag) {
+    public PostTag(Long tagId) {
+        this.tagId = tagId;
+    }
+
+    public void setPost(Post post) {
         this.post = post;
-        this.tag = tag;
     }
 }

@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class PostFacade {
+
     private final PostService postService;
     private final TagService tagService;
     private final CoupleService coupleService;
@@ -22,10 +23,7 @@ public class PostFacade {
     @Transactional
     public Long createPost(Long coupleId, CreatePostRequest createPostRequest) {
         Couple couple = coupleService.getCoupleById(coupleId);
-        Long savePostId = postService.createPost(couple, createPostRequest);
         List<Long> postTagIdList = tagService.createTag(couple, createPostRequest.getTags());
-        postService.createPostTag(savePostId, postTagIdList);
-
-        return savePostId;
+        return postService.createPost(couple, createPostRequest, postTagIdList);
     }
 }
