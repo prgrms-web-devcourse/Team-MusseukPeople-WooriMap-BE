@@ -39,9 +39,11 @@ public class MemberController {
     }
 
     @Operation(summary = "멤버 정보 확인", description = "멤버 정보 확인 API입니다.")
+    @LoginRequired
     @GetMapping
     public ResponseEntity<ApiResponse<MemberResponse>> showMember(@Login LoginMember loginMember) {
-        return ResponseEntity.ok().build();
+        MemberResponse memberResponse = memberService.getMemberResponseById(loginMember.getId());
+        return ResponseEntity.ok(new ApiResponse<>(memberResponse));
     }
 
     @Operation(summary = "멤버 회원 탈퇴", description = "멤버 회원 탈퇴 API입니다.")
