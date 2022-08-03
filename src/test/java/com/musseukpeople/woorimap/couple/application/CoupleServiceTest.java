@@ -3,6 +3,7 @@ package com.musseukpeople.woorimap.couple.application;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -35,9 +36,10 @@ class CoupleServiceTest extends IntegrationTest {
         //given
         Member inviter = new TMemberBuilder().email("inviter1@gmail.com").build();
         Member receiver = new TMemberBuilder().email("receiver1@gmail.com").build();
+        List<Member> members = List.of(inviter, receiver);
 
         //when
-        Long coupleId = coupleService.createCouple(inviter, receiver, COUPLE_START_DATE);
+        Long coupleId = coupleService.createCouple(members, COUPLE_START_DATE);
         Optional<Couple> couple = coupleRepository.findById(coupleId);
 
         //then
