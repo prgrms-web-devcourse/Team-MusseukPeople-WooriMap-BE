@@ -26,8 +26,8 @@ public class CoupleService {
     }
 
     @Transactional
-    public Long createCouple(Member inviter, Member receiver, LocalDate createCoupleDate) {
-        CoupleMembers coupleMembers = new CoupleMembers(List.of(inviter, receiver));
+    public Long createCouple(List<Member> members, LocalDate createCoupleDate) {
+        CoupleMembers coupleMembers = new CoupleMembers(members);
         Couple couple = coupleRepository.save(new Couple(createCoupleDate, coupleMembers));
         return couple.getId();
     }
