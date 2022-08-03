@@ -26,6 +26,7 @@ import com.musseukpeople.woorimap.auth.presentation.util.CookieUtil;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -55,6 +56,7 @@ public class AuthController {
     }
 
     @Operation(summary = "엑세스 토큰 재발급", description = "엑세스 토큰을 재발급 받습니다.")
+    @SecurityRequirement(name = "bearer")
     @PostMapping("/token")
     public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(@RequestTokens JwtToken jwtToken) {
         AccessTokenResponse accessToken = authService.refreshAccessToken(

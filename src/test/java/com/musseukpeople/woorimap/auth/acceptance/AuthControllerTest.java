@@ -90,12 +90,31 @@ class AuthControllerTest extends AcceptanceTest {
         String accessToken = 로그인_토큰(new SignInRequest(email, password));
 
         // when
-        MockHttpServletResponse response = mockMvc.perform(post("/api/auth/signout")
-                .header(HttpHeaders.AUTHORIZATION, accessToken))
-            .andReturn().getResponse();
+        MockHttpServletResponse response = 로그아웃(accessToken);
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("로그아웃 이후 해당 토큰 사용 불가 성공")
+    @Test
+    void logout_blackList_success() throws Exception {
+        // given
+        MockHttpServletResponse loginResponse = 로그인(new SignInRequest("woorimap@gmail.com", "!Hwan123"));
+        String accessToken = getAccessToken(loginResponse);
+        String refreshToken = getRefreshToken(loginResponse);
+        로그아웃(accessToken);
+
+        // when
+        MockHttpServletResponse response = 토큰_재발급_요청(accessToken, refreshToken);
+
+        // then
+        ErrorResponse errorResponse = getErrorResponse(response);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+            () -> assertThat(errorResponse.getCode()).isEqualTo("A003"),
+            () -> assertThat(errorResponse.getMessage()).isEqualTo("허용되지 않는 토큰입니다.")
+        );
     }
 
     @DisplayName("토큰 재발급 성공")
@@ -144,6 +163,12 @@ class AuthControllerTest extends AcceptanceTest {
 
         // then
         토큰_재발급_실패(response);
+    }
+
+    private MockHttpServletResponse 로그아웃(String accessToken) throws Exception {
+        return mockMvc.perform(post("/api/auth/signout")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+            .andReturn().getResponse();
     }
 
     private MockHttpServletResponse 토큰_재발급_요청(String accessToken, String refreshToken) throws Exception {
