@@ -79,6 +79,11 @@ public class JwtTokenProvider implements JwtProvider {
     }
 
     @Override
+    public Date getExpiredDate(String token) {
+        return getClaims(token).getExpiration();
+    }
+
+    @Override
     public Claims getClaims(String token) {
         try {
             return getClaimsJws(token).getBody();

@@ -50,7 +50,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
         Claims claims = jwtProvider.getClaims(accessToken);
         Long id = convertMemberId(accessToken, claims);
         Long coupleId = convertCoupleId(accessToken, claims);
-        return new LoginMember(id, coupleId);
+        return new LoginMember(id, coupleId, accessToken);
     }
 
     private Long convertMemberId(String token, Claims claims) {

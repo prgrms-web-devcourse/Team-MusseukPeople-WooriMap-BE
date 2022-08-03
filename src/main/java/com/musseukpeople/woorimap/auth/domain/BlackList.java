@@ -1,6 +1,5 @@
 package com.musseukpeople.woorimap.auth.domain;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.annotation.Id;
@@ -13,23 +12,17 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@RedisHash("token")
-public class Token {
+@RedisHash("blackList")
+public class BlackList {
 
     @Id
-    private String id;
-    private String refreshToken;
+    private String accessToken;
 
     @TimeToLive(unit = TimeUnit.MILLISECONDS)
     private long expiredTime;
 
-    public Token(String id, String refreshToken, long expiredTime) {
-        this.id = id;
-        this.refreshToken = refreshToken;
+    public BlackList(String accessToken, long expiredTime) {
+        this.accessToken = accessToken;
         this.expiredTime = expiredTime;
-    }
-
-    public boolean isNotSame(String refreshToken) {
-        return !Objects.equals(this.refreshToken, refreshToken);
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.musseukpeople.woorimap.auth.aop.LoginRequired;
-import com.musseukpeople.woorimap.auth.application.AuthService;
+import com.musseukpeople.woorimap.auth.application.AuthFacade;
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
@@ -26,6 +26,7 @@ import com.musseukpeople.woorimap.auth.presentation.util.CookieUtil;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -35,13 +36,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+    private final AuthFacade authFacade;
 
     @Operation(summary = "로그인", description = "로그인 API입니다.")
     @PostMapping("/signin")
     public ResponseEntity<ApiResponse<LoginResponse>> signIn(@Valid @RequestBody SignInRequest signInRequest,
                                                              HttpServletResponse response) {
-        LoginResponseDto loginResponseDto = authService.login(signInRequest);
+        LoginResponseDto loginResponseDto = authFacade.login(signInRequest);
         setTokenCookie(response, loginResponseDto.getRefreshToken());
         return ResponseEntity.ok(new ApiResponse<>(LoginResponse.from(loginResponseDto)));
     }
@@ -50,14 +51,15 @@ public class AuthController {
     @LoginRequired
     @PostMapping("/signout")
     public ResponseEntity<Void> signout(@Login LoginMember loginMember) {
-        authService.logout(loginMember.getId());
+        authFacade.logout(loginMember);
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "엑세스 토큰 재발급", description = "엑세스 토큰을 재발급 받습니다.")
+    @SecurityRequirement(name = "bearer")
     @PostMapping("/token")
     public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(@RequestTokens JwtToken jwtToken) {
-        AccessTokenResponse accessToken = authService.refreshAccessToken(
+        AccessTokenResponse accessToken = authFacade.refreshAccessToken(
             jwtToken.getAccessToken(),
             jwtToken.getRefreshToken()
         );

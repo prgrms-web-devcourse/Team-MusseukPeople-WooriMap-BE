@@ -17,12 +17,12 @@ import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.member.exception.LoginFailedException;
 import com.musseukpeople.woorimap.util.IntegrationTest;
 
-class AuthServiceTest extends IntegrationTest {
+class AuthFacadeTest extends IntegrationTest {
 
     private final String email = "woorimap@gmail.com";
     private final String password = "!Hwan123";
     @Autowired
-    private AuthService authService;
+    private AuthFacade authFacade;
 
     @Autowired
     private MemberService memberService;
@@ -39,7 +39,7 @@ class AuthServiceTest extends IntegrationTest {
         SignInRequest signInRequest = new SignInRequest(email, password);
 
         // when
-        LoginResponseDto loginResponseDto = authService.login(signInRequest);
+        LoginResponseDto loginResponseDto = authFacade.login(signInRequest);
 
         // then
         assertAll(
@@ -57,7 +57,7 @@ class AuthServiceTest extends IntegrationTest {
 
         // when
         // then
-        assertThatThrownBy(() -> authService.login(signInRequest))
+        assertThatThrownBy(() -> authFacade.login(signInRequest))
             .isInstanceOf(LoginFailedException.class)
             .hasMessageContaining("이메일 또는 비밀번호가 일치하지 않습니다.");
     }
@@ -71,7 +71,7 @@ class AuthServiceTest extends IntegrationTest {
 
         // when
         // then
-        assertThatThrownBy(() -> authService.login(signInRequest))
+        assertThatThrownBy(() -> authFacade.login(signInRequest))
             .isInstanceOf(LoginFailedException.class)
             .hasMessageContaining("이메일 또는 비밀번호가 일치하지 않습니다");
     }
@@ -85,7 +85,7 @@ class AuthServiceTest extends IntegrationTest {
         String refreshToken = loginResponseDto.getRefreshToken().getValue();
 
         // when
-        AccessTokenResponse accessTokenResponse = authService.refreshAccessToken(accessToken, refreshToken);
+        AccessTokenResponse accessTokenResponse = authFacade.refreshAccessToken(accessToken, refreshToken);
 
         // then
         assertThat(accessTokenResponse.getAccessToken()).isNotNull();
@@ -101,7 +101,7 @@ class AuthServiceTest extends IntegrationTest {
 
         // when
         // then
-        assertThatThrownBy(() -> authService.refreshAccessToken(invalidAccessToken, refreshToken))
+        assertThatThrownBy(() -> authFacade.refreshAccessToken(invalidAccessToken, refreshToken))
             .isInstanceOf(InvalidTokenException.class)
             .hasMessageContaining("유효하지 않은 토큰입니다.");
     }
@@ -116,12 +116,12 @@ class AuthServiceTest extends IntegrationTest {
 
         // when
         // then
-        assertThatThrownBy(() -> authService.refreshAccessToken(accessToken, invalidRefreshToken))
+        assertThatThrownBy(() -> authFacade.refreshAccessToken(accessToken, invalidRefreshToken))
             .isInstanceOf(InvalidTokenException.class)
             .hasMessageContaining("유효하지 않은 토큰입니다.");
     }
 
     private LoginResponseDto login(String email, String password) {
-        return authService.login(new SignInRequest(email, password));
+        return authFacade.login(new SignInRequest(email, password));
     }
 }

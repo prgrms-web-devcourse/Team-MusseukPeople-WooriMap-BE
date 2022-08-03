@@ -10,19 +10,21 @@ public class LoginMember {
     private Long id;
     private Long coupleId;
     private Authority authority;
+    private String accessToken;
 
     public LoginMember(Authority authority) {
-        this(null, null, authority);
+        this(null, null, authority, null);
     }
 
-    public LoginMember(Long id, Long coupleId) {
-        this(id, coupleId, coupleId != null ? COUPLE : SOLO);
+    public LoginMember(Long id, Long coupleId, String accessToken) {
+        this(id, coupleId, coupleId != null ? COUPLE : SOLO, accessToken);
     }
 
-    private LoginMember(Long id, Long coupleId, Authority authority) {
+    private LoginMember(Long id, Long coupleId, Authority authority, String accessToken) {
         this.id = id;
         this.coupleId = coupleId;
         this.authority = authority;
+        this.accessToken = accessToken;
     }
 
     public boolean isAnonymous() {

@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
-import com.musseukpeople.woorimap.auth.domain.Token;
-import com.musseukpeople.woorimap.auth.domain.TokenRepository;
+import com.musseukpeople.woorimap.auth.domain.RefreshToken;
+import com.musseukpeople.woorimap.auth.domain.RefreshTokenRepository;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 
@@ -14,23 +14,23 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class TokenService {
+public class RefreshTokenService {
 
-    private final TokenRepository tokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public void saveToken(String memberId, TokenDto tokenDto) {
-        Token token = new Token(memberId, tokenDto.getValue(), tokenDto.getExpiredTime());
-        tokenRepository.save(token);
+        RefreshToken refreshToken = new RefreshToken(memberId, tokenDto.getValue(), tokenDto.getExpiredTime());
+        refreshTokenRepository.save(refreshToken);
     }
 
     @Transactional
     public void removeByMemberId(String memberId) {
-        tokenRepository.deleteById(memberId);
+        refreshTokenRepository.deleteById(memberId);
     }
 
-    public Token getTokenByMemberId(String memberId) {
-        return tokenRepository.findById(memberId)
+    public RefreshToken getTokenByMemberId(String memberId) {
+        return refreshTokenRepository.findById(memberId)
             .orElseThrow(() -> new InvalidTokenException(null, ErrorCode.INVALID_TOKEN));
     }
 }
