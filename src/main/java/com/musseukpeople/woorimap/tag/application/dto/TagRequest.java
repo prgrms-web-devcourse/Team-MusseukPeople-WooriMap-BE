@@ -9,15 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TagRequest {
 
-    private Long id;
-
     @NotBlank
     private String name;
 
     private String color;
 
-    public TagRequest(Long id, String name, String color) {
-        this.id = id;
+    public TagRequest(String name, String color) {
         this.name = name;
         this.color = color;
     }

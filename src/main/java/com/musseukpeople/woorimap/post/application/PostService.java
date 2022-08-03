@@ -26,8 +26,8 @@ public class PostService {
     private final PostTagRepository postTagRepository;
 
     @Transactional
-    public Long createPost(Long coupleId, CreatePostRequest createPostRequest) {
-        Post post = createPostRequest.toPost(new Couple(coupleId));
+    public Long createPost(Couple couple, CreatePostRequest createPostRequest) {
+        Post post = createPostRequest.toPost(couple);
         return postRepository.save(post).getId();
     }
 

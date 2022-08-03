@@ -1,8 +1,6 @@
 package com.musseukpeople.woorimap.post.presentation;
 
 import java.net.URI;
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -36,9 +34,7 @@ public class PostController {
     public ResponseEntity<ApiResponse<String>> createPost(@Valid @RequestBody CreatePostRequest createPostRequest,
                                                           @Login LoginMember member) {
         Long coupleId = member.getCoupleId();
-        Long savePostId = postFacade.createPost(coupleId, createPostRequest);
-        List<Long> postTagIdList = postFacade.createTag(coupleId, createPostRequest.getTags());
-        postFacade.createPostTag(savePostId, postTagIdList);
-        return ResponseEntity.created(URI.create("/post/" + savePostId)).build();
+        Long savedPostId = postFacade.createPost(coupleId, createPostRequest);
+        return ResponseEntity.created(URI.create("/post/" + savedPostId)).build();
     }
 }

@@ -3,9 +3,11 @@ package com.musseukpeople.woorimap.post.application;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.musseukpeople.woorimap.couple.application.CoupleService;
+import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.tag.application.TagService;
-import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -15,16 +17,15 @@ import lombok.RequiredArgsConstructor;
 public class PostFacade {
     private final PostService postService;
     private final TagService tagService;
+    private final CoupleService coupleService;
 
+    @Transactional
     public Long createPost(Long coupleId, CreatePostRequest createPostRequest) {
-        return postService.createPost(coupleId, createPostRequest);
-    }
-
-    public List<Long> createTag(Long coupleId, List<TagRequest> tags) {
-        return tagService.createTag(coupleId, tags);
-    }
-
-    public void createPostTag(Long savePostId, List<Long> postTagIdList) {
+        Couple couple = coupleService.getCoupleById(coupleId);
+        Long savePostId = postService.createPost(couple, createPostRequest);
+        List<Long> postTagIdList = tagService.createTag(couple, createPostRequest.getTags());
         postService.createPostTag(savePostId, postTagIdList);
+
+        return savePostId;
     }
 }

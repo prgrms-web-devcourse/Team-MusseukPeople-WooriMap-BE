@@ -2,13 +2,14 @@ package com.musseukpeople.woorimap.couple.application;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
+import com.musseukpeople.woorimap.couple.exception.NotFoundCoupleException;
 import com.musseukpeople.woorimap.member.domain.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -30,5 +31,10 @@ public class CoupleService {
         CoupleMembers coupleMembers = new CoupleMembers(members);
         Couple couple = coupleRepository.save(new Couple(createCoupleDate, coupleMembers));
         return couple.getId();
+    }
+
+    public Couple getCoupleById(Long coupleId) {
+        return coupleRepository.findById(coupleId)
+            .orElseThrow(() -> new NotFoundCoupleException(ErrorCode.NOT_FOUND_COUPLE, coupleId));
     }
 }
