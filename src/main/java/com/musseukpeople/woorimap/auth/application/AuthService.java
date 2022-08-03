@@ -14,6 +14,7 @@ import com.musseukpeople.woorimap.auth.application.dto.response.LoginResponseDto
 import com.musseukpeople.woorimap.auth.domain.RefreshToken;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
+import com.musseukpeople.woorimap.auth.exception.UnauthorizedException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.member.application.MemberService;
 import com.musseukpeople.woorimap.member.domain.Member;
@@ -49,17 +50,13 @@ public class AuthService {
     @Transactional
     public void logout(LoginMember member) {
         String accessToken = member.getAccessToken();
-        Date expiredDate = jwtProvider.getExpiredDate(accessToken);
-        TokenDto tokenDto = new TokenDto(accessToken, expiredDate.getTime());
-
-        blackListService.saveBlackList(tokenDto);
+        registerBlackList(accessToken);
         refreshTokenService.removeByMemberId(String.valueOf(member.getId()));
     }
 
     public AccessTokenResponse refreshAccessToken(String accessToken, String refreshToken) {
-        if (!jwtProvider.validateToken(refreshToken)) {
-            throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
-        }
+        validateRefreshToken(refreshToken);
+        validateBlackList(accessToken);
 
         Claims claims = jwtProvider.getClaims(accessToken);
         RefreshToken findRefreshToken = getRefreshToken(claims);
@@ -68,7 +65,27 @@ public class AuthService {
         }
 
         String newAccessToken = createNewAccessToken(claims);
+        registerBlackList(accessToken);
         return new AccessTokenResponse(newAccessToken);
+    }
+
+    private void validateBlackList(String accessToken) {
+        if (blackListService.isBlackList(accessToken)) {
+            throw new UnauthorizedException(ErrorCode.BLACKLIST_TOKEN);
+        }
+    }
+
+    private void registerBlackList(String accessToken) {
+        Date expiredDate = jwtProvider.getExpiredDate(accessToken);
+        TokenDto tokenDto = new TokenDto(accessToken, expiredDate.getTime());
+
+        blackListService.saveBlackList(tokenDto);
+    }
+
+    private void validateRefreshToken(String refreshToken) {
+        if (!jwtProvider.validateToken(refreshToken)) {
+            throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
+        }
     }
 
     private RefreshToken getRefreshToken(Claims claims) {
