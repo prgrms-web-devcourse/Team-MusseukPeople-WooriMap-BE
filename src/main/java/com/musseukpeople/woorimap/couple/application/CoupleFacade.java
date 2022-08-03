@@ -12,7 +12,12 @@ import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleMyResponse;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleYourResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
+import com.musseukpeople.woorimap.couple.domain.Couple;
+import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.couple.exception.AlreadyCoupleException;
 import com.musseukpeople.woorimap.couple.exception.CreateCoupleFailException;
 import com.musseukpeople.woorimap.member.application.MemberService;
@@ -48,6 +53,20 @@ public class CoupleFacade {
         inviteCodeService.removeInviteCodeByMembers(members);
 
         return jwtProvider.createAccessToken(String.valueOf(receiverId), coupleId);
+    }
+
+    public CoupleResponse getCouple(LoginMember member) {
+        Long coupleId = member.getCoupleId();
+        Long myId = member.getId();
+
+        Couple couple = coupleService.getCoupleByIdFetchMember(coupleId);
+        CoupleMembers coupleMembers = couple.getCoupleMembers();
+
+        LocalDate startDate = couple.getStartDate();
+        CoupleMyResponse coupleMyResponse = coupleMembers.getMyResponse(myId);
+        CoupleYourResponse coupleYourResponse = coupleMembers.getYourResponse(myId);
+
+        return new CoupleResponse(startDate, coupleMyResponse, coupleYourResponse);
     }
 
     @Transactional
