@@ -30,7 +30,7 @@ public class CoupleFacade {
     @Transactional
     public void createCouple(String inviteCode, LoginMember receiver) {
         Long receiverId = receiver.getId();
-        Long inviterId = inviteCodeService.getInviterIdByInviteCode(inviteCode);
+        Long inviterId = inviteCodeService.getIdByCode(inviteCode);
 
         validateSameInviter(receiverId, inviterId);
 
@@ -42,7 +42,7 @@ public class CoupleFacade {
         List<Member> members = List.of(foundInviter, foundReceiver);
         LocalDate createCoupleDate = LocalDate.now();
         coupleService.createCouple(members, createCoupleDate);
-        inviteCodeService.removeInviteCodeByCreatedCouple(inviterId, receiverId);
+        inviteCodeService.removeInviteCodeByMembers(members);
     }
 
     @Transactional

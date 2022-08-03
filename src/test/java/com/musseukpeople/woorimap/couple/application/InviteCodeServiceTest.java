@@ -84,7 +84,7 @@ class InviteCodeServiceTest extends IntegrationTest {
         inviteCodeRepository.save(new InviteCode(INVITE_CODE, INVITER_ID, EXPIRE_DATE));
 
         //when
-        Long inviterId = inviteCodeService.getInviterIdByInviteCode(INVITE_CODE);
+        Long inviterId = inviteCodeService.getIdByCode(INVITE_CODE);
 
         //then
         assertThat(inviterId).isEqualTo(INVITER_ID);
@@ -98,7 +98,7 @@ class InviteCodeServiceTest extends IntegrationTest {
         inviteCodeRepository.save(new InviteCode(INVITE_CODE, INVITER_ID, EXPIRE_DATE));
 
         //when
-        assertThatThrownBy(() -> inviteCodeService.getInviterIdByInviteCode(notSavedCode))
+        assertThatThrownBy(() -> inviteCodeService.getIdByCode(notSavedCode))
 
             //then
             .isInstanceOf(NotFoundInviteCodeException.class);

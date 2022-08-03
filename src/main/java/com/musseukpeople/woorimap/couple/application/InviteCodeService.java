@@ -1,6 +1,8 @@
 package com.musseukpeople.woorimap.couple.application;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +12,7 @@ import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResp
 import com.musseukpeople.woorimap.couple.domain.InviteCode;
 import com.musseukpeople.woorimap.couple.domain.InviteCodeRepository;
 import com.musseukpeople.woorimap.couple.exception.NotFoundInviteCodeException;
+import com.musseukpeople.woorimap.member.domain.Member;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,13 +34,19 @@ public class InviteCodeService {
         return new InviteCodeResponse(inviteCode.getCode());
     }
 
-    public Long getInviterIdByInviteCode(String inviteCode) {
+    public Long getIdByCode(String inviteCode) {
         InviteCode foundInviteCode = inviteCodeRepository.findById(inviteCode)
             .orElseThrow(() -> new NotFoundInviteCodeException(ErrorCode.NOT_FOUND_INVITE_CODE, inviteCode));
         return foundInviteCode.getInviterId();
     }
 
-    public void removeInviteCodeByCreatedCouple(Long inviterId, Long receiverId) {
-        inviteCodeRepository.deleteByTwoMemberId(inviterId, receiverId);
+    public void removeInviteCodeByMembers(List<Member> members) {
+        inviteCodeRepository.deleteByInIds(createMemberIds(members));
+    }
+
+    private List<Long> createMemberIds(List<Member> members) {
+        List<Long> ids = new ArrayList<>();
+        members.forEach(member -> ids.add(member.getId()));
+        return ids;
     }
 }
