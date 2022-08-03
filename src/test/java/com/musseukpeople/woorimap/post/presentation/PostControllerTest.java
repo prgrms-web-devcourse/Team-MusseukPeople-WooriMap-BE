@@ -21,11 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.post.application.PostService;
-import com.musseukpeople.woorimap.post.entity.Post;
+import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
-import com.musseukpeople.woorimap.tag.entity.TagRepository;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
 
 public class PostControllerTest extends AcceptanceTest {
@@ -35,9 +34,6 @@ public class PostControllerTest extends AcceptanceTest {
     @Autowired
     private PostService postService;
 
-    @Autowired
-    private TagRepository tagRepository;
-
     @BeforeEach
     void login() throws Exception {
         String email = "test@gmail.com";
@@ -46,7 +42,7 @@ public class PostControllerTest extends AcceptanceTest {
         SignupRequest user = new SignupRequest(email, password, nickName);
         String accessToken = 회원가입_토큰(user);
         커플_맺기(accessToken);
-        coupleAccessToken = 로그인_토큰(new SignInRequest(user.getEmail(), user.getPassword()));
+        coupleAccessToken = 로그인_토큰(new SignInRequest(email, password));
     }
 
     @DisplayName("post 생성 완료")
@@ -59,7 +55,7 @@ public class PostControllerTest extends AcceptanceTest {
         CreatePostRequest createPostRequest = CreatePostRequest.builder()
             .title("첫 이야기")
             .content("<h1>첫 이야기.... </h1>")
-            .imagePaths(sampleImagePaths)
+            .imageUrls(sampleImagePaths)
             .tags(sampleTags)
             .latitude(new BigDecimal("12.12312321"))
             .longitude(new BigDecimal("122.3123121"))
