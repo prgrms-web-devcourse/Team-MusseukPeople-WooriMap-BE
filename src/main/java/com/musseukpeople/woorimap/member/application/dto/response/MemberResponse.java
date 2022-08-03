@@ -2,6 +2,8 @@ package com.musseukpeople.woorimap.member.application.dto.response;
 
 import java.time.LocalDate;
 
+import com.musseukpeople.woorimap.member.domain.Member;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +25,25 @@ public class MemberResponse {
         this.coupleNickName = coupleNickName;
         this.coupleStartingDate = coupleStartingDate;
         this.isCouple = isCouple;
+    }
+
+    public static MemberResponse createSoloMemberResponse(Member member) {
+        return new MemberResponse(
+            member.getImageUrl(),
+            member.getNickName().getValue(),
+            null,
+            null,
+            member.isCouple()
+        );
+    }
+
+    public static MemberResponse createCoupleMemberResponse(Member member, Member opponentMember) {
+        return new MemberResponse(
+            member.getImageUrl(),
+            member.getNickName().getValue(),
+            opponentMember.getNickName().getValue(),
+            member.getCouple().getStartDate(),
+            member.isCouple()
+        );
     }
 }

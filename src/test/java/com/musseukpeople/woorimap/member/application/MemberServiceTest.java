@@ -1,21 +1,27 @@
 package com.musseukpeople.woorimap.member.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.AfterEach;
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
+import com.musseukpeople.woorimap.couple.domain.Couple;
+import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
+import com.musseukpeople.woorimap.member.application.dto.response.MemberResponse;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.member.exception.DuplicateEmailException;
 import com.musseukpeople.woorimap.member.exception.LoginFailedException;
+import com.musseukpeople.woorimap.util.IntegrationTest;
+import com.musseukpeople.woorimap.util.fixture.TCoupleBuilder;
+import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
 
-@SpringBootTest
-class MemberServiceTest {
+class MemberServiceTest extends IntegrationTest {
 
     @Autowired
     private MemberService memberService;
@@ -23,10 +29,8 @@ class MemberServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @AfterEach
-    void tearDown() {
-        memberRepository.deleteAllInBatch();
-    }
+    @Autowired
+    private CoupleRepository coupleRepository;
 
     @DisplayName("회원 생성 성공")
     @Test
@@ -80,5 +84,43 @@ class MemberServiceTest {
         assertThatThrownBy(() -> memberService.getMemberByEmail("tt@gmail.com"))
             .isInstanceOf(LoginFailedException.class)
             .hasMessageContaining("이메일 또는 비밀번호가 일치하지 않습니다.");
+    }
+
+    @DisplayName("회원 정보 조회 성공 - 솔로")
+    @Test
+    void getMemberResponse_solo_success() {
+        // given
+        Member member = new TMemberBuilder().email("test@gmail.com").build();
+        Long id = memberRepository.save(member).getId();
+
+        // when
+        MemberResponse memberResponse = memberService.getMemberResponseById(id);
+
+        // then
+        assertAll(
+            () -> assertThat(memberResponse.getCoupleNickName()).isNull(),
+            () -> assertThat(memberResponse.getCoupleStartingDate()).isNull()
+        );
+    }
+
+    @DisplayName("회원 정보 조회 성공 - 커플")
+    @Test
+    void getMemberResponse_couple_success() {
+        // given
+        Couple couple = new TCoupleBuilder().build();
+        coupleRepository.save(couple);
+        Member member = new TMemberBuilder().email("test@gmail.com").couple(couple).build();
+        Member opponentMember = new TMemberBuilder().email("oppent@gmail.com").couple(couple).build();
+        Long id = memberRepository.save(member).getId();
+        memberRepository.save(opponentMember);
+
+        // when
+        MemberResponse memberResponse = memberService.getMemberResponseById(id);
+
+        // then
+        assertAll(
+            () -> assertThat(memberResponse.getCoupleNickName()).isEqualTo(opponentMember.getNickName().getValue()),
+            () -> assertThat(memberResponse.getCoupleStartingDate()).isEqualTo(LocalDate.now())
+        );
     }
 }
