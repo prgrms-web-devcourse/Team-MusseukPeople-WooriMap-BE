@@ -1,5 +1,7 @@
 package com.musseukpeople.woorimap.auth.application;
 
+import java.util.Date;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +12,7 @@ import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenRespo
 import com.musseukpeople.woorimap.auth.application.dto.response.LoginMemberResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.LoginResponseDto;
 import com.musseukpeople.woorimap.auth.domain.RefreshToken;
+import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.member.application.MemberService;
@@ -25,6 +28,7 @@ public class AuthService {
 
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;
+    private final BlackListService blackListService;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
@@ -43,8 +47,13 @@ public class AuthService {
     }
 
     @Transactional
-    public void logout(Long memberId) {
-        refreshTokenService.removeByMemberId(String.valueOf(memberId));
+    public void logout(LoginMember member) {
+        String accessToken = member.getAccessToken();
+        Date expiredDate = jwtProvider.getExpiredDate(accessToken);
+        TokenDto tokenDto = new TokenDto(accessToken, expiredDate.getTime());
+
+        blackListService.saveBlackList(tokenDto);
+        refreshTokenService.removeByMemberId(String.valueOf(member.getId()));
     }
 
     public AccessTokenResponse refreshAccessToken(String accessToken, String refreshToken) {

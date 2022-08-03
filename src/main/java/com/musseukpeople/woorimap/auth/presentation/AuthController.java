@@ -50,7 +50,7 @@ public class AuthController {
     @LoginRequired
     @PostMapping("/signout")
     public ResponseEntity<Void> signout(@Login LoginMember loginMember) {
-        authService.logout(loginMember.getId());
+        authService.logout(loginMember);
         return ResponseEntity.noContent().build();
     }
 
