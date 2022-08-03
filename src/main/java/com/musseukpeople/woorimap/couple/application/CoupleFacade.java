@@ -8,6 +8,8 @@ import java.util.Objects;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.musseukpeople.woorimap.auth.application.JwtProvider;
+import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
@@ -26,9 +28,10 @@ public class CoupleFacade {
     private final MemberService memberService;
     private final CoupleService coupleService;
     private final InviteCodeService inviteCodeService;
+    private final JwtProvider jwtProvider;
 
     @Transactional
-    public void createCouple(String inviteCode, LoginMember receiver) {
+    public TokenDto createCouple(String inviteCode, LoginMember receiver) {
         Long receiverId = receiver.getId();
         Long inviterId = inviteCodeService.getIdByCode(inviteCode);
 
@@ -41,20 +44,26 @@ public class CoupleFacade {
 
         List<Member> members = List.of(foundInviter, foundReceiver);
         LocalDate createCoupleDate = LocalDate.now();
-        coupleService.createCouple(members, createCoupleDate);
+        Long coupleId = coupleService.createCouple(members, createCoupleDate);
         inviteCodeService.removeInviteCodeByMembers(members);
+
+        return jwtProvider.createAccessToken(String.valueOf(receiverId), coupleId);
+    }
+
+    @Transactional
+    public TokenDto removeCouple(LoginMember member) {
+        Long coupleId = member.getCoupleId();
+        Long memberId = member.getId();
+
+        memberService.breakUpMembersByCoupleId(coupleId);
+        coupleService.removeCouple(coupleId);
+
+        return jwtProvider.createAccessToken(String.valueOf(memberId), null);
     }
 
     @Transactional
     public InviteCodeResponse createInviteCode(Long inviterId, LocalDateTime expireDate) {
         return inviteCodeService.createInviteCode(inviterId, expireDate);
-    }
-
-    @Transactional
-    public void removeCouple(LoginMember member) {
-        Long coupleId = member.getCoupleId();
-        memberService.breakUpMembersByCoupleId(coupleId);
-        coupleService.removeCouple(coupleId);
     }
 
     private void validateAlreadyCouple(Member foundInviter, Member foundReceiver) {
