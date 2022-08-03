@@ -8,7 +8,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,9 @@ public class DatabaseCleanup implements InitializingBean {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
 
     private List<String> tableNames;
 
@@ -45,5 +51,12 @@ public class DatabaseCleanup implements InitializingBean {
         }
 
         entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1;").executeUpdate();
+        redisCleanUp();
+    }
+
+    private void redisCleanUp() {
+        RedisConnection connection = redisConnectionFactory.getConnection();
+        connection.execute("flushall");
+        connection.close();
     }
 }
