@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.musseukpeople.woorimap.auth.aop.OnlyCouple;
 import com.musseukpeople.woorimap.auth.aop.OnlySolo;
+import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
+import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
 import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
@@ -36,20 +38,26 @@ public class CoupleController {
     @Operation(summary = "커플 맺기", description = "커플 맺기 API입니다.")
     @OnlySolo
     @PostMapping
-    public ResponseEntity<Void> createCouple(
+    public ResponseEntity<ApiResponse<AccessTokenResponse>> createCouple(
         @Valid @RequestBody CreateCoupleRequest createCoupleRequest,
         @Login LoginMember receiver
     ) {
-        coupleFacade.createCouple(createCoupleRequest.getCode(), receiver);
-        return ResponseEntity.ok().build();
+        TokenDto tokenDto = coupleFacade.createCouple(createCoupleRequest.getCode(), receiver);
+        AccessTokenResponse accessTokenResponse = new AccessTokenResponse(tokenDto.getValue());
+
+        return ResponseEntity.ok(new ApiResponse<>(accessTokenResponse));
     }
 
     @Operation(summary = "커플 해제", description = "커플 해제 API입니다.")
     @OnlyCouple
     @DeleteMapping
-    public ResponseEntity<Void> deleteCouple(@Login LoginMember member) {
-        coupleFacade.removeCouple(member);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ApiResponse<AccessTokenResponse>> deleteCouple(@Login LoginMember member) {
+        TokenDto tokenDto = coupleFacade.removeCouple(member);
+        AccessTokenResponse accessTokenResponse = new AccessTokenResponse(tokenDto.getValue());
+
+        return ResponseEntity
+            .status(HttpStatus.NO_CONTENT)
+            .body(new ApiResponse<>(accessTokenResponse));
     }
 
     @Operation(summary = "커플 초대 코드 생성", description = "커플 초대 코드 생성 API입니다.")

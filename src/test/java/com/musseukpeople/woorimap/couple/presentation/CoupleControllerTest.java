@@ -142,8 +142,8 @@ class CoupleControllerTest extends AcceptanceTest {
     @Test
     void removeCouple_success() throws Exception {
         //given
-        커플_맺기(accessToken);
-        accessToken = 로그인_토큰(new SignInRequest(email, password));
+        accessToken = 커플_맺기_토큰(accessToken);
+
         //when
         mockMvc.perform(delete("/api/couples")
                 .header(HttpHeaders.AUTHORIZATION, accessToken))
@@ -158,6 +158,21 @@ class CoupleControllerTest extends AcceptanceTest {
             () -> assertThat(foundMember).isPresent(),
             () -> assertThat(foundMember.get().isCouple()).isFalse()
         );
+    }
+
+    @DisplayName("커플이 아니면 커플 해제 실패")
+    @Test
+    void removeCouple_notCouple_fail() throws Exception {
+        //given
+        String notCoupleAccessToken = accessToken;
+
+        //when
+        mockMvc.perform(delete("/api/couples")
+                .header(HttpHeaders.AUTHORIZATION, notCoupleAccessToken))
+
+            //then
+            .andExpect(status().isForbidden())
+            .andDo(print());
     }
 
     private MockHttpServletResponse createInviteCodeApi(String accessToken) throws Exception {
