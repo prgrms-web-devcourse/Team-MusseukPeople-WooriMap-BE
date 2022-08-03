@@ -41,8 +41,7 @@ public class PostControllerTest extends AcceptanceTest {
         String nickName = "test";
         SignupRequest user = new SignupRequest(email, password, nickName);
         String accessToken = 회원가입_토큰(user);
-        커플_맺기(accessToken);
-        coupleAccessToken = 로그인_토큰(new SignInRequest(email, password));
+        coupleAccessToken = 커플_맺기_토큰(accessToken);
     }
 
     @DisplayName("post 생성 완료")
