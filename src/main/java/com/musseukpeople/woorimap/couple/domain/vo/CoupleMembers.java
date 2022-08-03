@@ -4,11 +4,16 @@ import static com.google.common.base.Preconditions.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleMyResponse;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleYourResponse;
 import com.musseukpeople.woorimap.couple.domain.Couple;
+import com.musseukpeople.woorimap.couple.exception.MappingCoupleMemberException;
 import com.musseukpeople.woorimap.member.domain.Member;
 
 import lombok.AccessLevel;
@@ -30,8 +35,26 @@ public class CoupleMembers {
         this.members = members;
     }
 
-    public void addMembers(Couple couple) {
+    public void setCoupleForMembers(Couple couple) {
         this.members.forEach(member -> member.changeCouple(couple));
+    }
+
+    public CoupleMyResponse getMyResponse(Long myId) {
+        return this.members.stream()
+            .filter(member -> Objects.equals(member.getId(), myId))
+            .findFirst()
+            .map(member -> new CoupleMyResponse(member.getImageUrl(), member.getNickName().getValue()))
+            .orElseThrow(
+                () -> new MappingCoupleMemberException("나의 정보를 변환할 수 없습니다.", ErrorCode.NOT_MAPPING_COUPLE_MEMBER));
+    }
+
+    public CoupleYourResponse getYourResponse(Long myId) {
+        return this.members.stream()
+            .filter(member -> !Objects.equals(member.getId(), myId))
+            .findFirst()
+            .map(member -> new CoupleYourResponse(member.getImageUrl(), member.getNickName().getValue()))
+            .orElseThrow(
+                () -> new MappingCoupleMemberException("상대방의 정보를 변환할 수 없습니다.", ErrorCode.NOT_MAPPING_COUPLE_MEMBER));
     }
 
     private void validateCoupleMembers(List<Member> members) {
