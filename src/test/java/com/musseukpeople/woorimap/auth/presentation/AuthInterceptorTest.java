@@ -1,12 +1,15 @@
 package com.musseukpeople.woorimap.auth.presentation;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
 import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -14,11 +17,13 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.method.HandlerMethod;
 
 import com.musseukpeople.woorimap.auth.aop.LoginRequired;
+import com.musseukpeople.woorimap.auth.application.BlackListService;
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.auth.exception.UnauthorizedException;
 import com.musseukpeople.woorimap.auth.infrastructure.JwtTokenProvider;
 
+@ExtendWith(MockitoExtension.class)
 class AuthInterceptorTest {
 
     private static final JwtTokenProvider PROVIDER = new JwtTokenProvider(
@@ -29,11 +34,13 @@ class AuthInterceptorTest {
     );
 
     private AuthInterceptor authInterceptor;
+    private BlackListService blackListService;
     private MockHttpServletResponse response;
 
     @BeforeEach
     void setUp() {
-        authInterceptor = new AuthInterceptor(PROVIDER);
+        blackListService = mock(BlackListService.class);
+        authInterceptor = new AuthInterceptor(PROVIDER, blackListService);
         response = new MockHttpServletResponse();
     }
 
@@ -111,6 +118,23 @@ class AuthInterceptorTest {
         assertThatThrownBy(() -> authInterceptor.preHandle(request, response, handlerMethod))
             .isInstanceOf(InvalidTokenException.class)
             .hasMessageContaining("유효하지 않은 토큰입니다.");
+    }
+
+    @DisplayName("블랙 리스트에 등록된 토큰으로 인한 실패")
+    @Test
+    void preHandle_blackList_fail() throws NoSuchMethodException {
+        // given
+        TokenDto token = PROVIDER.createAccessToken("1", null);
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token.getValue());
+        HandlerMethod handlerMethod = getLoginRequiredHandlerMethod();
+        given(blackListService.isBlackList(anyString())).willReturn(true);
+
+        // when
+        // then
+        assertThatThrownBy(() -> authInterceptor.preHandle(request, response, handlerMethod))
+            .isInstanceOf(UnauthorizedException.class)
+            .hasMessageContaining("허용되지 않는 토큰입니다.");
     }
 
     private HandlerMethod getLoginRequiredHandlerMethod() throws NoSuchMethodException {

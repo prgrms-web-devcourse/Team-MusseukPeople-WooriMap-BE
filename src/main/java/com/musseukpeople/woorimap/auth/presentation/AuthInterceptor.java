@@ -11,6 +11,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.google.common.base.Strings;
 import com.musseukpeople.woorimap.auth.aop.LoginRequired;
+import com.musseukpeople.woorimap.auth.application.BlackListService;
 import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.auth.exception.UnauthorizedException;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthInterceptor implements HandlerInterceptor {
 
     private final JwtProvider jwtProvider;
+    private final BlackListService blackListService;
 
     @Override
     public boolean preHandle(HttpServletRequest request,
@@ -34,7 +36,14 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         String accessToken = AuthorizationExtractor.extract(request);
         validateAccessToken(accessToken);
+        validateBlackList(accessToken);
         return true;
+    }
+
+    private void validateBlackList(String accessToken) {
+        if (blackListService.isBlackList(accessToken)) {
+            throw new UnauthorizedException(ErrorCode.BLACKLIST_TOKEN);
+        }
     }
 
     private boolean isNotLoginRequired(Object handler) {
