@@ -2,6 +2,9 @@ spring:
   profiles:
     active: local
 
+server:
+  forward-headers-strategy: framework
+  
 springdoc:
   swagger-ui:
     path: /api-docs
