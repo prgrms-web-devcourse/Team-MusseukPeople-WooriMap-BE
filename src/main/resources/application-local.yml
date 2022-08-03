@@ -23,6 +23,11 @@ spring:
     password: local
     port: 6379
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
 logging:
   level:
     org.hibernate.descriptor.sql: debug
