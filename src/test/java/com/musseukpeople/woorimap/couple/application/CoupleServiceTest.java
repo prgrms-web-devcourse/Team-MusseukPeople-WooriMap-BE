@@ -82,7 +82,7 @@ class CoupleServiceTest extends IntegrationTest {
         //then
         assertAll(
             () -> assertThat(couple.getId()).isEqualTo(COUPLE_ID),
-            () -> assertThat(couple.getCoupleMembers().getMembers()).hasSize(2)
+            () -> assertThat(couple.getStartDate()).isEqualTo(COUPLE_START_DATE)
         );
     }
 
