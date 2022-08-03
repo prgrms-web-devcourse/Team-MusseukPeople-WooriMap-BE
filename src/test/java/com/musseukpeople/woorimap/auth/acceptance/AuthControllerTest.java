@@ -103,7 +103,7 @@ class AuthControllerTest extends AcceptanceTest {
         MockHttpServletResponse loginResponse = 로그인(new SignInRequest("woorimap@gmail.com", "!Hwan123"));
         String accessToken = getAccessToken(loginResponse);
         String refreshToken = getRefreshToken(loginResponse);
-        로그아웃(accessToken);
+        로그아웃("Bearer" + accessToken);
 
         // when
         MockHttpServletResponse response = 토큰_재발급_요청(accessToken, refreshToken);
@@ -167,7 +167,7 @@ class AuthControllerTest extends AcceptanceTest {
 
     private MockHttpServletResponse 로그아웃(String accessToken) throws Exception {
         return mockMvc.perform(post("/api/auth/signout")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+                .header(HttpHeaders.AUTHORIZATION, accessToken))
             .andReturn().getResponse();
     }
 
