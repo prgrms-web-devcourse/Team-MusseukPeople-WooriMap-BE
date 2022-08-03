@@ -67,7 +67,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("솔로 회원 정보 성공")
+    @DisplayName("솔로 회원 정보 조회 성공")
     @Test
     void showMember_solo_success() throws Exception {
         // given
@@ -77,16 +77,41 @@ class MemberAcceptanceTest extends AcceptanceTest {
         String accessToken = 회원가입_토큰(new SignupRequest(email, password, nickName));
 
         // when
-        MockHttpServletResponse response = mockMvc.perform(get("/api/members")
+        MockHttpServletResponse response = 회원_정보_조회(accessToken);
+
+        // then
+        MemberResponse memberResponse = getResponseObject(response, MemberResponse.class);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(memberResponse.isCouple()).isFalse()
+        );
+    }
+
+    @DisplayName("커플 회원 정보 조회 성공")
+    @Test
+    void showMember_couple_success() throws Exception {
+        // given
+        String email = "test@gmail.com";
+        String password = "!Hwan1234";
+        String nickName = "hwan";
+        String accessToken = 회원가입_토큰(new SignupRequest(email, password, nickName));
+        String coupleAccessToken = 커플_맺기_토큰(accessToken);
+
+        // when
+        MockHttpServletResponse response = 회원_정보_조회(coupleAccessToken);
+
+        // then
+        MemberResponse memberResponse = getResponseObject(response, MemberResponse.class);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(memberResponse.getCoupleNickName()).isNotNull()
+        );
+    }
+
+    private MockHttpServletResponse 회원_정보_조회(String accessToken) throws Exception {
+        return mockMvc.perform(get("/api/members")
                 .header(HttpHeaders.AUTHORIZATION, accessToken))
             .andDo(print())
             .andReturn().getResponse();
-
-        // then
-        MemberResponse member = getResponseObject(response, MemberResponse.class);
-        assertAll(
-            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(member.isCouple()).isFalse()
-        );
     }
 }
