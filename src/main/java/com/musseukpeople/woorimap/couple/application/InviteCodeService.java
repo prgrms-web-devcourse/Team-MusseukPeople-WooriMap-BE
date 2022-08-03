@@ -1,8 +1,8 @@
 package com.musseukpeople.woorimap.couple.application;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,12 +41,7 @@ public class InviteCodeService {
     }
 
     public void removeInviteCodeByMembers(List<Member> members) {
-        inviteCodeRepository.deleteByInIds(createMemberIds(members));
-    }
-
-    private List<Long> createMemberIds(List<Member> members) {
-        List<Long> ids = new ArrayList<>();
-        members.forEach(member -> ids.add(member.getId()));
-        return ids;
+        List<Long> ids = members.stream().map(Member::getId).collect(Collectors.toList());
+        inviteCodeRepository.deleteByInIds(ids);
     }
 }
