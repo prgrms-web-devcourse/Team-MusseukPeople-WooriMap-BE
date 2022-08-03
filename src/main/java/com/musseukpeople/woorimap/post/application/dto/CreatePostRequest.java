@@ -7,6 +7,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.musseukpeople.woorimap.post.entity.PostTag;
 import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.post.entity.Post;
@@ -56,16 +57,16 @@ public class CreatePostRequest {
         this.longitude = longitude;
     }
 
-    public Post toPost(Couple coupleId) {
-        Post post = Post.builder()
+    public Post toPost(Couple coupleId, List<PostTag> postTagIdList) {
+        return Post.builder()
             .couple(coupleId)
             .title(title)
             .content(content)
             .latitude(latitude)
             .longitude(longitude)
             .postImages(toPostImages())
+            .postTags(postTagIdList)
             .build();
-        return post;
     }
 
     public List<PostImage> toPostImages() {
