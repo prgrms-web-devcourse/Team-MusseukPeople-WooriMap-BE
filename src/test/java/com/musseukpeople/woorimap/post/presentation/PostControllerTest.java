@@ -5,52 +5,43 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
-import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
 
 public class PostControllerTest extends AcceptanceTest {
 
-    @Autowired
-    protected ObjectMapper objectMapper;
-
-    @Autowired
-    private CoupleRepository coupleRepository;
-
-    private String accessToken;
+    private String coupleAccessToken;
 
     @BeforeEach
     void login() throws Exception {
         String email = "test@gmail.com";
         String password = "!Test1234";
         String nickName = "test";
-        accessToken = 회원가입_토큰(new SignupRequest(email, password, nickName));
+        SignupRequest user = new SignupRequest(email, password, nickName);
+        String accessToken = 회원가입_토큰(user);
+        커플_맺기(accessToken);
+        coupleAccessToken = 로그인_토큰(new SignInRequest(user.getEmail(), user.getPassword()));
     }
 
     @DisplayName("post 생성 완료")
     @Test
     void create_post_success() throws Exception {
-        Long coupleId = createCouple();
-
         List<String> sampleImagePaths = Arrays.asList("http://wooriemap.aws.com/1.jpg", "http://wooriemap.aws.com/2.jpg");
-        List<TagRequest> sampleTags = Arrays.asList(new TagRequest(null, "seoul", "F000000"), new TagRequest(null, "cafe", "F000000"));
+        List<TagRequest> sampleTags = Arrays.asList(new TagRequest("seoul", "F000000"), new TagRequest("cafe", "F000000"));
 
         CreatePostRequest createPostRequest = CreatePostRequest.builder()
             .title("첫 이야기")
@@ -63,17 +54,11 @@ public class PostControllerTest extends AcceptanceTest {
 
         MockHttpServletResponse response = mockMvc.perform(post("/api/post")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .header(HttpHeaders.AUTHORIZATION, coupleAccessToken)
                 .content(objectMapper.writeValueAsString(createPostRequest)))
             .andDo(print())
             .andReturn().getResponse();
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    private Long createCouple() {
-        LocalDate startDate = LocalDate.now();
-        Couple couple = new Couple(startDate);
-        return coupleRepository.save(couple).getId();
     }
 }

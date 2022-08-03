@@ -15,11 +15,15 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.musseukpeople.woorimap.couple.application.CoupleService;
+import com.musseukpeople.woorimap.member.domain.Member;
+import com.musseukpeople.woorimap.post.entity.PostTag;
+import com.musseukpeople.woorimap.post.entity.PostTagRepository;
 import com.musseukpeople.woorimap.tag.application.TagService;
 import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
+import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
@@ -32,7 +36,12 @@ public class PostServiceTest {
     private TagService tagService;
 
     @Autowired
-    private CoupleRepository coupleRepository;
+    private CoupleService coupleService;
+
+    @Autowired
+    private PostTagRepository postTagRepository;
+
+    private static final LocalDate COUPLE_START_DATE = LocalDate.of(2022, 1, 1);
 
     @Order(1)
     @DisplayName("post 생성 성공")
@@ -63,21 +72,23 @@ public class PostServiceTest {
     @Test
     void createPostTag_success() {
         // given
-        Long coupleId = createCouple();
+        Couple couple = createCouple();
         CreatePostRequest createPostRequest = getCreatePostRequest();
 
-        Long savedPostId = createPost(coupleId, createPostRequest);
-        List<Long> tagIdListOfThePost = createTag(coupleId, createPostRequest.getTags());
+        Long savedPostId = createPost(couple, createPostRequest);
+        List<Long> tagIdListOfThePost = createTag(couple, createPostRequest.getTags());
 
         // when
         postService.createPostTag(savedPostId, tagIdListOfThePost);
 
         // then
+        List<PostTag> postTags = postTagRepository.findAll();
+        assertThat(postTags).hasSize(tagIdListOfThePost.size());
     }
 
-    CreatePostRequest getCreatePostRequest() {
+    private CreatePostRequest getCreatePostRequest() {
         List<String> sampleImagePaths = Arrays.asList("http://wooriemap.aws.com/1.jpg", "http://wooriemap.aws.com/2.jpg");
-        List<TagRequest> sampleTags = Arrays.asList(new TagRequest(null, "seoul", "F000000"), new TagRequest(null, "cafe", "F000000"));
+        List<TagRequest> sampleTags = Arrays.asList(new TagRequest("seoul", "#F000000"), new TagRequest("cafe", "F000000"));
 
         CreatePostRequest createPostRequest = CreatePostRequest.builder()
             .title("첫 이야기")
@@ -91,17 +102,20 @@ public class PostServiceTest {
         return createPostRequest;
     }
 
-    private Long createCouple() {
-        LocalDate startDate = LocalDate.now();
-        Couple couple = new Couple(startDate);
-        return coupleRepository.save(couple).getId();
+    private Couple createCouple() {
+        Member inviter = new TMemberBuilder().email("inviter1@gmail.com").build();
+        Member receiver = new TMemberBuilder().email("receiver1@gmail.com").build();
+        List<Member> members = List.of(inviter, receiver);
+        Long coupleId = coupleService.createCouple(members, COUPLE_START_DATE);
+
+        return coupleService.getCoupleById(coupleId);
     }
 
-    private Long createPost(Long coupleId, CreatePostRequest createPostRequest) {
-        return postService.createPost(coupleId, createPostRequest);
+    private Long createPost(Couple couple, CreatePostRequest createPostRequest) {
+        return postService.createPost(couple, createPostRequest);
     }
 
-    private List<Long> createTag(Long coupleId, List<TagRequest> tagRequestList) {
-        return tagService.createTag(coupleId, tagRequestList);
+    private List<Long> createTag(Couple couple, List<TagRequest> tagRequestList) {
+        return tagService.createTag(couple, tagRequestList);
     }
 }
