@@ -1,6 +1,5 @@
 package com.musseukpeople.woorimap.post.application;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -10,9 +9,9 @@ import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.post.exception.NotFoundPostException;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
-import com.musseukpeople.woorimap.post.entity.Post;
-import com.musseukpeople.woorimap.post.entity.PostRepository;
-import com.musseukpeople.woorimap.post.entity.PostTag;
+import com.musseukpeople.woorimap.post.domain.Post;
+import com.musseukpeople.woorimap.post.domain.PostRepository;
+import com.musseukpeople.woorimap.post.domain.PostTag;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,11 +33,7 @@ public class PostService {
             .orElseThrow(() -> new NotFoundPostException(ErrorCode.NOT_FOUND_COUPLE, postId));
     }
 
-    public List<PostTag> toPostTag(List<Long> saveTagIdList) {
-        List<PostTag> postTagList = new ArrayList<>();
-        for (Long tagId : saveTagIdList) {
-            postTagList.add(new PostTag(tagId));
-        }
-        return postTagList;
+    private List<PostTag> toPostTag(List<Long> saveTagIdList) {
+        return saveTagIdList.stream().map(PostTag::new).toList();
     }
 }

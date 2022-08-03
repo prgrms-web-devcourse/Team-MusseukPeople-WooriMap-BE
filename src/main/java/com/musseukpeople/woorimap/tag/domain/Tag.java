@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.tag.entity;
+package com.musseukpeople.woorimap.tag.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

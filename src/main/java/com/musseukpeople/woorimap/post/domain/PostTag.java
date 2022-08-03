@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.post.entity;
+package com.musseukpeople.woorimap.post.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

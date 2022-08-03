@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.tag.entity;
+package com.musseukpeople.woorimap.tag.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

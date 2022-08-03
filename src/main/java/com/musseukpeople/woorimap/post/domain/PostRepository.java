@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.post.entity;
+package com.musseukpeople.woorimap.post.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

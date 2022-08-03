@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.post.entity;
+package com.musseukpeople.woorimap.post.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,14 +25,14 @@ public class PostImage {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private String imagePath;
+    private String imageUrl;
 
-    public PostImage(String imagePath) {
+    public PostImage(String imageUrl) {
         this.id = null;
-        this.imagePath = imagePath;
+        this.imageUrl = imageUrl;
     }
 
-    public void setPost(Post post) {
+    public void changePost(Post post) {
         this.post = post;
     }
 }

@@ -1,11 +1,10 @@
-package com.musseukpeople.woorimap.post.entity;
+package com.musseukpeople.woorimap.post.domain;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,6 +17,7 @@ import javax.persistence.OneToMany;
 
 import com.musseukpeople.woorimap.common.model.BaseEntity;
 import com.musseukpeople.woorimap.couple.domain.Couple;
+import com.musseukpeople.woorimap.post.domain.vo.GPSCoordinates;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -42,11 +42,8 @@ public class Post extends BaseEntity {
     @Lob
     private String content;
 
-    @Column(columnDefinition = "decimal(10,8)")
-    private BigDecimal latitude;
-
-    @Column(columnDefinition = "decimal(11,8)")
-    private BigDecimal longitude;
+    @Embedded
+    private GPSCoordinates gpsCoordinates;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private final List<PostImage> postImages = new ArrayList<>();
@@ -56,20 +53,15 @@ public class Post extends BaseEntity {
 
     @Builder
     public Post(Long id, Couple couple, String title, String content,
-                BigDecimal latitude, BigDecimal longitude,
+                GPSCoordinates gpsCoordinates,
                 List<PostImage> postImages, List<PostTag> postTags) {
         this.id = id;
         this.couple = couple;
         this.title = title;
         this.content = content;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.gpsCoordinates = gpsCoordinates;
         addPostImages(postImages);
         addPostTags(postTags);
-    }
-
-    public Post(Long id) {
-        this.id = id;
     }
 
     public void addPostImages(List<PostImage> postImages) {
@@ -77,10 +69,7 @@ public class Post extends BaseEntity {
     }
 
     public void addPostImage(PostImage postImage) {
-        if (postImage.getPost() != this) {
-            postImage.setPost(this);
-        }
-
+        postImage.changePost(this);
         this.getPostImages().add(postImage);
     }
 
@@ -89,10 +78,7 @@ public class Post extends BaseEntity {
     }
 
     public void addPostTag(PostTag postTags) {
-        if (postTags.getPost() != this) {
-            postTags.setPost(this);
-        }
-
+        postTags.setPost(this);
         this.getPostTags().add(postTags);
     }
 }

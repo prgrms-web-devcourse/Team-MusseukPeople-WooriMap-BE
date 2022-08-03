@@ -1,17 +1,17 @@
 package com.musseukpeople.woorimap.post.application.dto;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.musseukpeople.woorimap.post.entity.PostTag;
+import com.musseukpeople.woorimap.post.domain.PostTag;
+import com.musseukpeople.woorimap.post.domain.vo.GPSCoordinates;
 import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.post.entity.Post;
-import com.musseukpeople.woorimap.post.entity.PostImage;
+import com.musseukpeople.woorimap.post.domain.Post;
+import com.musseukpeople.woorimap.post.domain.PostImage;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -32,7 +32,7 @@ public class CreatePostRequest {
 
     @Schema(description = "이미지 저장 경로 리스트")
     @NotNull
-    private List<String> imagePaths;
+    private List<String> imageUrls;
 
     @Schema(description = "태그 리스트")
     @NotNull
@@ -47,11 +47,11 @@ public class CreatePostRequest {
     private BigDecimal longitude;
 
     @Builder
-    public CreatePostRequest(String title, String content, List<String> imagePaths, List<TagRequest> tags, BigDecimal latitude,
+    public CreatePostRequest(String title, String content, List<String> imageUrls, List<TagRequest> tags, BigDecimal latitude,
                              BigDecimal longitude) {
         this.title = title;
         this.content = content;
-        this.imagePaths = imagePaths;
+        this.imageUrls = imageUrls;
         this.tags = tags;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -62,18 +62,13 @@ public class CreatePostRequest {
             .couple(coupleId)
             .title(title)
             .content(content)
-            .latitude(latitude)
-            .longitude(longitude)
+            .gpsCoordinates(new GPSCoordinates(latitude, longitude))
             .postImages(toPostImages())
             .postTags(postTagIdList)
             .build();
     }
 
     public List<PostImage> toPostImages() {
-        List<PostImage> postImageList = new ArrayList<>();
-        for (String imagePath : imagePaths) {
-            postImageList.add(new PostImage(imagePath));
-        }
-        return postImageList;
+        return imageUrls.stream().map(PostImage::new).toList();
     }
 }

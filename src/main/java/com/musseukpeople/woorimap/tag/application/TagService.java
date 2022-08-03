@@ -2,13 +2,14 @@ package com.musseukpeople.woorimap.tag.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
-import com.musseukpeople.woorimap.tag.entity.Tag;
-import com.musseukpeople.woorimap.tag.entity.TagRepository;
+import com.musseukpeople.woorimap.tag.domain.Tag;
+import com.musseukpeople.woorimap.tag.domain.TagRepository;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class TagService {
         // 요청 받은 tag name 리스트가 DB에 저장되어 있는지 확인
         // 만약 DB에 cafe, seoul, korean 으로 저장되어 있고, 요청 받은 tag name 리스트가 cafe, korean 이라면
         // cafe, korean 이 반환 됨. - 저장되어 있는 tag name 리스트를 반환함
-        List<Tag> tagListFromDb = tagRepository.findExistTagByCoupleId(couple, tagRequestList);
+        List<Tag> tagListFromDb = tagRepository.findExistTagByCoupleId(couple, getTagNameInTagRequestList(tagRequestList));
 
         // 저장되어 있는 tag의 id 리스트를 저장
         List<Long> tagIdList = getTagIdFromTagList(tagListFromDb);
@@ -45,14 +46,14 @@ public class TagService {
     }
 
     private List<Long> getTagIdFromTagList(List<Tag> tagList) {
-        List<Long> tagIdList = new ArrayList<>();
-        for (Tag tag : tagList) {
-            tagIdList.add(tag.getId());
-        }
-        return tagIdList;
+        return tagList.stream().map(Tag::getId).collect(Collectors.toList());
     }
 
     private List<TagRequest> deduplicationTagRequest(List<TagRequest> tagRequestList, List<Tag> tagListFromDb) {
+        if (tagListFromDb.isEmpty()) {
+            return tagRequestList;
+        }
+
         List<TagRequest> tagRequestToRemove = new ArrayList<>();
         for (TagRequest tr : tagRequestList) {
             for (Tag tagFromDb : tagListFromDb) {
@@ -61,21 +62,21 @@ public class TagService {
                 }
             }
         }
+
+        if (tagRequestToRemove.isEmpty()) {
+            return tagRequestList;
+        }
+
         tagRequestList.removeAll(tagRequestToRemove);
 
         return tagRequestList;
     }
 
-    @Transactional
-    public List<Tag> getTags() {
-        return tagRepository.findAll();
+    private List<String> getTagNameInTagRequestList(List<TagRequest> tagRequestList) {
+        return tagRequestList.stream().map(TagRequest::getName).collect(Collectors.toList());
     }
 
-    public List<Tag> toTags(Couple couple, List<TagRequest> tagRequestList) {
-        List<Tag> newTags = new ArrayList<>();
-        for (TagRequest tr : tagRequestList) {
-            newTags.add(new Tag(tr.getName(), tr.getColor(), couple));
-        }
-        return newTags;
+    private List<Tag> toTags(Couple couple, List<TagRequest> tagRequestList) {
+        return tagRequestList.stream().map(tr -> new Tag(tr.getName(), tr.getColor(), couple)).collect(Collectors.toList());
     }
 }
