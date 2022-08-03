@@ -44,6 +44,6 @@ public class Couple extends BaseEntity {
         this.id = id;
         this.startDate = startDate;
         this.coupleMembers = coupleMembers;
-        this.coupleMembers.addMembers(this);
+        this.coupleMembers.setCoupleForMembers(this);
     }
 }
