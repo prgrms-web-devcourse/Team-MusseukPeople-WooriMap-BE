@@ -100,13 +100,11 @@ class AuthControllerTest extends AcceptanceTest {
     @Test
     void logout_blackList_success() throws Exception {
         // given
-        MockHttpServletResponse loginResponse = 로그인(new SignInRequest("woorimap@gmail.com", "!Hwan123"));
-        String accessToken = getAccessToken(loginResponse);
-        String refreshToken = getRefreshToken(loginResponse);
-        로그아웃("Bearer" + accessToken);
+        String accessToken = 로그인_토큰(new SignInRequest("woorimap@gmail.com", "!Hwan123"));
+        로그아웃(accessToken);
 
         // when
-        MockHttpServletResponse response = 토큰_재발급_요청(accessToken, refreshToken);
+        MockHttpServletResponse response = 로그아웃(accessToken);
 
         // then
         ErrorResponse errorResponse = getErrorResponse(response);

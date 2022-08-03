@@ -14,7 +14,6 @@ import com.musseukpeople.woorimap.auth.application.dto.response.LoginResponseDto
 import com.musseukpeople.woorimap.auth.domain.RefreshToken;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
-import com.musseukpeople.woorimap.auth.exception.UnauthorizedException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.member.application.MemberService;
 import com.musseukpeople.woorimap.member.domain.Member;
@@ -56,7 +55,6 @@ public class AuthFacade {
 
     public AccessTokenResponse refreshAccessToken(String accessToken, String refreshToken) {
         validateRefreshToken(refreshToken);
-        validateBlackList(accessToken);
 
         Claims claims = jwtProvider.getClaims(accessToken);
         RefreshToken findRefreshToken = getRefreshToken(claims);
@@ -65,14 +63,7 @@ public class AuthFacade {
         }
 
         String newAccessToken = createNewAccessToken(claims);
-        registerBlackList(accessToken);
         return new AccessTokenResponse(newAccessToken);
-    }
-
-    private void validateBlackList(String accessToken) {
-        if (blackListService.isBlackList(accessToken)) {
-            throw new UnauthorizedException(ErrorCode.BLACKLIST_TOKEN);
-        }
     }
 
     private void registerBlackList(String accessToken) {
