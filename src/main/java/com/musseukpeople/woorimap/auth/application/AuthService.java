@@ -9,7 +9,7 @@ import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.LoginMemberResponse;
 import com.musseukpeople.woorimap.auth.application.dto.response.LoginResponseDto;
-import com.musseukpeople.woorimap.auth.domain.Token;
+import com.musseukpeople.woorimap.auth.domain.RefreshToken;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.member.application.MemberService;
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 
     private final MemberService memberService;
-    private final TokenService tokenService;
+    private final RefreshTokenService refreshTokenService;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
@@ -38,13 +38,13 @@ public class AuthService {
         TokenDto accessToken = jwtProvider.createAccessToken(memberId, coupleId);
         TokenDto refreshToken = jwtProvider.createRefreshToken();
 
-        tokenService.saveToken(memberId, refreshToken);
+        refreshTokenService.saveToken(memberId, refreshToken);
         return new LoginResponseDto(accessToken, refreshToken, LoginMemberResponse.from(member));
     }
 
     @Transactional
     public void logout(Long memberId) {
-        tokenService.removeByMemberId(String.valueOf(memberId));
+        refreshTokenService.removeByMemberId(String.valueOf(memberId));
     }
 
     public AccessTokenResponse refreshAccessToken(String accessToken, String refreshToken) {
@@ -53,7 +53,7 @@ public class AuthService {
         }
 
         Claims claims = jwtProvider.getClaims(accessToken);
-        Token findRefreshToken = getRefreshToken(claims);
+        RefreshToken findRefreshToken = getRefreshToken(claims);
         if (findRefreshToken.isNotSame(refreshToken)) {
             throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
         }
@@ -62,9 +62,9 @@ public class AuthService {
         return new AccessTokenResponse(newAccessToken);
     }
 
-    private Token getRefreshToken(Claims claims) {
+    private RefreshToken getRefreshToken(Claims claims) {
         String memberId = claims.getSubject();
-        return tokenService.getTokenByMemberId(memberId);
+        return refreshTokenService.getTokenByMemberId(memberId);
     }
 
     private String createNewAccessToken(Claims claims) {

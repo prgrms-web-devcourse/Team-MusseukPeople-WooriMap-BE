@@ -13,23 +13,23 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@RedisHash("token")
-public class Token {
+@RedisHash("refreshToken")
+public class RefreshToken {
 
     @Id
     private String id;
-    private String refreshToken;
+    private String value;
 
     @TimeToLive(unit = TimeUnit.MILLISECONDS)
     private long expiredTime;
 
-    public Token(String id, String refreshToken, long expiredTime) {
+    public RefreshToken(String id, String value, long expiredTime) {
         this.id = id;
-        this.refreshToken = refreshToken;
+        this.value = value;
         this.expiredTime = expiredTime;
     }
 
     public boolean isNotSame(String refreshToken) {
-        return !Objects.equals(this.refreshToken, refreshToken);
+        return !Objects.equals(this.value, refreshToken);
     }
 }
