@@ -8,14 +8,16 @@ import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.member.domain.Member;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Embeddable
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CoupleMembers {
 
     private static final int COUPLE_MEMBERS_SIZE = 2;
@@ -26,6 +28,10 @@ public class CoupleMembers {
     public CoupleMembers(List<Member> members) {
         validateCoupleMembers(members);
         this.members = members;
+    }
+
+    public void addMembers(Couple couple) {
+        this.members.forEach(member -> member.changeCouple(couple));
     }
 
     private void validateCoupleMembers(List<Member> members) {

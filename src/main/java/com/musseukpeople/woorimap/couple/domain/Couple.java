@@ -3,7 +3,6 @@ package com.musseukpeople.woorimap.couple.domain;
 import static com.google.common.base.Preconditions.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -14,7 +13,6 @@ import javax.persistence.Id;
 
 import com.musseukpeople.woorimap.common.model.BaseEntity;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
-import com.musseukpeople.woorimap.member.domain.Member;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -46,10 +44,6 @@ public class Couple extends BaseEntity {
         this.id = id;
         this.startDate = startDate;
         this.coupleMembers = coupleMembers;
-        addMembers(this.coupleMembers.getMembers());
-    }
-
-    private void addMembers(List<Member> members) {
-        members.forEach(member -> member.changeCouple(this));
+        this.coupleMembers.addMembers(this);
     }
 }
