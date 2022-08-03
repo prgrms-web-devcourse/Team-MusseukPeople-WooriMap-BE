@@ -91,6 +91,34 @@ class CoupleControllerTest extends AcceptanceTest {
             .andDo(print());
     }
 
+    @DisplayName("커플 조회 성공")
+    @Test
+    void getCouple_success() throws Exception {
+        //given
+        String coupleToken = 커플_맺기_토큰(accessToken);
+
+        //when
+        mockMvc.perform(get("/api/couples")
+                .header(HttpHeaders.AUTHORIZATION, coupleToken))
+
+            //then
+            .andExpect(status().isOk())
+            .andDo(print());
+    }
+
+    @DisplayName("커플이 아니면 커플 조회 실패")
+    @Test
+    void getCouple_notCouple_fail() throws Exception {
+        //given
+        //when
+        mockMvc.perform(get("/api/couples")
+                .header(HttpHeaders.AUTHORIZATION, accessToken))
+
+            //then
+            .andExpect(status().isForbidden())
+            .andDo(print());
+    }
+
     @DisplayName("커플 초대 코드 생성 API 성공")
     @Test
     void inviteCodeCreate_success() throws Exception {
@@ -142,11 +170,11 @@ class CoupleControllerTest extends AcceptanceTest {
     @Test
     void removeCouple_success() throws Exception {
         //given
-        accessToken = 커플_맺기_토큰(accessToken);
+        String coupleToken = 커플_맺기_토큰(accessToken);
 
         //when
         mockMvc.perform(delete("/api/couples")
-                .header(HttpHeaders.AUTHORIZATION, accessToken))
+                .header(HttpHeaders.AUTHORIZATION, coupleToken))
 
             //then
             .andExpect(status().isNoContent())
