@@ -1,6 +1,7 @@
 package com.musseukpeople.woorimap.couple.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.member.domain.Member;
+import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.util.IntegrationTest;
 import com.musseukpeople.woorimap.util.fixture.TCoupleBuilder;
 import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
@@ -30,12 +32,21 @@ class CoupleServiceTest extends IntegrationTest {
     @Autowired
     private CoupleRepository coupleRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @BeforeEach
+    void setup() {
+        Couple testCouple = coupleBuilder.id(COUPLE_ID).startDate(COUPLE_START_DATE).build();
+        coupleRepository.save(testCouple);
+    }
+
     @DisplayName("커플 생성 성공")
     @Test
     void create_success() {
         //given
-        Member inviter = new TMemberBuilder().email("inviter1@gmail.com").build();
-        Member receiver = new TMemberBuilder().email("receiver1@gmail.com").build();
+        Member inviter = memberRepository.save(new TMemberBuilder().email("inviter1@gmail.com").build());
+        Member receiver = memberRepository.save(new TMemberBuilder().email("receiver1@gmail.com").build());
         List<Member> members = List.of(inviter, receiver);
 
         //when
@@ -46,10 +57,33 @@ class CoupleServiceTest extends IntegrationTest {
         assertThat(couple).isPresent();
     }
 
-    @BeforeEach
-    void setup() {
-        Couple testCouple = coupleBuilder.id(COUPLE_ID).startDate(COUPLE_START_DATE).build();
-        coupleRepository.save(testCouple);
+    @DisplayName("멤버 1명으로 커플 생성 실패")
+    @Test
+    void create_badMembers_fail() {
+        //given
+        Member inviter = memberRepository.save(new TMemberBuilder().email("inviter1@gmail.com").build());
+        List<Member> members = List.of(inviter);
+
+        //when
+        assertThatThrownBy(() -> coupleService.createCouple(members, COUPLE_START_DATE))
+
+            //then
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("커플 인원이 2명이 아닙니다");
+    }
+
+    @DisplayName("커플 조회 성공")
+    @Test
+    void getCouple_success() {
+        //given
+        //when
+        Couple couple = coupleService.getCoupleByIdFetchMember(COUPLE_ID);
+
+        //then
+        assertAll(
+            () -> assertThat(couple.getId()).isEqualTo(COUPLE_ID),
+            () -> assertThat(couple.getCoupleMembers().getMembers()).hasSize(2)
+        );
     }
 
     @DisplayName("커플 삭제 성공")
