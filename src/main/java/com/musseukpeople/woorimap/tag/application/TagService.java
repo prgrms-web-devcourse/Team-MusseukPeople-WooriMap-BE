@@ -1,7 +1,10 @@
 package com.musseukpeople.woorimap.tag.application;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +24,6 @@ public class TagService {
 
     private final TagRepository tagRepository;
 
-    private final QueryTagRepository queryTagRepository;
 
     @Transactional
     public List<Long> createTag(Long coupleId, List<TagRequest> tagRequestList) {
@@ -40,7 +42,7 @@ public class TagService {
             }
         }
 
-        List<Tag> tagListFromDb = queryTagRepository.findExistTagByCoupleId(coupleId, tagRequestListWithIdOfNull);
+        List<Tag> tagListFromDb = tagRepository.findExistTagByCoupleId(coupleId, tagRequestListWithIdOfNull);
 
         // 새로 저장할 tag list와 db의 tag list를 비교해서 중복된 tag name list
         List<TagRequest> tagRequestToRemove = new ArrayList<>();
