@@ -142,8 +142,8 @@ class CoupleControllerTest extends AcceptanceTest {
     @Test
     void removeCouple_success() throws Exception {
         //given
-        커플_맺기(accessToken);
-        accessToken = 로그인_토큰(new SignInRequest(email, password));
+        accessToken = 커플_맺기_토큰(accessToken);
+        
         //when
         mockMvc.perform(delete("/api/couples")
                 .header(HttpHeaders.AUTHORIZATION, accessToken))

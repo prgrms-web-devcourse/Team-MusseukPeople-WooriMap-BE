@@ -68,7 +68,12 @@ public abstract class AcceptanceTest {
             .andReturn().getResponse();
     }
 
-    protected void 커플_맺기(String accessToken) throws Exception {
+    protected String 로그인_토큰(SignInRequest signInRequest) throws Exception {
+        MockHttpServletResponse response = 로그인(signInRequest);
+        return "Bearer" + getResponseObject(response, LoginResponse.class).getAccessToken();
+    }
+
+    protected MockHttpServletResponse 커플_맺기(String accessToken) throws Exception {
         String rEmail = "receiver@gmail.com";
         String rPassword = "!Recevier123";
         String rNickName = "receiver";
@@ -76,15 +81,16 @@ public abstract class AcceptanceTest {
         회원가입(new SignupRequest(rEmail, rPassword, rNickName));
         String receiverToken = 로그인_토큰(new SignInRequest(rEmail, rPassword));
         CreateCoupleRequest createCoupleRequest = new CreateCoupleRequest(inviteCode);
-        
-        mockMvc.perform(post("/api/couples")
-            .header(HttpHeaders.AUTHORIZATION, receiverToken)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(createCoupleRequest)));
+
+        return mockMvc.perform(post("/api/couples")
+                .header(HttpHeaders.AUTHORIZATION, receiverToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createCoupleRequest)))
+            .andReturn().getResponse();
     }
 
-    protected String 로그인_토큰(SignInRequest signInRequest) throws Exception {
-        MockHttpServletResponse response = 로그인(signInRequest);
+    protected String 커플_맺기_토큰(String accessToken) throws Exception {
+        MockHttpServletResponse response = 커플_맺기(accessToken);
         return "Bearer" + getResponseObject(response, LoginResponse.class).getAccessToken();
     }
 
