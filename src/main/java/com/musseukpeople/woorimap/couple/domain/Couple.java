@@ -46,4 +46,8 @@ public class Couple extends BaseEntity {
         this.coupleMembers = coupleMembers;
         this.coupleMembers.addMembers(this);
     }
+
+    public Couple(Long id) {
+        this.id = id;
+    }
 }
