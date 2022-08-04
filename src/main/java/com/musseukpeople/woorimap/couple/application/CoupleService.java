@@ -2,7 +2,6 @@ package com.musseukpeople.woorimap.couple.application;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +34,11 @@ public class CoupleService {
         return couple.getId();
     }
 
+    public Couple getCoupleById(Long coupleId) {
+        return coupleRepository.findById(coupleId)
+            .orElseThrow(() -> new NotFoundCoupleException(ErrorCode.NOT_FOUND_COUPLE, coupleId));
+    }
+    
     public Couple getCoupleWithMemberById(Long coupleId) {
         return coupleRepository.findWithMemberById(coupleId)
             .orElseThrow(
