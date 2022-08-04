@@ -35,7 +35,7 @@ public class CoupleMembers {
         this.members = members;
     }
 
-    public void setCoupleForMembers(Couple couple) {
+    public void assignCoupleForMembers(Couple couple) {
         this.members.forEach(member -> member.changeCouple(couple));
     }
 
