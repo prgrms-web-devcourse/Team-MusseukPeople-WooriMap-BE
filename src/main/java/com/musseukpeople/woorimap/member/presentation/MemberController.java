@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.member.application.MemberService;
+import com.musseukpeople.woorimap.member.application.dto.request.EditProfileRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.member.application.dto.response.MemberResponse;
 
@@ -44,6 +46,14 @@ public class MemberController {
     public ResponseEntity<ApiResponse<MemberResponse>> showMember(@Login LoginMember loginMember) {
         MemberResponse memberResponse = memberService.getMemberResponseById(loginMember.getId());
         return ResponseEntity.ok(new ApiResponse<>(memberResponse));
+    }
+
+    @Operation(summary = "멤버 회원 가입", description = "멤버 회원 가입 API입니다.")
+    @LoginRequired
+    @PutMapping
+    public ResponseEntity<Void> editProfile(@Valid @RequestBody EditProfileRequest editProfileRequest,
+                                            @Login LoginMember loginMember) {
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "멤버 회원 탈퇴", description = "멤버 회원 탈퇴 API입니다.")

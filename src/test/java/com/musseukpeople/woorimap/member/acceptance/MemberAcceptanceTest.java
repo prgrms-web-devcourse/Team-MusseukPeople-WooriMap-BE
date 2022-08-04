@@ -5,13 +5,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.common.exception.ErrorResponse;
+import com.musseukpeople.woorimap.member.application.dto.request.EditProfileRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.member.application.dto.response.MemberResponse;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
@@ -65,6 +69,48 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("회원 정보 수정 성공 - 솔로")
+    @Test
+    void editProfile_solo_success() throws Exception {
+        // given
+        String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test"));
+        String nickName = "wooriMap";
+        String imageUrl = "https://image.com";
+        EditProfileRequest editProfileRequest = new EditProfileRequest(nickName, imageUrl, null);
+
+        // when
+        MockHttpServletResponse response = mockMvc.perform(put("/api/members")
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(editProfileRequest)))
+            .andReturn().getResponse();
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("회원 정보 수정 성공 - 커플")
+    @Test
+    void editProfile_couple_success() throws Exception {
+        // given
+        String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test"));
+        accessToken = 커플_맺기_토큰(accessToken);
+        String nickName = "wooriMap";
+        String imageUrl = "https://image.com";
+        LocalDate coupleStartDate = LocalDate.of(2022, 1, 1);
+        EditProfileRequest editProfileRequest = new EditProfileRequest(nickName, imageUrl, coupleStartDate);
+
+        // when
+        MockHttpServletResponse response = mockMvc.perform(put("/api/members")
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(editProfileRequest)))
+            .andReturn().getResponse();
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("솔로 회원 정보 조회 성공")
