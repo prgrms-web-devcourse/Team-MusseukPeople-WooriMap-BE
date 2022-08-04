@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +33,6 @@ class CoupleServiceTest extends IntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
-
-    @BeforeEach
-    void setup() {
-        Couple testCouple = coupleBuilder.id(COUPLE_ID).startDate(COUPLE_START_DATE).build();
-        coupleRepository.save(testCouple);
-    }
 
     @DisplayName("커플 생성 성공")
     @Test
@@ -105,6 +98,8 @@ class CoupleServiceTest extends IntegrationTest {
     @Test
     void remove_success() {
         //given
+        Couple testCouple = coupleBuilder.id(COUPLE_ID).startDate(COUPLE_START_DATE).build();
+        coupleRepository.save(testCouple);
         coupleService.removeCouple(COUPLE_ID);
 
         //when
