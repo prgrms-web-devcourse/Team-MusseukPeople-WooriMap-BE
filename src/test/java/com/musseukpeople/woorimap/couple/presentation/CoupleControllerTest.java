@@ -19,10 +19,9 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
-import com.musseukpeople.woorimap.common.exception.ErrorCode;
-import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
 import com.musseukpeople.woorimap.couple.application.dto.request.EditCoupleRequest;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleCheckResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleEditResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
@@ -239,40 +238,43 @@ class CoupleControllerTest extends AcceptanceTest {
             .andDo(print());
     }
 
-    @DisplayName("커플 확인 API 성공")
-    @Test
-    void check_success() throws Exception {
-        //given
-        String coupleToken = 커플_맺기_토큰(accessToken);
-
-        //when
-        mockMvc.perform(get("/api/couples/check")
-                .header(HttpHeaders.AUTHORIZATION, coupleToken))
-
-            //then
-            .andExpect(status().isOk())
-            .andDo(print());
-    }
-
     @DisplayName("솔로라서 커플 확인 실패")
     @Test
     void check_solo_fail() throws Exception {
         //given
-        ErrorCode errorCode = ErrorCode.IS_NOT_COUPLE;
-
         //when
         MockHttpServletResponse response = mockMvc.perform(get("/api/couples/check")
                 .header(HttpHeaders.AUTHORIZATION, accessToken))
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isOk())
             .andDo(print())
             .andReturn().getResponse();
-        ErrorResponse errorResponse = getErrorResponse(response);
+        CoupleCheckResponse checkResponse = getResponseObject(response, CoupleCheckResponse.class);
 
         //then
         assertAll(
-            () -> assertThat(errorResponse.getCode()).isEqualTo(errorCode.getCode()),
-            () -> assertThat(errorResponse.getMessage()).isEqualTo(errorCode.getMessage())
+            () -> assertThat(checkResponse.getAccessToken()).isNull(),
+            () -> assertThat(checkResponse.isCouple()).isFalse()
         );
+    }
+
+    @DisplayName("커플 확인 API 성공")
+    @Test
+    void check_couple_fail() throws Exception {
+        //given
+        String coupleToken = 커플_맺기_토큰(accessToken);
+
+        //when
+        MockHttpServletResponse response = mockMvc.perform(get("/api/couples/check")
+                .header(HttpHeaders.AUTHORIZATION, coupleToken))
+
+            //then
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andReturn().getResponse();
+
+        CoupleCheckResponse checkResponse = getResponseObject(response, CoupleCheckResponse.class);
+
+        assertThat(checkResponse.getAccessToken()).isNotNull();
     }
 
     private MockHttpServletResponse createInviteCodeApi(String accessToken) throws Exception {

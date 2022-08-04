@@ -9,10 +9,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleCheckResponse;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
-import com.musseukpeople.woorimap.couple.exception.NotCoupleException;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.util.IntegrationTest;
@@ -44,12 +44,14 @@ class CoupleFacadeTest extends IntegrationTest {
         Member saveYou = memberRepository.save(you);
 
         //when
-        coupleFacade.checkCouple(saveMe.getId());
+        CoupleCheckResponse coupleCheckResponse = coupleFacade.checkCouple(saveMe.getId());
 
         //then
         assertAll(
             () -> assertThat(saveMe.isCouple()).isTrue(),
-            () -> assertThat(saveYou.isCouple()).isTrue()
+            () -> assertThat(saveYou.isCouple()).isTrue(),
+            () -> assertThat(coupleCheckResponse.getAccessToken()).isNotNull(),
+            () -> assertThat(coupleCheckResponse.isCouple()).isTrue()
         );
     }
 
@@ -60,12 +62,15 @@ class CoupleFacadeTest extends IntegrationTest {
         Member member = new TMemberBuilder().email("me@gamil.com").build();
         Couple couple = new TCoupleBuilder().build();
         coupleRepository.save(couple);
-        Long memberId = memberRepository.save(member).getId();
+        Long soloId = memberRepository.save(member).getId();
 
         //when
-        assertThatThrownBy(() -> coupleFacade.checkCouple(memberId))
+        CoupleCheckResponse coupleCheckResponse = coupleFacade.checkCouple(soloId);
 
-            //then
-            .isInstanceOf(NotCoupleException.class);
+        //then
+        assertAll(
+            () -> assertThat(coupleCheckResponse.getAccessToken()).isNull(),
+            () -> assertThat(coupleCheckResponse.isCouple()).isFalse()
+        );
     }
 }
