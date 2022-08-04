@@ -43,6 +43,11 @@ public class MemberService {
             .orElseThrow(() -> new NotFoundMemberException(ErrorCode.NOT_FOUND_MEMBER, id));
     }
 
+    public Member getMemberWithCoupleById(Long id) {
+        return memberRepository.findMemberWithCoupleById(id)
+            .orElseThrow(() -> new NotFoundMemberException(ErrorCode.NOT_FOUND_MEMBER, id));
+    }
+
     public Member getMemberByEmail(String email) {
         return memberRepository.findMemberByEmail(email)
             .orElseThrow(() -> new LoginFailedException(ErrorCode.LOGIN_FAILED));

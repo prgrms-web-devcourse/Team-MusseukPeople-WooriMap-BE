@@ -40,8 +40,8 @@ public class CoupleFacade {
 
         validateSameInviter(receiverId, inviterId);
 
-        Member foundInviter = memberService.getMemberById(inviterId);
-        Member foundReceiver = memberService.getMemberById(receiverId);
+        Member foundInviter = memberService.getMemberWithCoupleById(inviterId);
+        Member foundReceiver = memberService.getMemberWithCoupleById(receiverId);
 
         validateAlreadyCouple(foundInviter, foundReceiver);
 
