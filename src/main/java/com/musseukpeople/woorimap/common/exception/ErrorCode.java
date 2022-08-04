@@ -33,6 +33,7 @@ public enum ErrorCode {
     ALREADY_COUPLE(HttpStatus.BAD_REQUEST, "CP003", "이미 커플입니다."),
     INVALID_COUPLE_MEMBERS_SIZE(HttpStatus.BAD_REQUEST, "CP004", "커플 멤버의 수가 유효하지 않습니다."),
     NOT_MAPPING_COUPLE_MEMBER(HttpStatus.BAD_REQUEST, "CP005", "커플 멤버 정보 매핑 실패"),
+    IS_NOT_COUPLE(HttpStatus.BAD_REQUEST, "CP006", "커플이 맺어지지 않았습니다."),
 
     // InviteCode
     NOT_FOUND_INVITE_CODE(HttpStatus.NOT_FOUND, "I001", "존재하지 않는 코드입니다.");
