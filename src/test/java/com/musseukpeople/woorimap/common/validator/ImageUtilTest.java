@@ -27,11 +27,12 @@ class ImageUtilTest {
         String url = "invalidUrl";
 
         // when
-        assertThatThrownBy(() -> ImageUtil.isImageUrl(url))
-            .isInstanceOf(InvalidImageUrlExcpetion.class)
-            .hasMessageContaining("올바른 이미지 URL이 아닙니다.");
+        boolean result = ImageUtil.isImageUrl(url);
+
+        // then
+        assertThat(result).isFalse();
     }
-    
+
     @DisplayName("URL이 이미지가 아님으로 인한 실패")
     @Test
     void isImageUrl_invalidImageUrl_fail() {

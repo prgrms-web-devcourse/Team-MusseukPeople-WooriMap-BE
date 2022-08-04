@@ -78,8 +78,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // given
         String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test"));
         String nickName = "wooriMap";
-        String imageUrl = "https://image.com";
-        EditProfileRequest editProfileRequest = new EditProfileRequest(nickName, imageUrl);
+        String imageUrl = "https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png";
+        EditProfileRequest editProfileRequest = new EditProfileRequest(imageUrl, nickName);
 
         // when
         MockHttpServletResponse response = 프로필_수정(accessToken, editProfileRequest);
