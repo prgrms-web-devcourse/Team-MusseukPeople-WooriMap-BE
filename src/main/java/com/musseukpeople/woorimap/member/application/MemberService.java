@@ -75,11 +75,6 @@ public class MemberService {
         memberRepository.updateCoupleIdSetNull(coupleId);
     }
 
-    private Member getMemberWithCoupleById(Long id) {
-        return memberRepository.findWithCoupleById(id)
-            .orElseThrow(() -> new NotFoundMemberException(ErrorCode.NOT_FOUND_MEMBER, id));
-    }
-
     private void validateDuplicateEmail(String email) {
         if (memberRepository.existsByEmailValue(email)) {
             throw new DuplicateEmailException(email, ErrorCode.DUPLICATE_EMAIL);
