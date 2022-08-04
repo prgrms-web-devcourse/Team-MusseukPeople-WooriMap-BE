@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -40,8 +39,8 @@ public class PostControllerTest extends AcceptanceTest {
     @Transactional
     @Test
     void create_post_success() throws Exception {
-        List<String> sampleImagePaths = Arrays.asList("http://wooriemap.aws.com/1.jpg", "http://wooriemap.aws.com/2.jpg");
-        List<TagRequest> sampleTags = Arrays.asList(new TagRequest("seoul", "F000000"), new TagRequest("cafe", "F000000"));
+        List<String> sampleImagePaths = List.of("http://wooriemap.aws.com/1.jpg", "http://wooriemap.aws.com/2.jpg");
+        List<TagRequest> sampleTags = List.of(new TagRequest("seoul", "F000000"), new TagRequest("cafe", "F000000"));
 
         CreatePostRequest createPostRequest = CreatePostRequest.builder()
             .title("첫 이야기")
