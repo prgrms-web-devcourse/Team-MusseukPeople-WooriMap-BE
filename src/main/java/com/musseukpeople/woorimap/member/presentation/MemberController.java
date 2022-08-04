@@ -52,10 +52,9 @@ public class MemberController {
     @Operation(summary = "멤버 정보 수정", description = "멤버 정보 수정 API입니다.")
     @LoginRequired
     @PutMapping
-    public ResponseEntity<ApiResponse<ProfileResponse>> editProfile(
-        @Valid @RequestBody EditProfileRequest editProfileRequest,
-        @Login LoginMember loginMember) {
-        ProfileResponse profileResponse = memberService.modifyMember(loginMember.getId(), editProfileRequest);
+    public ResponseEntity<ApiResponse<ProfileResponse>> editProfile(@Valid @RequestBody EditProfileRequest request,
+                                                                    @Login LoginMember loginMember) {
+        ProfileResponse profileResponse = memberService.modifyMember(loginMember.getId(), request);
         return ResponseEntity.ok(new ApiResponse<>(profileResponse));
     }
 
