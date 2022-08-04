@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
-import com.musseukpeople.woorimap.couple.exception.NotFoundCoupleException;
 import com.musseukpeople.woorimap.member.application.dto.request.EditProfileRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.member.application.dto.response.MemberResponse;
@@ -55,12 +54,7 @@ public class MemberService {
 
     public MemberResponse getMemberResponseById(Long id) {
         Member member = getMemberWithCoupleById(id);
-
-        if (member.isCouple()) {
-            Member opponentMember = getOpponentMember(member);
-            return MemberResponse.createCoupleMemberResponse(member, opponentMember);
-        }
-        return MemberResponse.createSoloMemberResponse(member);
+        return MemberResponse.from(member);
     }
 
     public Member getMemberById(Long id) {
@@ -92,12 +86,5 @@ public class MemberService {
         if (memberRepository.existsByEmailValue(email)) {
             throw new DuplicateEmailException(email, ErrorCode.DUPLICATE_EMAIL);
         }
-    }
-
-    private Member getOpponentMember(Member member) {
-        Long id = member.getId();
-        Long coupleId = member.getCouple().getId();
-        return memberRepository.findOpponentMember(id, coupleId)
-            .orElseThrow(() -> new NotFoundCoupleException(ErrorCode.NOT_FOUND_MEMBER, coupleId));
     }
 }
