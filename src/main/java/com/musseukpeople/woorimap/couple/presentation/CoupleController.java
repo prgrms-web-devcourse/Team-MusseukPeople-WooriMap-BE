@@ -25,6 +25,7 @@ import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.couple.application.CoupleFacade;
 import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
 import com.musseukpeople.woorimap.couple.application.dto.request.EditCoupleRequest;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleCheckResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleEditResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
@@ -88,10 +89,9 @@ public class CoupleController {
     @Operation(summary = "커플 확인", description = "커플 확인 API입니다.")
     @LoginRequired
     @GetMapping("/check")
-    public ResponseEntity<ApiResponse<AccessTokenResponse>> checkCouple(@Login LoginMember member) {
-        TokenDto tokenDto = coupleFacade.checkCouple(member.getId());
-        AccessTokenResponse accessTokenResponse = new AccessTokenResponse(tokenDto.getValue());
-        return ResponseEntity.ok(new ApiResponse<>(accessTokenResponse));
+    public ResponseEntity<ApiResponse<CoupleCheckResponse>> checkCouple(@Login LoginMember member) {
+        CoupleCheckResponse coupleCheckResponse = coupleFacade.checkCouple(member.getId());
+        return ResponseEntity.ok(new ApiResponse<>(coupleCheckResponse));
     }
 
     @Operation(summary = "커플 초대 코드 생성", description = "커플 초대 코드 생성 API입니다.")
