@@ -12,6 +12,7 @@ import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleEditResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleMemeberResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
@@ -64,6 +65,11 @@ public class CoupleFacade {
         CoupleMemeberResponse coupleYourResponse = CoupleMemeberResponse.from(couple.getOpponentMember(memberId));
 
         return new CoupleResponse(startDate, coupleMemeberResponse, coupleYourResponse);
+    }
+
+    @Transactional
+    public CoupleEditResponse modifyCouple(Long coupleId, LocalDate modifyDate) {
+        return coupleService.modifyCouple(coupleId, modifyDate);
     }
 
     @Transactional
