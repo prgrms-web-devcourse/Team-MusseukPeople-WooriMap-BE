@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleEditResponse;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.member.domain.Member;
@@ -23,7 +24,7 @@ class CoupleServiceTest extends IntegrationTest {
 
     private static final TCoupleBuilder coupleBuilder = new TCoupleBuilder();
     private static final Long COUPLE_ID = 1L;
-    private static final LocalDate COUPLE_START_DATE = LocalDate.of(2022, 1, 1);
+    private static final LocalDate COUPLE_START_DATE = LocalDate.of(2022, 8, 4);
 
     @Autowired
     private CoupleService coupleService;
@@ -68,6 +69,25 @@ class CoupleServiceTest extends IntegrationTest {
             //then
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("커플 인원이 2명이 아닙니다");
+    }
+
+    @DisplayName("커플 수정 성공")
+    @Test
+    void modify_success() {
+        //given
+        Couple testCouple = coupleBuilder.id(COUPLE_ID).startDate(COUPLE_START_DATE).build();
+        Couple couple = coupleRepository.save(testCouple);
+        LocalDate modifyDate = LocalDate.of(2022, 6, 28);
+        Long coupleId = couple.getId();
+
+        //when
+        CoupleEditResponse coupleEditResponse = coupleService.modifyCouple(coupleId, modifyDate);
+        Couple findCouple = coupleRepository.findById(coupleId).get();
+
+        //then
+        assertThat(coupleEditResponse.getStartDate()).isEqualTo(modifyDate);
+        assertThat(findCouple.getStartDate()).isNotEqualTo(COUPLE_START_DATE);
+        assertThat(findCouple.getStartDate()).isEqualTo(modifyDate);
     }
 
     @DisplayName("커플 조회 성공")

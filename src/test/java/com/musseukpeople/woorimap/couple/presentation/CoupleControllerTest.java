@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -19,6 +20,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
+import com.musseukpeople.woorimap.couple.application.dto.request.EditCoupleRequest;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleEditResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
@@ -125,6 +128,29 @@ class CoupleControllerTest extends AcceptanceTest {
             //then
             .andExpect(status().isForbidden())
             .andDo(print());
+    }
+
+    @DisplayName("커플 수정 API 성공")
+    @Test
+    void modify_success() throws Exception {
+        //given
+        String coupleToken = 커플_맺기_토큰(accessToken);
+        LocalDate modifyDate = LocalDate.of(1996, 6, 28);
+        EditCoupleRequest editCoupleRequest = new EditCoupleRequest(modifyDate);
+
+        //when
+        MockHttpServletResponse response = mockMvc.perform(put("/api/couples")
+                .header(HttpHeaders.AUTHORIZATION, coupleToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(editCoupleRequest)))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andReturn().getResponse();
+
+        CoupleEditResponse editResponse = getResponseObject(response, CoupleEditResponse.class);
+
+        //then
+        assertThat(editResponse.getStartDate()).isEqualTo(modifyDate);
     }
 
     @DisplayName("커플 초대 코드 생성 API 성공")
