@@ -5,7 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.couple.exception.NotFoundCoupleException;
+import com.musseukpeople.woorimap.member.application.dto.request.EditProfileRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
+import com.musseukpeople.woorimap.member.application.dto.response.MemberResponse;
+import com.musseukpeople.woorimap.member.application.dto.response.ProfileResponse;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.member.domain.vo.Email;
