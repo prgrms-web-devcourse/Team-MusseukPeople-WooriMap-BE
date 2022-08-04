@@ -45,7 +45,7 @@ public class Couple extends BaseEntity {
         this.id = id;
         this.startDate = startDate;
         this.coupleMembers = coupleMembers;
-        this.coupleMembers.assignCoupleForMembers(this);
+        this.coupleMembers.assignCouple(this);
     }
 
     public Member getMe(Long id) {

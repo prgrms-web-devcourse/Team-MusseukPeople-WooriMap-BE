@@ -32,7 +32,7 @@ public class CoupleMembers {
         this.members = members;
     }
 
-    public void assignCoupleForMembers(Couple couple) {
+    public void assignCouple(Couple couple) {
         this.members.forEach(member -> member.changeCouple(couple));
     }
 
@@ -45,7 +45,11 @@ public class CoupleMembers {
     }
 
     public Member getYou(Long id) {
-        return this.members.stream().filter(member -> !member.isSame(id)).findAny().orElseThrow();
+        return this.members.stream()
+            .filter(member -> !member.isSame(id))
+            .findAny()
+            .orElseThrow(
+                () -> new MappingCoupleMemberException("상대방의 정보를 변환할 수 없습니다.", ErrorCode.NOT_MAPPING_COUPLE_MEMBER));
     }
 
     private void validateCoupleMembers(List<Member> members) {
