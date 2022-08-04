@@ -19,6 +19,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.couple.domain.InviteCode;
@@ -98,12 +99,20 @@ class CoupleControllerTest extends AcceptanceTest {
         String coupleToken = 커플_맺기_토큰(accessToken);
 
         //when
-        mockMvc.perform(get("/api/couples")
+        MockHttpServletResponse response = mockMvc.perform(get("/api/couples")
                 .header(HttpHeaders.AUTHORIZATION, coupleToken))
 
             //then
             .andExpect(status().isOk())
-            .andDo(print());
+            .andDo(print())
+            .andReturn().getResponse();
+
+        CoupleResponse coupleResponse = getResponseObject(response, CoupleResponse.class);
+
+        assertAll(
+            () -> assertThat(coupleResponse.getMe().getNickName()).isEqualTo(nickName),
+            () -> assertThat(coupleResponse.getYou().getNickName()).isEqualTo("inviter")
+        );
     }
 
     @DisplayName("커플이 아니면 커플 조회 실패")
