@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.couple.application.CoupleFacade;
 import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,6 +50,14 @@ public class CoupleController {
         return ResponseEntity.ok(new ApiResponse<>(accessTokenResponse));
     }
 
+    @Operation(summary = "커플 조회", description = "커플 조회 API입니다.")
+    @OnlyCouple
+    @GetMapping
+    public ResponseEntity<ApiResponse<CoupleResponse>> getCouple(@Login LoginMember member) {
+        CoupleResponse coupleResponse = coupleFacade.getCouple(member);
+        return ResponseEntity.ok(new ApiResponse<>(coupleResponse));
+    }
+    
     @Operation(summary = "커플 해제", description = "커플 해제 API입니다.")
     @OnlyCouple
     @DeleteMapping

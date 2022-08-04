@@ -12,7 +12,10 @@ import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleMemeberResponse;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
+import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.exception.AlreadyCoupleException;
 import com.musseukpeople.woorimap.couple.exception.CreateCoupleFailException;
 import com.musseukpeople.woorimap.member.application.MemberService;
@@ -37,8 +40,8 @@ public class CoupleFacade {
 
         validateSameInviter(receiverId, inviterId);
 
-        Member foundInviter = memberService.getMemberById(inviterId);
-        Member foundReceiver = memberService.getMemberById(receiverId);
+        Member foundInviter = memberService.getMemberWithCoupleById(inviterId);
+        Member foundReceiver = memberService.getMemberWithCoupleById(receiverId);
 
         validateAlreadyCouple(foundInviter, foundReceiver);
 
@@ -48,6 +51,19 @@ public class CoupleFacade {
         inviteCodeService.removeInviteCodeByMembers(members);
 
         return jwtProvider.createAccessToken(String.valueOf(receiverId), coupleId);
+    }
+
+    public CoupleResponse getCouple(LoginMember member) {
+        Long coupleId = member.getCoupleId();
+        Long memberId = member.getId();
+
+        Couple couple = coupleService.getCoupleWithMemberById(coupleId);
+
+        LocalDate startDate = couple.getStartDate();
+        CoupleMemeberResponse coupleMemeberResponse = CoupleMemeberResponse.from(couple.getMyMember(memberId));
+        CoupleMemeberResponse coupleYourResponse = CoupleMemeberResponse.from(couple.getOpponentMember(memberId));
+
+        return new CoupleResponse(startDate, coupleMemeberResponse, coupleYourResponse);
     }
 
     @Transactional
