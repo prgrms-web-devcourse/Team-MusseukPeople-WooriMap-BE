@@ -20,6 +20,7 @@ import com.musseukpeople.woorimap.member.application.MemberService;
 import com.musseukpeople.woorimap.member.application.dto.request.EditProfileRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.member.application.dto.response.MemberResponse;
+import com.musseukpeople.woorimap.member.application.dto.response.ProfileResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,9 +52,11 @@ public class MemberController {
     @Operation(summary = "멤버 회원 가입", description = "멤버 회원 가입 API입니다.")
     @LoginRequired
     @PutMapping
-    public ResponseEntity<Void> editProfile(@Valid @RequestBody EditProfileRequest editProfileRequest,
-                                            @Login LoginMember loginMember) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ApiResponse<ProfileResponse>> editProfile(
+        @Valid @RequestBody EditProfileRequest editProfileRequest,
+        @Login LoginMember loginMember) {
+        ProfileResponse profileResponse = memberService.modifyMember(loginMember.getId(), editProfileRequest);
+        return ResponseEntity.ok(new ApiResponse<>(profileResponse));
     }
 
     @Operation(summary = "멤버 회원 탈퇴", description = "멤버 회원 탈퇴 API입니다.")
