@@ -49,7 +49,7 @@ public class MemberController {
         return ResponseEntity.ok(new ApiResponse<>(memberResponse));
     }
 
-    @Operation(summary = "멤버 회원 가입", description = "멤버 회원 가입 API입니다.")
+    @Operation(summary = "멤버 정보 수정", description = "멤버 정보 수정 API입니다.")
     @LoginRequired
     @PutMapping
     public ResponseEntity<ApiResponse<ProfileResponse>> editProfile(
