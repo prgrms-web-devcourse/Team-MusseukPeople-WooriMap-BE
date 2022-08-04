@@ -55,4 +55,8 @@ public class Couple extends BaseEntity {
     public Member getOpponentMember(Long id) {
         return this.coupleMembers.getOpponentMember(id);
     }
+
+    public void changStartDate(LocalDate modifyDate) {
+        this.startDate = modifyDate;
+    }
 }
