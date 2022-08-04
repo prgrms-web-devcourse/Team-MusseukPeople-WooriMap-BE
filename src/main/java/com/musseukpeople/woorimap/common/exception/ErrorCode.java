@@ -25,11 +25,14 @@ public enum ErrorCode {
     // Auth
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A001", "유효하지 않은 토큰입니다."),
     NOT_FOUND_TOKEN(HttpStatus.UNAUTHORIZED, "A002", "로그인이 필요합니다."),
+    BLACKLIST_TOKEN(HttpStatus.UNAUTHORIZED, "A003", "허용되지 않는 토큰입니다."),
 
     // Couple
     NOT_FOUND_COUPLE(HttpStatus.NOT_FOUND, "CP001", "존재하지 않는 커플입니다."),
     NOT_CREATE_COUPLE(HttpStatus.BAD_REQUEST, "CP002", "커플 맺기 실패했습니다"),
     ALREADY_COUPLE(HttpStatus.BAD_REQUEST, "CP003", "이미 커플입니다."),
+    INVALID_COUPLE_MEMBERS_SIZE(HttpStatus.BAD_REQUEST, "CP004", "커플 멤버의 수가 유효하지 않습니다."),
+    NOT_MAPPING_COUPLE_MEMBER(HttpStatus.BAD_REQUEST, "CP005", "커플 멤버 정보 매핑 실패"),
 
     // InviteCode
     NOT_FOUND_INVITE_CODE(HttpStatus.NOT_FOUND, "I001", "존재하지 않는 코드입니다."),

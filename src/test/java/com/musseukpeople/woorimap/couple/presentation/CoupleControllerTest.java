@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -19,6 +20,9 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
+import com.musseukpeople.woorimap.couple.application.dto.request.EditCoupleRequest;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleEditResponse;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.couple.domain.InviteCode;
@@ -47,8 +51,7 @@ class CoupleControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void login() throws Exception {
-        회원가입(new SignupRequest(email, password, nickName));
-        accessToken = 로그인_토큰(new SignInRequest(email, password));
+        accessToken = 회원가입_토큰(new SignupRequest(email, password, nickName));
     }
 
     @DisplayName("커플 맺기 API 성공")
@@ -89,6 +92,65 @@ class CoupleControllerTest extends AcceptanceTest {
             //then
             .andExpect(status().isBadRequest())
             .andDo(print());
+    }
+
+    @DisplayName("커플 조회 성공")
+    @Test
+    void getCouple_success() throws Exception {
+        //given
+        String coupleToken = 커플_맺기_토큰(accessToken);
+
+        //when
+        MockHttpServletResponse response = mockMvc.perform(get("/api/couples")
+                .header(HttpHeaders.AUTHORIZATION, coupleToken))
+
+            //then
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andReturn().getResponse();
+
+        CoupleResponse coupleResponse = getResponseObject(response, CoupleResponse.class);
+
+        assertAll(
+            () -> assertThat(coupleResponse.getMe().getNickName()).isEqualTo(nickName),
+            () -> assertThat(coupleResponse.getYou().getNickName()).isEqualTo("inviter")
+        );
+    }
+
+    @DisplayName("커플이 아니면 커플 조회 실패")
+    @Test
+    void getCouple_notCouple_fail() throws Exception {
+        //given
+        //when
+        mockMvc.perform(get("/api/couples")
+                .header(HttpHeaders.AUTHORIZATION, accessToken))
+
+            //then
+            .andExpect(status().isForbidden())
+            .andDo(print());
+    }
+
+    @DisplayName("커플 수정 API 성공")
+    @Test
+    void modify_success() throws Exception {
+        //given
+        String coupleToken = 커플_맺기_토큰(accessToken);
+        LocalDate modifyDate = LocalDate.of(1996, 6, 28);
+        EditCoupleRequest editCoupleRequest = new EditCoupleRequest(modifyDate);
+
+        //when
+        MockHttpServletResponse response = mockMvc.perform(put("/api/couples")
+                .header(HttpHeaders.AUTHORIZATION, coupleToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(editCoupleRequest)))
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andReturn().getResponse();
+
+        CoupleEditResponse editResponse = getResponseObject(response, CoupleEditResponse.class);
+
+        //then
+        assertThat(editResponse.getStartDate()).isEqualTo(modifyDate);
     }
 
     @DisplayName("커플 초대 코드 생성 API 성공")
@@ -142,11 +204,11 @@ class CoupleControllerTest extends AcceptanceTest {
     @Test
     void removeCouple_success() throws Exception {
         //given
-        accessToken = 커플_맺기_토큰(accessToken);
+        String coupleToken = 커플_맺기_토큰(accessToken);
 
         //when
         mockMvc.perform(delete("/api/couples")
-                .header(HttpHeaders.AUTHORIZATION, accessToken))
+                .header(HttpHeaders.AUTHORIZATION, coupleToken))
 
             //then
             .andExpect(status().isNoContent())

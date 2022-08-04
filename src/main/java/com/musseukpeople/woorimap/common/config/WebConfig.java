@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.musseukpeople.woorimap.auth.aop.MemberAuthorityContext;
+import com.musseukpeople.woorimap.auth.application.BlackListService;
 import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.presentation.AuthInterceptor;
 import com.musseukpeople.woorimap.auth.presentation.resolver.AuthArgumentResolver;
@@ -24,6 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
     private static final String ALLOWED_METHOD_NAMES = "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH";
 
     private final JwtProvider jwtProvider;
+    private final BlackListService blackListService;
     private final MemberAuthorityContext memberAuthorityContext;
 
     @Override
@@ -38,7 +40,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AuthInterceptor(jwtProvider));
+        registry.addInterceptor(new AuthInterceptor(jwtProvider, blackListService));
     }
 
     @Override

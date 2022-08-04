@@ -74,16 +74,16 @@ public abstract class AcceptanceTest {
     }
 
     protected MockHttpServletResponse 커플_맺기(String accessToken) throws Exception {
-        String rEmail = "receiver@gmail.com";
-        String rPassword = "!Recevier123";
-        String rNickName = "receiver";
-        String inviteCode = createInviteCodeApi(accessToken).getContentAsString().replaceAll("[^0-9]", "");
-        회원가입(new SignupRequest(rEmail, rPassword, rNickName));
-        String receiverToken = 로그인_토큰(new SignInRequest(rEmail, rPassword));
+        String iEmail = "inviter@gmail.com";
+        String iPassword = "!Inviter123";
+        String iNickName = "inviter";
+        회원가입(new SignupRequest(iEmail, iPassword, iNickName));
+        String inviterToken = 로그인_토큰(new SignInRequest(iEmail, iPassword));
+        String inviteCode = createInviteCodeApi(inviterToken).getContentAsString().replaceAll("[^0-9]", "");
         CreateCoupleRequest createCoupleRequest = new CreateCoupleRequest(inviteCode);
 
         return mockMvc.perform(post("/api/couples")
-                .header(HttpHeaders.AUTHORIZATION, receiverToken)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createCoupleRequest)))
             .andReturn().getResponse();

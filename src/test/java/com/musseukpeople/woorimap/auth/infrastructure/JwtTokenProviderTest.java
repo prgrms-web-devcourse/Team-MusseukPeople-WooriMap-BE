@@ -3,6 +3,8 @@ package com.musseukpeople.woorimap.auth.infrastructure;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Date;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -99,5 +101,18 @@ class JwtTokenProviderTest {
 
         // then
         assertThat(result).isFalse();
+    }
+
+    @DisplayName("토큰의 유효 시간 추출 성공")
+    @Test
+    void getExpiredDate_success() {
+        // given
+        String accessToken = PROVIDER.createAccessToken("1", 1L).getValue();
+
+        // when
+        Date expiredDate = PROVIDER.getExpiredDate(accessToken);
+
+        // then
+        assertThat(expiredDate).isAfter(new Date());
     }
 }

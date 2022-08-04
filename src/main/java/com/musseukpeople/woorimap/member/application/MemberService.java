@@ -5,7 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.couple.exception.NotFoundCoupleException;
+import com.musseukpeople.woorimap.member.application.dto.request.EditProfileRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
+import com.musseukpeople.woorimap.member.application.dto.response.MemberResponse;
+import com.musseukpeople.woorimap.member.application.dto.response.ProfileResponse;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.member.domain.vo.Email;
@@ -38,20 +42,40 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
+    @Transactional
+    public ProfileResponse modifyMember(Long id, EditProfileRequest editProfileRequest) {
+        Member member = getMemberById(id);
+        String nickName = editProfileRequest.getNickName();
+        String imageUrl = editProfileRequest.getImageUrl();
+
+        member.changeNickName(nickName);
+        member.changeProfileImage(imageUrl);
+        return new ProfileResponse(imageUrl, nickName);
+    }
+
+    public MemberResponse getMemberResponseById(Long id) {
+        Member member = getMemberWithCoupleById(id);
+
+        if (member.isCouple()) {
+            Member opponentMember = getOpponentMember(member);
+            return MemberResponse.createCoupleMemberResponse(member, opponentMember);
+        }
+        return MemberResponse.createSoloMemberResponse(member);
+    }
+
     public Member getMemberById(Long id) {
         return memberRepository.findById(id)
+            .orElseThrow(() -> new NotFoundMemberException(ErrorCode.NOT_FOUND_MEMBER, id));
+    }
+
+    public Member getMemberWithCoupleById(Long id) {
+        return memberRepository.findMemberWithCoupleById(id)
             .orElseThrow(() -> new NotFoundMemberException(ErrorCode.NOT_FOUND_MEMBER, id));
     }
 
     public Member getMemberByEmail(String email) {
         return memberRepository.findMemberByEmail(email)
             .orElseThrow(() -> new LoginFailedException(ErrorCode.LOGIN_FAILED));
-    }
-
-    private void validateDuplicateEmail(String email) {
-        if (memberRepository.existsByEmailValue(email)) {
-            throw new DuplicateEmailException(email, ErrorCode.DUPLICATE_EMAIL);
-        }
     }
 
     @Transactional
@@ -62,5 +86,18 @@ public class MemberService {
     @Transactional
     public void breakUpMembersByCoupleId(Long coupleId) {
         memberRepository.updateCoupleIdSetNull(coupleId);
+    }
+
+    private void validateDuplicateEmail(String email) {
+        if (memberRepository.existsByEmailValue(email)) {
+            throw new DuplicateEmailException(email, ErrorCode.DUPLICATE_EMAIL);
+        }
+    }
+
+    private Member getOpponentMember(Member member) {
+        Long id = member.getId();
+        Long coupleId = member.getCouple().getId();
+        return memberRepository.findOpponentMember(id, coupleId)
+            .orElseThrow(() -> new NotFoundCoupleException(ErrorCode.NOT_FOUND_MEMBER, coupleId));
     }
 }

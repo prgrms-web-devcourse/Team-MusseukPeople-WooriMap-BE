@@ -1,5 +1,7 @@
 package com.musseukpeople.woorimap.couple.application.dto.response;
 
+import java.time.LocalDate;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -7,12 +9,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class InviteCodeResponse {
+public class CoupleEditResponse {
 
-    @Schema(description = "초대 코드")
-    private String code;
+    @Schema(description = "수정된 날짜")
+    private LocalDate startDate;
 
-    public InviteCodeResponse(String code) {
-        this.code = code;
+    public CoupleEditResponse(LocalDate startDate) {
+        this.startDate = startDate;
     }
 }

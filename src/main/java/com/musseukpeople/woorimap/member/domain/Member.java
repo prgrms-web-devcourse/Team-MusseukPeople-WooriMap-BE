@@ -1,5 +1,7 @@
 package com.musseukpeople.woorimap.member.domain;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -68,11 +70,23 @@ public class Member extends BaseEntity {
         this.couple = couple;
     }
 
+    public void changeNickName(String nickName) {
+        this.nickName = new NickName(nickName);
+    }
+
+    public void changeProfileImage(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public void breakUp() {
         this.couple = null;
     }
 
     public boolean isCouple() {
         return this.couple != null;
+    }
+
+    public boolean isSame(Long id) {
+        return Objects.equals(this.id, id);
     }
 }

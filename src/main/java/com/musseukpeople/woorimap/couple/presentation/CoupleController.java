@@ -7,7 +7,9 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,9 @@ import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.couple.application.CoupleFacade;
 import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
+import com.musseukpeople.woorimap.couple.application.dto.request.EditCoupleRequest;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleEditResponse;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,6 +51,25 @@ public class CoupleController {
         AccessTokenResponse accessTokenResponse = new AccessTokenResponse(tokenDto.getValue());
 
         return ResponseEntity.ok(new ApiResponse<>(accessTokenResponse));
+    }
+
+    @Operation(summary = "커플 조회", description = "커플 조회 API입니다.")
+    @OnlyCouple
+    @GetMapping
+    public ResponseEntity<ApiResponse<CoupleResponse>> getCouple(@Login LoginMember member) {
+        CoupleResponse coupleResponse = coupleFacade.getCouple(member);
+        return ResponseEntity.ok(new ApiResponse<>(coupleResponse));
+    }
+
+    @Operation(summary = "커플 수정", description = "커플 수정 API입니다.")
+    @OnlyCouple
+    @PutMapping
+    public ResponseEntity<ApiResponse<CoupleEditResponse>> editCouple(
+        @Valid @RequestBody EditCoupleRequest editCoupleRequest,
+        @Login LoginMember member) {
+        CoupleEditResponse coupleEditResponse = coupleFacade.modifyCouple(member.getCoupleId(),
+            editCoupleRequest.getEditDate());
+        return ResponseEntity.ok(new ApiResponse<>(coupleEditResponse));
     }
 
     @Operation(summary = "커플 해제", description = "커플 해제 API입니다.")

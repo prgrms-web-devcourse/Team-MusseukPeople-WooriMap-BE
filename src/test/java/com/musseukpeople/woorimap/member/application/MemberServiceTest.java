@@ -1,21 +1,32 @@
 package com.musseukpeople.woorimap.member.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.AfterEach;
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
+import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.member.application.dto.request.EditProfileRequest;
+import com.musseukpeople.woorimap.couple.domain.Couple;
+import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
+import com.musseukpeople.woorimap.member.application.dto.response.ProfileResponse;
+import com.musseukpeople.woorimap.member.application.dto.response.MemberResponse;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.member.exception.DuplicateEmailException;
 import com.musseukpeople.woorimap.member.exception.LoginFailedException;
+import com.musseukpeople.woorimap.member.exception.NotFoundMemberException;
+import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
+import com.musseukpeople.woorimap.util.IntegrationTest;
+import com.musseukpeople.woorimap.util.fixture.TCoupleBuilder;
+import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
 
-@SpringBootTest
-class MemberServiceTest {
+class MemberServiceTest extends IntegrationTest {
 
     @Autowired
     private MemberService memberService;
@@ -23,10 +34,8 @@ class MemberServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @AfterEach
-    void tearDown() {
-        memberRepository.deleteAllInBatch();
-    }
+    @Autowired
+    private CoupleRepository coupleRepository;
 
     @DisplayName("회원 생성 성공")
     @Test
@@ -80,5 +89,78 @@ class MemberServiceTest {
         assertThatThrownBy(() -> memberService.getMemberByEmail("tt@gmail.com"))
             .isInstanceOf(LoginFailedException.class)
             .hasMessageContaining("이메일 또는 비밀번호가 일치하지 않습니다.");
+    }
+
+    @DisplayName("회원 정보 조회 성공 - 솔로")
+    @Test
+    void getMemberResponse_solo_success() {
+        // given
+        Member member = new TMemberBuilder().email("test@gmail.com").build();
+        Long id = memberRepository.save(member).getId();
+
+        // when
+        MemberResponse memberResponse = memberService.getMemberResponseById(id);
+
+        // then
+        assertAll(
+            () -> assertThat(memberResponse.getCoupleNickName()).isNull(),
+            () -> assertThat(memberResponse.getCoupleStartingDate()).isNull()
+        );
+    }
+
+    @DisplayName("회원 정보 조회 성공 - 커플")
+    @Test
+    void getMemberResponse_couple_success() {
+        // given
+        Couple couple = new TCoupleBuilder().build();
+        coupleRepository.save(couple);
+        Member member = new TMemberBuilder().email("test@gmail.com").couple(couple).build();
+        Member opponentMember = new TMemberBuilder().email("oppent@gmail.com").couple(couple).build();
+        Long id = memberRepository.save(member).getId();
+        memberRepository.save(opponentMember);
+
+        // when
+        MemberResponse memberResponse = memberService.getMemberResponseById(id);
+
+        // then
+        assertAll(
+            () -> assertThat(memberResponse.getCoupleNickName()).isEqualTo(opponentMember.getNickName().getValue()),
+            () -> assertThat(memberResponse.getCoupleStartingDate()).isEqualTo(LocalDate.now())
+        );
+    }
+
+    @DisplayName("회원 프로필 수정 성공")
+    @Test
+    void modifyMember_success() {
+        // given
+        Long id = memberRepository.save(new TMemberBuilder().build()).getId();
+        String imageUrl = "modifyUrl";
+        String nickName = "modifyNickName";
+        EditProfileRequest editProfileRequest = new EditProfileRequest(imageUrl, nickName);
+
+        // when
+        ProfileResponse profile = memberService.modifyMember(id, editProfileRequest);
+
+        // then
+        assertAll(
+            () -> assertThat(profile.getImageUrl()).isEqualTo(imageUrl),
+            () -> assertThat(profile.getNickName()).isEqualTo(nickName)
+        );
+    }
+
+    @DisplayName("존재하지 않는 회원으로 인한 프로필 수정 실패")
+    @Test
+    void modifyMember_notFoundMember_success() {
+        // given
+        String imageUrl = "modifyUrl";
+        String nickName = "modifyNickName";
+        EditProfileRequest editProfileRequest = new EditProfileRequest(imageUrl, nickName);
+
+        // when
+        // then
+        assertThatThrownBy(() -> memberService.modifyMember(1L, editProfileRequest))
+            .isInstanceOf(NotFoundMemberException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.NOT_FOUND_MEMBER)
+            .hasMessageContaining("존재하지 않는 회원입니다.");
     }
 }
