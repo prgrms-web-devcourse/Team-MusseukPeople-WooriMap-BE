@@ -45,16 +45,21 @@ class CoupleServiceTest extends IntegrationTest {
     @Test
     void create_success() {
         //given
-        Member inviter = memberRepository.save(new TMemberBuilder().email("inviter1@gmail.com").build());
-        Member receiver = memberRepository.save(new TMemberBuilder().email("receiver1@gmail.com").build());
+        Member inviter = new TMemberBuilder().email("inviter1@gmail.com").build();
+        Member receiver = new TMemberBuilder().email("receiver1@gmail.com").build();
         List<Member> members = List.of(inviter, receiver);
 
         //when
         Long coupleId = coupleService.createCouple(members, COUPLE_START_DATE);
-        Optional<Couple> couple = coupleRepository.findById(coupleId);
+        Member saveInviter = memberRepository.save(inviter);
+        Member saveReceiver = memberRepository.save(receiver);
+        Couple couple = coupleRepository.findById(coupleId).get();
 
         //then
-        assertThat(couple).isPresent();
+        assertAll(
+            () -> assertThat(saveInviter.getCouple().getId()).isEqualTo(couple.getId()),
+            () -> assertThat(saveReceiver.getCouple().getId()).isEqualTo(couple.getId())
+        );
     }
 
     @DisplayName("멤버 1명으로 커플 생성 실패")
@@ -76,14 +81,24 @@ class CoupleServiceTest extends IntegrationTest {
     @Test
     void getCouple_success() {
         //given
+        Member inviter = new TMemberBuilder().email("inviter1@gmail.com").build();
+        Member receiver = new TMemberBuilder().email("receiver1@gmail.com").build();
+        List<Member> members = List.of(inviter, receiver);
+        Long coupleId = coupleService.createCouple(members, COUPLE_START_DATE);
+        memberRepository.save(inviter);
+        memberRepository.save(receiver);
+
         //when
-        Couple couple = coupleService.getCoupleByIdFetchMember(COUPLE_ID);
+        Couple couple = coupleService.getCoupleWithMemberById(coupleId);
 
         //then
         assertAll(
-            () -> assertThat(couple.getId()).isEqualTo(COUPLE_ID),
-            () -> assertThat(couple.getStartDate()).isEqualTo(COUPLE_START_DATE)
+            () -> assertThat(couple.getId()).isEqualTo(coupleId),
+            () -> assertThat(couple.getStartDate()).isEqualTo(COUPLE_START_DATE),
+            () -> assertThat(couple.getCoupleMembers().getMembers()).hasSize(2)
         );
+
+        assertThat(couple.getCoupleMembers().getMembers()).hasSize(2);
     }
 
     @DisplayName("커플 삭제 성공")
