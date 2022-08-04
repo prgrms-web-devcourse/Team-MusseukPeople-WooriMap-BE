@@ -6,8 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.couple.exception.NotFoundCoupleException;
+import com.musseukpeople.woorimap.member.application.dto.request.EditProfileRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.member.application.dto.response.MemberResponse;
+import com.musseukpeople.woorimap.member.application.dto.response.ProfileResponse;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.member.domain.vo.Email;
@@ -38,6 +40,17 @@ public class MemberService {
             .nickName(new NickName(signupRequest.getNickName()))
             .build();
         return memberRepository.save(member).getId();
+    }
+
+    @Transactional
+    public ProfileResponse modifyMember(Long id, EditProfileRequest editProfileRequest) {
+        Member member = getMemberById(id);
+        String nickName = editProfileRequest.getNickName();
+        String imageUrl = editProfileRequest.getImageUrl();
+
+        member.changeNickName(nickName);
+        member.changeProfileImage(imageUrl);
+        return new ProfileResponse(imageUrl, nickName);
     }
 
     public MemberResponse getMemberResponseById(Long id) {

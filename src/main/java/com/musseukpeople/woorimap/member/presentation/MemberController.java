@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +17,10 @@ import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.member.application.MemberService;
+import com.musseukpeople.woorimap.member.application.dto.request.EditProfileRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.member.application.dto.response.MemberResponse;
+import com.musseukpeople.woorimap.member.application.dto.response.ProfileResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,6 +47,15 @@ public class MemberController {
     public ResponseEntity<ApiResponse<MemberResponse>> showMember(@Login LoginMember loginMember) {
         MemberResponse memberResponse = memberService.getMemberResponseById(loginMember.getId());
         return ResponseEntity.ok(new ApiResponse<>(memberResponse));
+    }
+
+    @Operation(summary = "멤버 정보 수정", description = "멤버 정보 수정 API입니다.")
+    @LoginRequired
+    @PutMapping
+    public ResponseEntity<ApiResponse<ProfileResponse>> editProfile(@Valid @RequestBody EditProfileRequest request,
+                                                                    @Login LoginMember loginMember) {
+        ProfileResponse profileResponse = memberService.modifyMember(loginMember.getId(), request);
+        return ResponseEntity.ok(new ApiResponse<>(profileResponse));
     }
 
     @Operation(summary = "멤버 회원 탈퇴", description = "멤버 회원 탈퇴 API입니다.")

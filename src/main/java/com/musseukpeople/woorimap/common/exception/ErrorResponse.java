@@ -40,10 +40,11 @@ public class ErrorResponse {
     }
 
     @Getter
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class FieldError {
-        private final String field;
-        private final String value;
-        private final String reason;
+        private String field;
+        private String value;
+        private String reason;
 
         private FieldError(String field, String value, String reason) {
             this.field = field;
