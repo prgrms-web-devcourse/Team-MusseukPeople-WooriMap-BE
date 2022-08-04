@@ -12,6 +12,7 @@ import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleCheckResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleEditResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleMemeberResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
@@ -19,7 +20,6 @@ import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResp
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.exception.AlreadyCoupleException;
 import com.musseukpeople.woorimap.couple.exception.CreateCoupleFailException;
-import com.musseukpeople.woorimap.couple.exception.NotCoupleException;
 import com.musseukpeople.woorimap.member.application.MemberService;
 import com.musseukpeople.woorimap.member.domain.Member;
 
@@ -101,16 +101,14 @@ public class CoupleFacade {
         }
     }
 
-    @Transactional
-    public TokenDto checkCouple(Long loginMemberId) {
+    public CoupleCheckResponse checkCouple(Long loginMemberId) {
         Member member = memberService.getMemberWithCoupleById(loginMemberId);
+        String memberId = String.valueOf(member.getId());
 
-        if (member.isCouple()) {
-            String memberId = String.valueOf(member.getId());
-            Long coupleId = member.getCouple().getId();
-            return jwtProvider.createAccessToken(memberId, coupleId);
-        }
+        boolean isCouple = member.isCouple();
+        String accessToken = isCouple ?
+            jwtProvider.createAccessToken(memberId, member.getCouple().getId()).getValue() : null;
 
-        throw new NotCoupleException(ErrorCode.IS_NOT_COUPLE);
+        return new CoupleCheckResponse(accessToken, isCouple);
     }
 }
