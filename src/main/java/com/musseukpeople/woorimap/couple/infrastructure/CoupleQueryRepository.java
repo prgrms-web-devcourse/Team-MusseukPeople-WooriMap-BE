@@ -6,5 +6,5 @@ import com.musseukpeople.woorimap.couple.domain.Couple;
 
 public interface CoupleQueryRepository {
 
-    Optional<Couple> findByIdFetchMember(Long coupleId);
+    Optional<Couple> findWithMemberById(Long coupleId);
 }

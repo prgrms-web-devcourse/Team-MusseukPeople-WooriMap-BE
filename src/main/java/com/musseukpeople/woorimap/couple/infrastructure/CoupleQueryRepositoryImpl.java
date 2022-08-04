@@ -17,7 +17,7 @@ public class CoupleQueryRepositoryImpl implements CoupleQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<Couple> findByIdFetchMember(Long coupleId) {
+    public Optional<Couple> findWithMemberById(Long coupleId) {
         return Optional.ofNullable(jpaQueryFactory.selectFrom(couple)
             .leftJoin(couple.coupleMembers.members, member)
             .fetchJoin()

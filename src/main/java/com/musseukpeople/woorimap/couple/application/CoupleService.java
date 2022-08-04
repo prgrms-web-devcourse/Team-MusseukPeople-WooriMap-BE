@@ -34,8 +34,8 @@ public class CoupleService {
         return couple.getId();
     }
 
-    public Couple getCoupleByIdFetchMember(Long coupleId) {
-        return coupleRepository.findByIdFetchMember(coupleId)
+    public Couple getCoupleWithMemberById(Long coupleId) {
+        return coupleRepository.findWithMemberById(coupleId)
             .orElseThrow(
                 () -> new NotFoundCoupleException(ErrorCode.NOT_FOUND_COUPLE, coupleId)
             );

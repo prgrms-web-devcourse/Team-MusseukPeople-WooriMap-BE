@@ -17,7 +17,6 @@ import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleYourResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
 import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.couple.exception.AlreadyCoupleException;
 import com.musseukpeople.woorimap.couple.exception.CreateCoupleFailException;
 import com.musseukpeople.woorimap.member.application.MemberService;
@@ -59,12 +58,11 @@ public class CoupleFacade {
         Long coupleId = member.getCoupleId();
         Long myId = member.getId();
 
-        Couple couple = coupleService.getCoupleByIdFetchMember(coupleId);
-        CoupleMembers coupleMembers = couple.getCoupleMembers();
+        Couple couple = coupleService.getCoupleWithMemberById(coupleId);
 
         LocalDate startDate = couple.getStartDate();
-        CoupleMyResponse coupleMyResponse = coupleMembers.getMyResponse(myId);
-        CoupleYourResponse coupleYourResponse = coupleMembers.getYourResponse(myId);
+        CoupleMyResponse coupleMyResponse = CoupleMyResponse.from(couple, myId);
+        CoupleYourResponse coupleYourResponse = CoupleYourResponse.from(couple, myId);
 
         return new CoupleResponse(startDate, coupleMyResponse, coupleYourResponse);
     }
