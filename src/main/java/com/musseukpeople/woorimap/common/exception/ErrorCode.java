@@ -16,6 +16,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C003", " 서버 에러입니다."),
     INVALID_TYPE_VALUE(HttpStatus.BAD_REQUEST, "C004", " 잘못된 타입입니다."),
     HANDLE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "C005", " 접근 권한이 없습니다."),
+    INVALID_IMAGE_URL(HttpStatus.BAD_REQUEST, "C006", "올바른 이미지 URL이 아닙니다."),
 
     // User
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "U001", "이메일 또는 비밀번호가 일치하지 않습니다."),
