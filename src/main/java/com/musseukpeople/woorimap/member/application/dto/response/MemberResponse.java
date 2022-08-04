@@ -11,16 +11,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberResponse {
 
-    @Schema(description = "프로필 이미지 url")
+    @Schema(description = "이메일")
+    private String email;
+
+    @Schema(description = "이미지 URL")
     private String imageUrl;
 
     @Schema(description = "닉네임")
     private String nickName;
 
     @Schema(description = "커플 유무")
-    private boolean isCouple;
+    private Boolean isCouple;
 
-    public MemberResponse(String imageUrl, String nickName, boolean isCouple) {
+    public MemberResponse(String email, String imageUrl, String nickName, boolean isCouple) {
+        this.email = email;
         this.imageUrl = imageUrl;
         this.nickName = nickName;
         this.isCouple = isCouple;
@@ -28,6 +32,7 @@ public class MemberResponse {
 
     public static MemberResponse from(Member member) {
         return new MemberResponse(
+            member.getEmail().getValue(),
             member.getImageUrl(),
             member.getNickName().getValue(),
             member.isCouple()
