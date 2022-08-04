@@ -2,6 +2,8 @@ package com.musseukpeople.woorimap.member.application.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
+import com.musseukpeople.woorimap.common.validator.ImageUrl;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class EditProfileRequest {
 
     @Schema(description = "프로필 이미지 URL")
+    @ImageUrl
     private String imageUrl;
 
     @Schema(description = "닉네임")

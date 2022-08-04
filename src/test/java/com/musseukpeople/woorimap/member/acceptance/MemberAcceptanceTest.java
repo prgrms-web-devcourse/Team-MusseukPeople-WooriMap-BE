@@ -3,6 +3,9 @@ package com.musseukpeople.woorimap.member.acceptance;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+
+import java.io.IOException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -79,11 +82,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         EditProfileRequest editProfileRequest = new EditProfileRequest(nickName, imageUrl);
 
         // when
-        MockHttpServletResponse response = mockMvc.perform(put("/api/members")
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(editProfileRequest)))
-            .andReturn().getResponse();
+        MockHttpServletResponse response = 프로필_수정(accessToken, editProfileRequest);
 
         // then
         ProfileResponse profileResponse = getResponseObject(response, ProfileResponse.class);
@@ -140,5 +139,55 @@ class MemberAcceptanceTest extends AcceptanceTest {
                 .header(HttpHeaders.AUTHORIZATION, accessToken))
             .andDo(print())
             .andReturn().getResponse();
+    }
+
+    @DisplayName("URL이 아닌 아님으로 인한 프로필 수정 실패")
+    @Test
+    void editProfile_notUrl_fail() throws Exception {
+        // given
+        String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test"));
+        String imageUrl = "invalidUrl";
+        String nickName = "wooriMap";
+        EditProfileRequest editProfileRequest = new EditProfileRequest(imageUrl, nickName);
+
+        // when
+        MockHttpServletResponse response = 프로필_수정(accessToken, editProfileRequest);
+
+        // then
+        이미지_URL_실패(response);
+    }
+
+    @DisplayName("이미지 URL이 아닌 아님으로 인한 프로필 수정 실패")
+    @Test
+    void editProfile_invalidImageUrl_fail() throws Exception {
+        // given
+        String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test"));
+        String imageUrl = "https://programmers.co.kr/";
+        String nickName = "wooriMap";
+        EditProfileRequest editProfileRequest = new EditProfileRequest(imageUrl, nickName);
+
+        // when
+        MockHttpServletResponse response = 프로필_수정(accessToken, editProfileRequest);
+
+        // then
+        이미지_URL_실패(response);
+    }
+
+    private MockHttpServletResponse 프로필_수정(String accessToken, EditProfileRequest editProfileRequest) throws
+        Exception {
+        return mockMvc.perform(put("/api/members")
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(editProfileRequest)))
+            .andDo(print())
+            .andReturn().getResponse();
+    }
+
+    private void 이미지_URL_실패(MockHttpServletResponse response) throws IOException {
+        ErrorResponse errorResponse = getErrorResponse(response);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+            () -> assertThat(errorResponse.getErrors().get(0).getReason()).isEqualTo("올바른 이미지 URL이 아닙니다.")
+        );
     }
 }
