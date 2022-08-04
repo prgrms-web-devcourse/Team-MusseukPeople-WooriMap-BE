@@ -9,6 +9,7 @@ import com.musseukpeople.woorimap.couple.application.CoupleService;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.tag.application.TagService;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
+import com.musseukpeople.woorimap.tag.domain.Tag;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +24,7 @@ public class PostFacade {
     @Transactional
     public Long createPost(Long coupleId, CreatePostRequest createPostRequest) {
         Couple couple = coupleService.getCoupleById(coupleId);
-        List<Long> postTagIdList = tagService.createTag(couple, createPostRequest.getTags());
-        return postService.createPost(couple, createPostRequest, postTagIdList);
+        List<Tag> tagsOfPost = tagService.createTag(couple, createPostRequest.getTags());
+        return postService.createPost(couple, createPostRequest, tagsOfPost);
     }
 }

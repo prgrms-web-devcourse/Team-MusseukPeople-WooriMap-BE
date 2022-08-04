@@ -2,6 +2,7 @@ package com.musseukpeople.woorimap.post.application.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -69,6 +70,6 @@ public class CreatePostRequest {
     }
 
     public List<PostImage> toPostImages() {
-        return imageUrls.stream().map(PostImage::new).toList();
+        return imageUrls.stream().map(PostImage::new).collect(Collectors.toList());
     }
 }

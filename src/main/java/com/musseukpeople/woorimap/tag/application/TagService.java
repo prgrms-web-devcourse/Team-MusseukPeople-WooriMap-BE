@@ -22,31 +22,22 @@ public class TagService {
     private final TagRepository tagRepository;
 
     @Transactional
-    public List<Long> createTag(Couple couple, List<TagRequest> tagRequestList) {
+    public List<Tag> createTag(Couple couple, List<TagRequest> tagRequestList) {
 
         // 요청 받은 tag name 리스트가 DB에 저장되어 있는지 확인
         // 만약 DB에 cafe, seoul, korean 으로 저장되어 있고, 요청 받은 tag name 리스트가 cafe, korean 이라면
         // cafe, korean 이 반환 됨. - 저장되어 있는 tag name 리스트를 반환함
-        List<Tag> tagListFromDb = tagRepository.findExistTagByCoupleId(couple, getTagNameInTagRequestList(tagRequestList));
-
-        // 저장되어 있는 tag의 id 리스트를 저장
-        List<Long> tagIdList = getTagIdFromTagList(tagListFromDb);
+        List<Tag> existTags = tagRepository.findExistTagByCoupleId(couple, getTagNameInTagRequestList(tagRequestList));
 
         // TagRequest 리스트에서 이미 저장되어 있는 Tag 리스트를 제외함 - 최종적으로 저장할 TagRequest 리스트만 필요하니깐
-        List<TagRequest> tagRequestListToSave = deduplicationTagRequest(tagRequestList, tagListFromDb);
+        List<TagRequest> tagRequestListToSave = deduplicationTagRequest(tagRequestList, existTags);
 
         List<Tag> tagListToSave = toTags(couple, tagRequestListToSave);
-        List<Tag> tagListInserted = tagRepository.saveAll(tagListToSave);
+        List<Tag> tagsInserted = tagRepository.saveAll(tagListToSave);
 
-        for (Tag tag : tagListInserted) {
-            tagIdList.add(tag.getId());
-        }
+        existTags.addAll(tagsInserted);
 
-        return tagIdList;
-    }
-
-    private List<Long> getTagIdFromTagList(List<Tag> tagList) {
-        return tagList.stream().map(Tag::getId).collect(Collectors.toList());
+        return existTags;
     }
 
     private List<TagRequest> deduplicationTagRequest(List<TagRequest> tagRequestList, List<Tag> tagListFromDb) {
