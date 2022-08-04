@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ImageUtilTest {
 
@@ -11,7 +13,7 @@ class ImageUtilTest {
     @Test
     void isImageUrl_success() {
         // given
-        String url = "https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png";
+        String url = "https://main.dwkg3ddyxqleg.amplifyapp.com/8c7f4d11b6e0b8ac08f0.png";
 
         // when
         boolean result = ImageUtil.isImageUrl(url);
@@ -20,25 +22,11 @@ class ImageUtilTest {
         assertThat(result).isTrue();
     }
 
-    @DisplayName("URL이 아님으로 인한 실패")
-    @Test
-    void isImageUrl_notUrl_fail() {
+    @DisplayName("올바르지 않는 URL로 인한 실패")
+    @ParameterizedTest
+    @ValueSource(strings = {"invalidUrl", "https://programmers.co.kr/", "https://test.com"})
+    void isImageUrl_notUrl_fail(String url) {
         // given
-        String url = "invalidUrl";
-
-        // when
-        boolean result = ImageUtil.isImageUrl(url);
-
-        // then
-        assertThat(result).isFalse();
-    }
-
-    @DisplayName("URL이 이미지가 아님으로 인한 실패")
-    @Test
-    void isImageUrl_invalidImageUrl_fail() {
-        // given
-        String url = "https://programmers.co.kr/";
-
         // when
         boolean result = ImageUtil.isImageUrl(url);
 
