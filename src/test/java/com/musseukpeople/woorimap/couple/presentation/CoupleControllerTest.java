@@ -48,8 +48,7 @@ class CoupleControllerTest extends AcceptanceTest {
 
     @BeforeEach
     void login() throws Exception {
-        회원가입(new SignupRequest(email, password, nickName));
-        accessToken = 로그인_토큰(new SignInRequest(email, password));
+        accessToken = 회원가입_토큰(new SignupRequest(email, password, nickName));
     }
 
     @DisplayName("커플 맺기 API 성공")
