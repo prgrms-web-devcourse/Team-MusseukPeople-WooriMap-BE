@@ -253,7 +253,7 @@ class CoupleControllerTest extends AcceptanceTest {
         //then
         assertAll(
             () -> assertThat(checkResponse.getAccessToken()).isNull(),
-            () -> assertThat(checkResponse.isCouple()).isFalse()
+            () -> assertThat(checkResponse.getIsCouple()).isFalse()
         );
     }
 
@@ -275,6 +275,7 @@ class CoupleControllerTest extends AcceptanceTest {
         CoupleCheckResponse checkResponse = getResponseObject(response, CoupleCheckResponse.class);
 
         assertThat(checkResponse.getAccessToken()).isNotNull();
+        assertThat(checkResponse.getIsCouple()).isTrue();
     }
 
     private MockHttpServletResponse createInviteCodeApi(String accessToken) throws Exception {

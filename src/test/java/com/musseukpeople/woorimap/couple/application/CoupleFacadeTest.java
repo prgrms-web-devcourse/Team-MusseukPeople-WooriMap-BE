@@ -51,7 +51,7 @@ class CoupleFacadeTest extends IntegrationTest {
             () -> assertThat(saveMe.isCouple()).isTrue(),
             () -> assertThat(saveYou.isCouple()).isTrue(),
             () -> assertThat(coupleCheckResponse.getAccessToken()).isNotNull(),
-            () -> assertThat(coupleCheckResponse.isCouple()).isTrue()
+            () -> assertThat(coupleCheckResponse.getIsCouple()).isTrue()
         );
     }
 
@@ -70,7 +70,7 @@ class CoupleFacadeTest extends IntegrationTest {
         //then
         assertAll(
             () -> assertThat(coupleCheckResponse.getAccessToken()).isNull(),
-            () -> assertThat(coupleCheckResponse.isCouple()).isFalse()
+            () -> assertThat(coupleCheckResponse.getIsCouple()).isFalse()
         );
     }
 }

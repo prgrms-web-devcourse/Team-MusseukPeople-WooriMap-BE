@@ -13,7 +13,7 @@ public class CoupleCheckResponse {
     private String accessToken;
 
     @Schema(description = "커플 유무")
-    private boolean isCouple;
+    private Boolean isCouple;
 
     public CoupleCheckResponse(String accessToken, boolean isCouple) {
         this.accessToken = accessToken;
