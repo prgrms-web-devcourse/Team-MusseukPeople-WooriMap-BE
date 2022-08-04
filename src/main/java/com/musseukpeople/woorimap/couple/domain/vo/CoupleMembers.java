@@ -36,7 +36,7 @@ public class CoupleMembers {
         this.members.forEach(member -> member.changeCouple(couple));
     }
 
-    public Member getMe(Long id) {
+    public Member getMyMember(Long id) {
         return this.members.stream()
             .filter(member -> member.isSame(id))
             .findAny()
@@ -44,7 +44,7 @@ public class CoupleMembers {
                 () -> new MappingCoupleMemberException("나의 정보를 변환할 수 없습니다.", ErrorCode.NOT_MAPPING_COUPLE_MEMBER));
     }
 
-    public Member getYou(Long id) {
+    public Member getOpponentMember(Long id) {
         return this.members.stream()
             .filter(member -> !member.isSame(id))
             .findAny()

@@ -60,8 +60,8 @@ public class CoupleFacade {
         Couple couple = coupleService.getCoupleWithMemberById(coupleId);
 
         LocalDate startDate = couple.getStartDate();
-        CoupleMemeberResponse coupleMemeberResponse = CoupleMemeberResponse.from(couple.getMe(memberId));
-        CoupleMemeberResponse coupleYourResponse = CoupleMemeberResponse.from(couple.getYou(memberId));
+        CoupleMemeberResponse coupleMemeberResponse = CoupleMemeberResponse.from(couple.getMyMember(memberId));
+        CoupleMemeberResponse coupleYourResponse = CoupleMemeberResponse.from(couple.getOpponentMember(memberId));
 
         return new CoupleResponse(startDate, coupleMemeberResponse, coupleYourResponse);
     }

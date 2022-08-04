@@ -48,11 +48,11 @@ public class Couple extends BaseEntity {
         this.coupleMembers.assignCouple(this);
     }
 
-    public Member getMe(Long id) {
-        return this.coupleMembers.getMe(id);
+    public Member getMyMember(Long id) {
+        return this.coupleMembers.getMyMember(id);
     }
 
-    public Member getYou(Long id) {
-        return this.coupleMembers.getYou(id);
+    public Member getOpponentMember(Long id) {
+        return this.coupleMembers.getOpponentMember(id);
     }
 }
