@@ -57,6 +57,9 @@ public class Couple extends BaseEntity {
     }
 
     public void changStartDate(LocalDate modifyDate) {
+        checkArgument(modifyDate.isBefore(LocalDate.now().plusDays(1)),
+            "현재 이후 날짜로 커플을 생성할 수 없습니다.");
+        
         this.startDate = modifyDate;
     }
 }
