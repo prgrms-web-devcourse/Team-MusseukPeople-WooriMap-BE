@@ -3,6 +3,7 @@ package com.musseukpeople.woorimap.util.fixture;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.vo.Email;
 import com.musseukpeople.woorimap.member.domain.vo.NickName;
@@ -15,6 +16,7 @@ public class TMemberBuilder {
     private Password password = Password.encryptPassword(PASSWORD_ENCODER, "!Test1234");
     private NickName nickName = new NickName("test");
     private String imageUrl = "test";
+    private Couple couple = null;
 
     public TMemberBuilder email(String email) {
         this.email = new Email(email);
@@ -36,13 +38,20 @@ public class TMemberBuilder {
         return this;
     }
 
+    public TMemberBuilder couple(Couple couple) {
+        this.couple = couple;
+        return this;
+    }
+
     public Member build() {
-        return Member.builder()
+        Member member = Member.builder()
             .email(email)
             .password(password)
             .nickName(nickName)
             .imageUrl(imageUrl)
             .build();
+        member.changeCouple(couple);
+        return member;
     }
 
 }

@@ -3,6 +3,7 @@ package com.musseukpeople.woorimap.member.acceptance;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
+import com.musseukpeople.woorimap.member.application.dto.response.MemberResponse;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -63,5 +65,53 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("솔로 회원 정보 조회 성공")
+    @Test
+    void showMember_solo_success() throws Exception {
+        // given
+        String email = "test@gmail.com";
+        String password = "!Hwan1234";
+        String nickName = "hwan";
+        String accessToken = 회원가입_토큰(new SignupRequest(email, password, nickName));
+
+        // when
+        MockHttpServletResponse response = 회원_정보_조회(accessToken);
+
+        // then
+        MemberResponse memberResponse = getResponseObject(response, MemberResponse.class);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(memberResponse.isCouple()).isFalse()
+        );
+    }
+
+    @DisplayName("커플 회원 정보 조회 성공")
+    @Test
+    void showMember_couple_success() throws Exception {
+        // given
+        String email = "test@gmail.com";
+        String password = "!Hwan1234";
+        String nickName = "hwan";
+        String accessToken = 회원가입_토큰(new SignupRequest(email, password, nickName));
+        String coupleAccessToken = 커플_맺기_토큰(accessToken);
+
+        // when
+        MockHttpServletResponse response = 회원_정보_조회(coupleAccessToken);
+
+        // then
+        MemberResponse memberResponse = getResponseObject(response, MemberResponse.class);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(memberResponse.getCoupleNickName()).isNotNull()
+        );
+    }
+
+    private MockHttpServletResponse 회원_정보_조회(String accessToken) throws Exception {
+        return mockMvc.perform(get("/api/members")
+                .header(HttpHeaders.AUTHORIZATION, accessToken))
+            .andDo(print())
+            .andReturn().getResponse();
     }
 }

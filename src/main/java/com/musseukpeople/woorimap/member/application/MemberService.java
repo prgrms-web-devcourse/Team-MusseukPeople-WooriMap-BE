@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.couple.exception.NotFoundCoupleException;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
+import com.musseukpeople.woorimap.member.application.dto.response.MemberResponse;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.member.domain.vo.Email;
@@ -38,6 +40,16 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
+    public MemberResponse getMemberResponseById(Long id) {
+        Member member = getMemberWithCoupleById(id);
+
+        if (member.isCouple()) {
+            Member opponentMember = getOpponentMember(member);
+            return MemberResponse.createCoupleMemberResponse(member, opponentMember);
+        }
+        return MemberResponse.createSoloMemberResponse(member);
+    }
+
     public Member getMemberById(Long id) {
         return memberRepository.findById(id)
             .orElseThrow(() -> new NotFoundMemberException(ErrorCode.NOT_FOUND_MEMBER, id));
@@ -53,12 +65,6 @@ public class MemberService {
             .orElseThrow(() -> new LoginFailedException(ErrorCode.LOGIN_FAILED));
     }
 
-    private void validateDuplicateEmail(String email) {
-        if (memberRepository.existsByEmailValue(email)) {
-            throw new DuplicateEmailException(email, ErrorCode.DUPLICATE_EMAIL);
-        }
-    }
-
     @Transactional
     public void removeMember(Long memberId) {
         memberRepository.deleteById(memberId);
@@ -67,5 +73,23 @@ public class MemberService {
     @Transactional
     public void breakUpMembersByCoupleId(Long coupleId) {
         memberRepository.updateCoupleIdSetNull(coupleId);
+    }
+
+    private Member getMemberWithCoupleById(Long id) {
+        return memberRepository.findWithCoupleById(id)
+            .orElseThrow(() -> new NotFoundMemberException(ErrorCode.NOT_FOUND_MEMBER, id));
+    }
+
+    private void validateDuplicateEmail(String email) {
+        if (memberRepository.existsByEmailValue(email)) {
+            throw new DuplicateEmailException(email, ErrorCode.DUPLICATE_EMAIL);
+        }
+    }
+
+    private Member getOpponentMember(Member member) {
+        Long id = member.getId();
+        Long coupleId = member.getCouple().getId();
+        return memberRepository.findOpponentMember(id, coupleId)
+            .orElseThrow(() -> new NotFoundCoupleException(ErrorCode.NOT_FOUND_MEMBER, coupleId));
     }
 }
