@@ -110,7 +110,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertAll(
             () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(memberResponse.getNickName()).isEqualTo(nickName),
-            () -> assertThat(memberResponse.isCouple()).isFalse()
+            () -> assertThat(memberResponse.getIsCouple()).isFalse()
         );
     }
 
