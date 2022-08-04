@@ -1,7 +1,6 @@
 package com.musseukpeople.woorimap.post.presentation;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
@@ -12,16 +11,12 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
-import com.musseukpeople.woorimap.post.application.PostService;
-import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
@@ -30,9 +25,6 @@ import com.musseukpeople.woorimap.util.AcceptanceTest;
 public class PostControllerTest extends AcceptanceTest {
 
     private String coupleAccessToken;
-
-    @Autowired
-    private PostService postService;
 
     @BeforeEach
     void login() throws Exception {
@@ -67,12 +59,6 @@ public class PostControllerTest extends AcceptanceTest {
             .andDo(print())
             .andReturn().getResponse();
 
-        Post post = postService.getPost(1L);
-
-        assertAll(
-            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value()),
-            () -> assertThat(post.getPostTags()).hasSize(2),
-            () -> assertThat(post.getPostImages()).hasSize(2)
-        );
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
     }
 }

@@ -21,6 +21,7 @@ import com.musseukpeople.woorimap.tag.application.TagService;
 import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
+import com.musseukpeople.woorimap.tag.domain.Tag;
 import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
 
 @SpringBootTest
@@ -64,7 +65,7 @@ public class PostServiceTest {
         Couple couple = createCouple();
 
         // when
-        List<Long> tagIdListOfThePost = createTag(couple, createPostRequest.getTags());
+        List<Tag> tagIdListOfThePost = createTag(couple, createPostRequest.getTags());
 
         // then
         assertThat(tagIdListOfThePost).hasSize(2);
@@ -78,15 +79,15 @@ public class PostServiceTest {
         Couple couple = createCouple();
         CreatePostRequest createPostRequest = getCreatePostRequest();
 
-        List<Long> tagIdListOfThePost = createTag(couple, createPostRequest.getTags());
-        Long savedPostId = createPost(couple, createPostRequest, tagIdListOfThePost);
+        List<Tag> tagOfPost = createTag(couple, createPostRequest.getTags());
+        Long savedPostId = createPost(couple, createPostRequest, tagOfPost);
 
         // when
         // then
         Post postFromDb = postRepository.findById(savedPostId).get();
 
         assertAll(
-            () -> assertThat(postFromDb.getPostTags()).hasSize(tagIdListOfThePost.size()),
+            () -> assertThat(postFromDb.getPostTags()).hasSize(tagOfPost.size()),
             () -> assertThat(postFromDb.getPostTags().get(0).getPost().getId()).isEqualTo(savedPostId),
             () -> assertThat(postFromDb.getPostImages()).hasSize(createPostRequest.getImageUrls().size()),
             () -> assertThat(postFromDb.getPostImages().get(0).getPost().getId()).isEqualTo(savedPostId),
@@ -120,11 +121,11 @@ public class PostServiceTest {
         return coupleService.getCoupleById(coupleId);
     }
 
-    private Long createPost(Couple couple, CreatePostRequest createPostRequest, List<Long> postTagIdList) {
-        return postService.createPost(couple, createPostRequest, postTagIdList);
+    private Long createPost(Couple couple, CreatePostRequest createPostRequest, List<Tag> tagsOfPost) {
+        return postService.createPost(couple, createPostRequest, tagsOfPost);
     }
 
-    private List<Long> createTag(Couple couple, List<TagRequest> tagRequestList) {
+    private List<Tag> createTag(Couple couple, List<TagRequest> tagRequestList) {
         return tagService.createTag(couple, tagRequestList);
     }
 }
