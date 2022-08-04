@@ -12,9 +12,8 @@ import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
-import com.musseukpeople.woorimap.couple.application.dto.response.CoupleMyResponse;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleMemeberResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
-import com.musseukpeople.woorimap.couple.application.dto.response.CoupleYourResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.InviteCodeResponse;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.exception.AlreadyCoupleException;
@@ -56,15 +55,15 @@ public class CoupleFacade {
 
     public CoupleResponse getCouple(LoginMember member) {
         Long coupleId = member.getCoupleId();
-        Long myId = member.getId();
+        Long memberId = member.getId();
 
         Couple couple = coupleService.getCoupleWithMemberById(coupleId);
 
         LocalDate startDate = couple.getStartDate();
-        CoupleMyResponse coupleMyResponse = CoupleMyResponse.from(couple, myId);
-        CoupleYourResponse coupleYourResponse = CoupleYourResponse.from(couple, myId);
+        CoupleMemeberResponse coupleMemeberResponse = CoupleMemeberResponse.from(couple.getMe(memberId));
+        CoupleMemeberResponse coupleYourResponse = CoupleMemeberResponse.from(couple.getYou(memberId));
 
-        return new CoupleResponse(startDate, coupleMyResponse, coupleYourResponse);
+        return new CoupleResponse(startDate, coupleMemeberResponse, coupleYourResponse);
     }
 
     @Transactional

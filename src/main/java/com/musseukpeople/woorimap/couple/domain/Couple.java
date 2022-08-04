@@ -13,6 +13,7 @@ import javax.persistence.Id;
 
 import com.musseukpeople.woorimap.common.model.BaseEntity;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
+import com.musseukpeople.woorimap.member.domain.Member;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -45,5 +46,13 @@ public class Couple extends BaseEntity {
         this.startDate = startDate;
         this.coupleMembers = coupleMembers;
         this.coupleMembers.assignCoupleForMembers(this);
+    }
+
+    public Member getMe(Long id) {
+        return this.coupleMembers.getMe(id);
+    }
+
+    public Member getYou(Long id) {
+        return this.coupleMembers.getYou(id);
     }
 }

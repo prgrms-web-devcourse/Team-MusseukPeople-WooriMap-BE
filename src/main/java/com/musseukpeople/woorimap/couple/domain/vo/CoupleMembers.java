@@ -8,7 +8,9 @@ import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.couple.domain.Couple;
+import com.musseukpeople.woorimap.couple.exception.MappingCoupleMemberException;
 import com.musseukpeople.woorimap.member.domain.Member;
 
 import lombok.AccessLevel;
@@ -32,6 +34,18 @@ public class CoupleMembers {
 
     public void assignCoupleForMembers(Couple couple) {
         this.members.forEach(member -> member.changeCouple(couple));
+    }
+
+    public Member getMe(Long id) {
+        return this.members.stream()
+            .filter(member -> member.isSame(id))
+            .findAny()
+            .orElseThrow(
+                () -> new MappingCoupleMemberException("나의 정보를 변환할 수 없습니다.", ErrorCode.NOT_MAPPING_COUPLE_MEMBER));
+    }
+
+    public Member getYou(Long id) {
+        return this.members.stream().filter(member -> !member.isSame(id)).findAny().orElseThrow();
     }
 
     private void validateCoupleMembers(List<Member> members) {

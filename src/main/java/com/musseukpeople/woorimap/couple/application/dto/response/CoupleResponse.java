@@ -11,14 +11,14 @@ import lombok.NoArgsConstructor;
 public class CoupleResponse {
 
     private LocalDate startDate;
-    private CoupleMyResponse me;
-    private CoupleYourResponse you;
+    private CoupleMemeberResponse me;
+    private CoupleMemeberResponse you;
 
     public CoupleResponse(LocalDate startDate,
-                          CoupleMyResponse coupleMyResponse,
-                          CoupleYourResponse coupleYourResponse) {
+                          CoupleMemeberResponse coupleMeResponse,
+                          CoupleMemeberResponse coupleYouResponse) {
         this.startDate = startDate;
-        this.me = coupleMyResponse;
-        this.you = coupleYourResponse;
+        this.me = coupleMeResponse;
+        this.you = coupleYouResponse;
     }
 }
