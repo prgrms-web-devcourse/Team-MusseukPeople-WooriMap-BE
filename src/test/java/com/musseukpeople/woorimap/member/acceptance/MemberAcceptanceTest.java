@@ -93,9 +93,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("솔로 회원 정보 조회 성공")
+    @DisplayName("회원 정보 조회 성공")
     @Test
-    void showMember_solo_success() throws Exception {
+    void showMember_success() throws Exception {
         // given
         String email = "test@gmail.com";
         String password = "!Hwan1234";
@@ -112,13 +112,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
             () -> assertThat(memberResponse.getNickName()).isEqualTo(nickName),
             () -> assertThat(memberResponse.isCouple()).isFalse()
         );
-    }
-
-    private MockHttpServletResponse 회원_정보_조회(String accessToken) throws Exception {
-        return mockMvc.perform(get("/api/members")
-                .header(HttpHeaders.AUTHORIZATION, accessToken))
-            .andDo(print())
-            .andReturn().getResponse();
     }
 
     @DisplayName("URL이 아닌 아님으로 인한 프로필 수정 실패")
@@ -169,5 +162,12 @@ class MemberAcceptanceTest extends AcceptanceTest {
             () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
             () -> assertThat(errorResponse.getErrors().get(0).getReason()).isEqualTo("올바른 이미지 URL이 아닙니다.")
         );
+    }
+
+    private MockHttpServletResponse 회원_정보_조회(String accessToken) throws Exception {
+        return mockMvc.perform(get("/api/members")
+                .header(HttpHeaders.AUTHORIZATION, accessToken))
+            .andDo(print())
+            .andReturn().getResponse();
     }
 }
