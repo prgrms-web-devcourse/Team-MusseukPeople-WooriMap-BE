@@ -70,6 +70,14 @@ public class Member extends BaseEntity {
         this.couple = couple;
     }
 
+    public void changeNickName(String nickName) {
+        this.nickName = new NickName(nickName);
+    }
+
+    public void changeProfileImage(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public void breakUp() {
         this.couple = null;
     }
