@@ -5,8 +5,6 @@ import java.net.URL;
 
 import org.apache.tika.Tika;
 
-import com.musseukpeople.woorimap.common.exception.ErrorCode;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +19,7 @@ public class ImageUtil {
             String mimeType = tika.detect(new URL(url));
             return mimeType.startsWith(IMAGE_MIMETYPE);
         } catch (IOException e) {
-            throw new InvalidImageUrlExcpetion(url, ErrorCode.INVALID_IMAGE_URL);
+            return false;
         }
     }
 }
