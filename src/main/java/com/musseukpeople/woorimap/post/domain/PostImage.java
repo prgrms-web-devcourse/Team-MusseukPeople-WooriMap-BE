@@ -1,5 +1,6 @@
 package com.musseukpeople.woorimap.post.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -21,18 +22,15 @@ public class PostImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String imageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private String imageUrl;
-
-    public PostImage(String imageUrl) {
-        this.id = null;
-        this.imageUrl = imageUrl;
-    }
-
-    public void changePost(Post post) {
+    public PostImage(Post post, String imageUrl) {
         this.post = post;
+        this.imageUrl = imageUrl;
     }
 }
