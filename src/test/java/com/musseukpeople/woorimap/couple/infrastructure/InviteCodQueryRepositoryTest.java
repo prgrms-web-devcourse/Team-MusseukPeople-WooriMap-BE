@@ -43,8 +43,8 @@ class InviteCodQueryRepositoryTest {
         assertAll(
             () -> assertThat(inviteCode).isNotNull(),
             () -> assertThat(inviteCode.getCode()).isEqualTo(INVITE_CODE),
-            () -> assertThat(inviteCode.getExpireDate()).isAfter(LocalDateTime.now()),
-            () -> assertThat(inviteCode.getExpireDate()).isBeforeOrEqualTo(LocalDateTime.now().plusDays(1))
+            () -> assertThat(inviteCode.getExpireDateTime()).isAfter(LocalDateTime.now()),
+            () -> assertThat(inviteCode.getExpireDateTime()).isBeforeOrEqualTo(LocalDateTime.now().plusDays(1))
         );
     }
 
