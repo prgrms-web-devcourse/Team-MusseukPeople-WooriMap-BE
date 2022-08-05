@@ -14,8 +14,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostTag {
 
@@ -31,11 +31,8 @@ public class PostTag {
     @JoinColumn(name = "tag_id")
     private Tag tag;
 
-    public PostTag(Tag tag) {
-        this.tag = tag;
-    }
-
-    public void setPost(Post post) {
+    public PostTag(Post post, Tag tag) {
         this.post = post;
+        this.tag = tag;
     }
 }
