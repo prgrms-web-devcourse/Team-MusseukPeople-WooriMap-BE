@@ -37,7 +37,6 @@ public class PostController {
                                                         @Login LoginMember member) {
         Long coupleId = member.getCoupleId();
         Long postId = postFacade.createPost(coupleId, createPostRequest);
-
         return ResponseEntity.created(createURI(postId)).build();
     }
 

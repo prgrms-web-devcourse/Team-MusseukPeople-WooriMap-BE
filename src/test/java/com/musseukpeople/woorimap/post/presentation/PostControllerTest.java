@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +51,7 @@ class PostControllerTest extends AcceptanceTest {
             .tags(sampleTags)
             .latitude(new BigDecimal("12.12312321"))
             .longitude(new BigDecimal("122.3123121"))
+            .datingDate(LocalDate.now())
             .build();
 
         MockHttpServletResponse response = mockMvc.perform(post("/api/couples/posts")
