@@ -3,17 +3,15 @@ package com.musseukpeople.woorimap.post.application.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.post.domain.Post;
-import com.musseukpeople.woorimap.post.domain.PostImage;
-import com.musseukpeople.woorimap.post.domain.PostTag;
 import com.musseukpeople.woorimap.post.domain.vo.Location;
 import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
+import com.musseukpeople.woorimap.tag.domain.Tag;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -65,19 +63,15 @@ public class CreatePostRequest {
         this.datingDate = datingDate;
     }
 
-    public Post toPost(Couple coupleId, List<PostTag> postTagIdList) {
+    public Post toPost(Couple couple, List<Tag> tags) {
         return Post.builder()
-            .couple(coupleId)
+            .couple(couple)
             .title(title)
             .content(content)
             .location(new Location(latitude, longitude))
-            .postImages(toPostImages())
-            .postTags(postTagIdList)
+            .datingDate(datingDate)
+            .imageUrls(imageUrls)
+            .tags(tags)
             .build();
-    }
-
-    public List<PostImage> toPostImages() {
-        return imageUrls.stream().map(PostImage::new)
-            .collect(Collectors.toList());
     }
 }
