@@ -46,6 +46,10 @@ public class Tag {
         this.couple = couple;
     }
 
+    public boolean isSameName(Tag tag) {
+        return this.name.equals(tag.name);
+    }
+
     public Long getId() {
         return id;
     }
