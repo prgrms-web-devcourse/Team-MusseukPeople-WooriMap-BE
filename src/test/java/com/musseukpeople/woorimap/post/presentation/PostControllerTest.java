@@ -32,8 +32,7 @@ class PostControllerTest extends AcceptanceTest {
         String email = "test@gmail.com";
         String password = "!Test1234";
         String nickName = "test";
-        SignupRequest user = new SignupRequest(email, password, nickName);
-        String accessToken = 회원가입_토큰(user);
+        String accessToken = 회원가입_토큰(new SignupRequest(email, password, nickName));
         coupleAccessToken = 커플_맺기_토큰(accessToken);
     }
 
@@ -41,26 +40,26 @@ class PostControllerTest extends AcceptanceTest {
     @Transactional
     @Test
     void create_post_success() throws Exception {
-        List<String> sampleImagePaths = List.of("http://wooriemap.aws.com/1.jpg", "http://wooriemap.aws.com/2.jpg");
-        List<TagRequest> sampleTags = List.of(new TagRequest("seoul", "F000000"), new TagRequest("cafe", "F000000"));
-
-        CreatePostRequest createPostRequest = CreatePostRequest.builder()
+        // given
+        CreatePostRequest request = CreatePostRequest.builder()
             .title("첫 이야기")
             .content("<h1>첫 이야기.... </h1>")
-            .imageUrls(sampleImagePaths)
-            .tags(sampleTags)
+            .imageUrls(List.of("imageUrl1", "imageUrl2"))
+            .tags(List.of(new TagRequest("서울", "#FFFFFF"), new TagRequest("부산", "#FFFFF1")))
+            .datingDate(LocalDate.now())
             .latitude(new BigDecimal("12.12312321"))
             .longitude(new BigDecimal("122.3123121"))
-            .datingDate(LocalDate.now())
             .build();
 
+        // when
         MockHttpServletResponse response = mockMvc.perform(post("/api/couples/posts")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, coupleAccessToken)
-                .content(objectMapper.writeValueAsString(createPostRequest)))
+                .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
             .andReturn().getResponse();
 
+        // then
         assertAll(
             () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value()),
             () -> assertThat(response.getHeader(HttpHeaders.LOCATION)).isNotNull()

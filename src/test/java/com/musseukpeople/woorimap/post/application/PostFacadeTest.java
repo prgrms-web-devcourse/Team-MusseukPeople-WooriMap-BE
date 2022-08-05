@@ -48,6 +48,7 @@ class PostFacadeTest extends IntegrationTest {
             .title("첫 이야기")
             .content("<h1>첫 이야기.... </h1>")
             .imageUrls(List.of("imageUrl1", "imageUrl2"))
+            .datingDate(LocalDate.now())
             .tags(List.of(new TagRequest("서울", "#FFFFFF"), new TagRequest("부산", "#FFFFFF")))
             .latitude(new BigDecimal("12.12312321"))
             .longitude(new BigDecimal("122.3123121"))

@@ -87,6 +87,7 @@ class PostServiceTest extends IntegrationTest {
             .title("첫 이야기")
             .content("<h1>첫 이야기.... </h1>")
             .imageUrls(List.of("imageUrl1", "imageUrl2"))
+            .datingDate(LocalDate.now())
             .latitude(new BigDecimal("12.12312321"))
             .longitude(new BigDecimal("122.3123121"))
             .build();
