@@ -12,7 +12,11 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
 
   redis:
     host: localhost
