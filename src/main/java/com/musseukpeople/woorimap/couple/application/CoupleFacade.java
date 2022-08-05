@@ -12,6 +12,7 @@ import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.couple.application.dto.response.CoupleCheckResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleEditResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleMemeberResponse;
 import com.musseukpeople.woorimap.couple.application.dto.response.CoupleResponse;
@@ -98,5 +99,16 @@ public class CoupleFacade {
         if (Objects.equals(inviterId, receiverId)) {
             throw new CreateCoupleFailException("자기 자신이 커플을 맺을 수 없습니다.", ErrorCode.NOT_CREATE_COUPLE);
         }
+    }
+
+    public CoupleCheckResponse checkCouple(Long loginMemberId) {
+        Member member = memberService.getMemberWithCoupleById(loginMemberId);
+        String memberId = String.valueOf(member.getId());
+
+        boolean isCouple = member.isCouple();
+        String accessToken = isCouple ?
+            jwtProvider.createAccessToken(memberId, member.getCouple().getId()).getValue() : null;
+
+        return new CoupleCheckResponse(accessToken, isCouple);
     }
 }
