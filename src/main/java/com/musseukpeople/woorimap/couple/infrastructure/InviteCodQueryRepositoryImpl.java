@@ -23,7 +23,7 @@ public class InviteCodQueryRepositoryImpl implements InviteCodQueryRepository {
             .selectFrom(inviteCode)
             .where(
                 inviterIdEq(inviterId),
-                expireDateBeforeNow()
+                expireDateTimeBeforeNow()
             )
             .fetchOne());
     }
@@ -38,7 +38,7 @@ public class InviteCodQueryRepositoryImpl implements InviteCodQueryRepository {
         return inviteCode.inviterId.eq(inviterId);
     }
 
-    private BooleanExpression expireDateBeforeNow() {
-        return inviteCode.expireDate.after(LocalDateTime.now());
+    private BooleanExpression expireDateTimeBeforeNow() {
+        return inviteCode.expireDateTime.after(LocalDateTime.now());
     }
 }

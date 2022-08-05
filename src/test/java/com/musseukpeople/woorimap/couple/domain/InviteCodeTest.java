@@ -25,7 +25,7 @@ class InviteCodeTest {
         //then
         assertAll(
             () -> assertThat(inviteCode.getCode()).hasSize(7),
-            () -> assertThat(inviteCode.getExpireDate()).isBeforeOrEqualTo(LocalDateTime.now().plusDays(1))
+            () -> assertThat(inviteCode.getExpireDateTime()).isBeforeOrEqualTo(LocalDateTime.now().plusDays(1))
         );
     }
 

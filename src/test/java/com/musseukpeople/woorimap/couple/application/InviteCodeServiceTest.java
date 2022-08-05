@@ -46,7 +46,7 @@ class InviteCodeServiceTest extends IntegrationTest {
         assertAll(
             () -> assertThat(inviteCode.getCode()).isEqualTo(findInviteCode.getCode()),
             () -> assertThat(findInviteCode.getInviterId()).isEqualTo(INVITER_ID),
-            () -> assertThat(findInviteCode.getExpireDate()).isAfter(LocalDateTime.now())
+            () -> assertThat(findInviteCode.getExpireDateTime()).isAfter(LocalDateTime.now())
         );
     }
 

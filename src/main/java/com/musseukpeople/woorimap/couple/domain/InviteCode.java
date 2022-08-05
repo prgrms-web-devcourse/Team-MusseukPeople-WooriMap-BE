@@ -26,13 +26,13 @@ public class InviteCode {
     private Long inviterId;
 
     @Column(nullable = false)
-    private LocalDateTime expireDate;
+    private LocalDateTime expireDateTime;
 
-    public InviteCode(String code, Long inviterId, LocalDateTime expireDate) {
+    public InviteCode(String code, Long inviterId, LocalDateTime expireDateTime) {
         validateCode(code);
         this.code = code;
         this.inviterId = inviterId;
-        this.expireDate = expireDate;
+        this.expireDateTime = expireDateTime;
     }
 
     private void validateCode(String code) {
