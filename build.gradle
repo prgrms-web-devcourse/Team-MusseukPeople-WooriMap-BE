@@ -41,6 +41,8 @@ dependencies {
     implementation(group: 'it.ozimov', name: 'embedded-redis', version: '0.7.3') {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
+    implementation 'org.flywaydb:flyway-core:8.5.12'
+    implementation 'org.flywaydb:flyway-mysql:8.5.12'
 
     // QueryDsl
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
