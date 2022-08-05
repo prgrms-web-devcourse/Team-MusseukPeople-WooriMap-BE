@@ -17,7 +17,7 @@ import javax.persistence.OneToMany;
 
 import com.musseukpeople.woorimap.common.model.BaseEntity;
 import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.post.domain.vo.GPSCoordinates;
+import com.musseukpeople.woorimap.post.domain.vo.Location;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -43,23 +43,22 @@ public class Post extends BaseEntity {
     private String content;
 
     @Embedded
-    private GPSCoordinates gpsCoordinates;
+    private Location location;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private final List<PostImage> postImages = new ArrayList<>();
+    private List<PostImage> postImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private final List<PostTag> postTags = new ArrayList<>();
+    private List<PostTag> postTags = new ArrayList<>();
 
     @Builder
-    public Post(Long id, Couple couple, String title, String content,
-                GPSCoordinates gpsCoordinates,
-                List<PostImage> postImages, List<PostTag> postTags) {
+    public Post(Long id, Couple couple, String title, String content, Location location, List<PostImage> postImages,
+                List<PostTag> postTags) {
         this.id = id;
         this.couple = couple;
         this.title = title;
         this.content = content;
-        this.gpsCoordinates = gpsCoordinates;
+        this.location = location;
         addPostImages(postImages);
         addPostTags(postTags);
     }

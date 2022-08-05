@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.musseukpeople.woorimap.post.domain.PostTag;
-import com.musseukpeople.woorimap.post.domain.vo.GPSCoordinates;
-import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.PostImage;
+import com.musseukpeople.woorimap.post.domain.PostTag;
+import com.musseukpeople.woorimap.post.domain.vo.Location;
+import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -48,8 +48,8 @@ public class CreatePostRequest {
     private BigDecimal longitude;
 
     @Builder
-    public CreatePostRequest(String title, String content, List<String> imageUrls, List<TagRequest> tags, BigDecimal latitude,
-                             BigDecimal longitude) {
+    public CreatePostRequest(String title, String content, List<String> imageUrls, List<TagRequest> tags,
+                             BigDecimal latitude, BigDecimal longitude) {
         this.title = title;
         this.content = content;
         this.imageUrls = imageUrls;
@@ -63,13 +63,14 @@ public class CreatePostRequest {
             .couple(coupleId)
             .title(title)
             .content(content)
-            .gpsCoordinates(new GPSCoordinates(latitude, longitude))
+            .location(new Location(latitude, longitude))
             .postImages(toPostImages())
             .postTags(postTagIdList)
             .build();
     }
 
     public List<PostImage> toPostImages() {
-        return imageUrls.stream().map(PostImage::new).collect(Collectors.toList());
+        return imageUrls.stream().map(PostImage::new)
+            .collect(Collectors.toList());
     }
 }

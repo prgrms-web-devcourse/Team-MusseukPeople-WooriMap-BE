@@ -14,18 +14,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.couple.application.CoupleService;
+import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.member.domain.Member;
+import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.tag.application.TagService;
 import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
-import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
 import com.musseukpeople.woorimap.tag.domain.Tag;
+import com.musseukpeople.woorimap.util.IntegrationTest;
 import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
 
 @SpringBootTest
-public class PostServiceTest {
+class PostServiceTest extends IntegrationTest {
+
+    private static final LocalDate COUPLE_START_DATE = LocalDate.of(2022, 1, 1);
 
     @Autowired
     private PostService postService;
@@ -41,8 +44,6 @@ public class PostServiceTest {
 
     @Autowired
     private PostRepository postRepository;
-
-    private static final LocalDate COUPLE_START_DATE = LocalDate.of(2022, 1, 1);
 
     @DisplayName("post 생성 성공 - postFacade")
     @Test
@@ -91,8 +92,8 @@ public class PostServiceTest {
             () -> assertThat(postFromDb.getPostTags().get(0).getPost().getId()).isEqualTo(savedPostId),
             () -> assertThat(postFromDb.getPostImages()).hasSize(createPostRequest.getImageUrls().size()),
             () -> assertThat(postFromDb.getPostImages().get(0).getPost().getId()).isEqualTo(savedPostId),
-            () -> assertThat(postFromDb.getGpsCoordinates().getLongitude()).isEqualTo(createPostRequest.getLongitude()),
-            () -> assertThat(postFromDb.getGpsCoordinates().getLatitude()).isEqualTo(createPostRequest.getLatitude())
+            () -> assertThat(postFromDb.getLocation().getLongitude()).isEqualTo(createPostRequest.getLongitude()),
+            () -> assertThat(postFromDb.getLocation().getLatitude()).isEqualTo(createPostRequest.getLatitude())
         );
     }
 
