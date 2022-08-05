@@ -51,4 +51,33 @@ class TagsTest {
             .isInstanceOf(DuplicateTagException.class)
             .hasMessage("태그가 중복됩니다.");
     }
+
+    @DisplayName("이름 같은 태그들 제외 성공")
+    @Test
+    void removeAllByName_success() {
+        // given
+        Tag duplicateTag = new Tag("서울", "#FFFFFF", couple);
+        Tags tags = new Tags(List.of(duplicateTag, new Tag("맛집", "#FFFFFF", couple)));
+        Tags compareTags = new Tags(List.of(duplicateTag));
+
+        // when
+        Tags nonDuplicateTags = tags.removeAllByName(compareTags);
+
+        // then
+        assertThat(nonDuplicateTags.getList()).hasSize(1);
+    }
+
+    @DisplayName("태그들 추가 성공")
+    @Test
+    void addAll_success() {
+        // given
+        Tags tags = new Tags(List.of(new Tag("서울", "#FFFFFF", couple), new Tag("맛집", "#FFFFFF", couple)));
+        Tags addTags = new Tags(List.of(new Tag("낙성대역", "#FFFFFF", couple)));
+
+        // when
+        Tags addAllTags = tags.addAll(addTags);
+
+        // then
+        assertThat(addAllTags.getList()).hasSize(3);
+    }
 }
