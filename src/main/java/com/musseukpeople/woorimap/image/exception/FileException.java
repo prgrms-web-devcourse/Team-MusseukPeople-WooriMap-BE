@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.file.exception;
+package com.musseukpeople.woorimap.image.exception;
 
 import com.musseukpeople.woorimap.common.exception.BusinessException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;

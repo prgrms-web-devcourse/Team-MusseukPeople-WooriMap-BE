@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.file.domain;
+package com.musseukpeople.woorimap.image.domain;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -7,11 +7,13 @@ import java.util.UUID;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.common.io.Files;
+import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.image.exception.NotSupportImageException;
 
 import lombok.Getter;
 
 @Getter
-public class S3File {
+public class S3Image {
     private static final String FOLDER_DELIMITER = "/";
     private static final String EXTENSION_DELIMITER = ".";
     private static final String BLANK = " ";
@@ -20,18 +22,20 @@ public class S3File {
     private final String originFileName;
     private final String extension;
 
-    public S3File(String originFileName, String extension, MultipartFile multipartFile) {
+    private S3Image(String originFileName, String extension, MultipartFile multipartFile) {
+        if (!FileType.verifyType(extension)) {
+            throw new NotSupportImageException(extension, ErrorCode.INVALID_IMAGE_EXTENSION);
+        }
         this.originFileName = originFileName;
         this.extension = extension;
         this.multipartFile = multipartFile;
     }
 
-    public static S3File createImage(MultipartFile multipartFile) {
+    public static S3Image createImage(MultipartFile multipartFile) {
         String originalFileName = Objects.requireNonNull(multipartFile.getOriginalFilename())
             .replace(BLANK, BLANK_REPLACEMENT);
         String extension = Files.getFileExtension(originalFileName);
-        FileType.verifyType(extension);
-        return new S3File(originalFileName, extension, multipartFile);
+        return new S3Image(originalFileName, extension, multipartFile);
     }
 
     public String generateS3FileName(Long memberId, String activeProfile) {

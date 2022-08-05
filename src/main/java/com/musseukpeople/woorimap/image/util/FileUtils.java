@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.file.util;
+package com.musseukpeople.woorimap.image.util;
 
 import java.io.File;
 

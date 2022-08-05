@@ -1,6 +1,5 @@
-package com.musseukpeople.woorimap.file.presentation;
+package com.musseukpeople.woorimap.image.presentation;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,7 @@ import com.musseukpeople.woorimap.auth.aop.LoginRequired;
 import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
-import com.musseukpeople.woorimap.file.application.FileService;
+import com.musseukpeople.woorimap.image.application.ImageService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("api")
 public class ImageController {
 
-    private final FileService imageService;
+    private final ImageService imageService;
 
     @LoginRequired
     @Operation(summary = "단일 이미지 업로드", description = "이미지를 S3에 업로드해 url을 반환합니다.")
@@ -34,7 +33,7 @@ public class ImageController {
     public ResponseEntity<ApiResponse<String>> uploadImage(
         @Login LoginMember loginMember,
         @RequestPart("file") MultipartFile file
-    ) throws IOException {
+    ) {
         return ResponseEntity.ok(new ApiResponse<>(imageService.uploadImage(loginMember.getId(), file)));
     }
 
