@@ -1,6 +1,7 @@
 package com.musseukpeople.woorimap.post.presentation;
 
 import java.net.URI;
+
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.musseukpeople.woorimap.auth.aop.OnlyCouple;
 import com.musseukpeople.woorimap.auth.domain.login.Login;
@@ -23,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "게시글", description = "게시글 관련 API입니다.")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/post")
+@RequestMapping("/api/couples/posts")
 public class PostController {
 
     private final PostFacade postFacade;
@@ -31,10 +33,18 @@ public class PostController {
     @Operation(summary = "게시글 생성", description = "게시글 생성 API입니다.")
     @OnlyCouple
     @PostMapping
-    public ResponseEntity<ApiResponse<String>> createPost(@Valid @RequestBody CreatePostRequest createPostRequest,
-                                                          @Login LoginMember member) {
+    public ResponseEntity<ApiResponse<Void>> createPost(@Valid @RequestBody CreatePostRequest createPostRequest,
+                                                        @Login LoginMember member) {
         Long coupleId = member.getCoupleId();
-        Long savedPostId = postFacade.createPost(coupleId, createPostRequest);
-        return ResponseEntity.created(URI.create("/post/" + savedPostId)).build();
+        Long postId = postFacade.createPost(coupleId, createPostRequest);
+
+        return ResponseEntity.created(createURI(postId)).build();
+    }
+
+    private URI createURI(Long id) {
+        return ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(id)
+            .toUri();
     }
 }
