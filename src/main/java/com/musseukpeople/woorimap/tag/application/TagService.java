@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.*;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,7 @@ public class TagService {
     @Transactional
     public Tags findOrCreateTags(Couple couple, List<TagRequest> tagRequests) {
         Tags requestTags = toTags(couple, tagRequests);
-        Tags existTags = new Tags(tagRepository.findExistTagByCoupleId(couple, requestTags.toNames()));
+        Tags existTags = new Tags(tagRepository.findExistTagByCouple(couple, requestTags.toNames()));
 
         Tags newTags = requestTags.removeAllByName(existTags);
         tagRepository.saveAll(newTags.getList());
@@ -34,8 +35,14 @@ public class TagService {
         return existTags.addAll(newTags);
     }
 
-    public List<TagResponse> getCoupleTags(Long id) {
-        return tagRepository.findAllByCoupleId(id).stream()
+    @Cacheable(
+        key = "#coupleId",
+        value = "coupleTags",
+        unless = "#result == null || #result.isEmpty()"
+    )
+    public List<TagResponse> getCoupleTags(Long coupleId) {
+        List<Tag> result = tagRepository.findAllByCoupleId(coupleId);
+        return result.stream()
             .map(tag -> new TagResponse(tag.getName(), tag.getColor()))
             .collect(toList());
     }
