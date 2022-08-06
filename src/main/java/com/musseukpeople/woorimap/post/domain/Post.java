@@ -72,6 +72,14 @@ public class Post extends BaseEntity {
         this.postTags = new PostTags(covertToPostTags(tags));
     }
 
+    public String getThumbnailUrl() {
+        return postImages.getThumbnailUrl();
+    }
+
+    public List<String> getImageUrls() {
+        return postImages.getImageUrls();
+    }
+
     private List<PostTag> covertToPostTags(List<Tag> tags) {
         return tags.stream()
             .map(tag -> new PostTag(this, tag))
