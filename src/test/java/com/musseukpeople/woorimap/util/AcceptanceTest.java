@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,6 +112,13 @@ public abstract class AcceptanceTest {
     protected <T> T getResponseObject(MockHttpServletResponse response, Class<T> type) throws IOException {
         JavaType javaType = objectMapper.getTypeFactory().constructParametricType(ApiResponse.class, type);
         ApiResponse<T> result = objectMapper.readValue(response.getContentAsString(), javaType);
+        return result.getData();
+    }
+
+    protected <T> List<T> getResponseList(MockHttpServletResponse response, Class<T> type) throws IOException {
+        JavaType insideType = objectMapper.getTypeFactory().constructParametricType(List.class, type);
+        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(ApiResponse.class, insideType);
+        ApiResponse<List<T>> result = objectMapper.readValue(response.getContentAsString(), javaType);
         return result.getData();
     }
 
