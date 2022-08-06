@@ -24,7 +24,7 @@ public class PostImages {
         this.postImages = postImages;
     }
 
-    public String getThumbnail() {
+    public String getThumbnailUrl() {
         return postImages.get(THUMNAIL_INDEX).getImageUrl();
     }
 
