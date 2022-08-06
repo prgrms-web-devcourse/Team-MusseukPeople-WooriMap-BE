@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
+import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 import com.musseukpeople.woorimap.tag.domain.TagRepository;
 import com.musseukpeople.woorimap.tag.domain.Tags;

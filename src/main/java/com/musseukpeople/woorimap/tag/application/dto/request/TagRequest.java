@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.tag.application.dto;
+package com.musseukpeople.woorimap.tag.application.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
