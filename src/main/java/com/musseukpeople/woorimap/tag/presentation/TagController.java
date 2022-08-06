@@ -11,6 +11,7 @@ import com.musseukpeople.woorimap.auth.aop.OnlyCouple;
 import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
+import com.musseukpeople.woorimap.tag.application.TagService;
 import com.musseukpeople.woorimap.tag.application.dto.response.TagResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,10 +24,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("api/couples/tags")
 public class TagController {
 
+    private final TagService tagService;
+
     @Operation(summary = "태그 전체 조회", description = "태그 전체 조회 API입니다.")
     @OnlyCouple
     @GetMapping
     public ResponseEntity<ApiResponse<List<TagResponse>>> showAll(@Login LoginMember loginMember) {
-        return ResponseEntity.ok().build();
+        List<TagResponse> tagResponses = tagService.getCoupleTags(loginMember.getCoupleId());
+        return ResponseEntity.ok(new ApiResponse<>(tagResponses));
     }
 }
