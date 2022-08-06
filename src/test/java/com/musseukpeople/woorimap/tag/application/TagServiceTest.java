@@ -1,6 +1,7 @@
 package com.musseukpeople.woorimap.tag.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +17,7 @@ import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
+import com.musseukpeople.woorimap.tag.application.dto.response.TagResponse;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 import com.musseukpeople.woorimap.tag.domain.TagRepository;
 import com.musseukpeople.woorimap.tag.domain.Tags;
@@ -68,6 +70,23 @@ class TagServiceTest extends IntegrationTest {
         assertThatThrownBy(() -> tagService.findOrCreateTags(couple, tagRequests))
             .isInstanceOf(DuplicateTagException.class)
             .hasMessage("태그가 중복됩니다.");
+    }
+
+    @DisplayName("태그 조회 성공")
+    @Test
+    void getCoupleTags() {
+        // given
+        tagRepository.saveAll(List.of(new Tag("서울", "#FFFFFF", couple), new Tag("맛집", "#FFFFFF", couple)));
+
+        // when
+        List<TagResponse> tags = tagService.getCoupleTags(couple.getId());
+
+        // then
+        assertAll(
+            () -> assertThat(tags).hasSize(2),
+            () -> assertThat(tags).extracting("name").containsExactly("서울", "맛집")
+        );
+
     }
 
     private Couple createCouple() {

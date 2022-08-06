@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
+import com.musseukpeople.woorimap.tag.application.dto.response.TagResponse;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 import com.musseukpeople.woorimap.tag.domain.TagRepository;
 import com.musseukpeople.woorimap.tag.domain.Tags;
@@ -31,6 +32,12 @@ public class TagService {
         tagRepository.saveAll(newTags.getList());
 
         return existTags.addAll(newTags);
+    }
+
+    public List<TagResponse> getCoupleTags(Long id) {
+        return tagRepository.findAllByCoupleId(id).stream()
+            .map(tag -> new TagResponse(tag.getName(), tag.getColor()))
+            .collect(toList());
     }
 
     private Tags toTags(Couple couple, List<TagRequest> tagRequestList) {
