@@ -68,7 +68,7 @@ public class AuthFacade {
 
     private void registerBlackList(String accessToken) {
         Date expiredDate = jwtProvider.getExpiredDate(accessToken);
-        TokenDto tokenDto = new TokenDto(accessToken, expiredDate.getTime());
+        TokenDto tokenDto = new TokenDto(accessToken, expiredDate.getTime() - new Date().getTime());
 
         blackListService.saveBlackList(tokenDto);
     }
