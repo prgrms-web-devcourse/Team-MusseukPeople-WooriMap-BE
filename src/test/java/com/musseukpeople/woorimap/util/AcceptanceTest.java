@@ -24,6 +24,7 @@ import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
+import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -92,6 +93,15 @@ public abstract class AcceptanceTest {
     protected String 커플_맺기_토큰(String accessToken) throws Exception {
         MockHttpServletResponse response = 커플_맺기(accessToken);
         return "Bearer" + getResponseObject(response, LoginResponse.class).getAccessToken();
+    }
+
+    protected MockHttpServletResponse 게시글_작성(String token, CreatePostRequest request) throws Exception {
+        return mockMvc.perform(post("/api/couples/posts")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andReturn().getResponse();
     }
 
     protected ErrorResponse getErrorResponse(MockHttpServletResponse response) throws IOException {
