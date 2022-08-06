@@ -18,6 +18,10 @@ import javax.persistence.ManyToOne;
 
 import com.musseukpeople.woorimap.common.model.BaseEntity;
 import com.musseukpeople.woorimap.couple.domain.Couple;
+import com.musseukpeople.woorimap.post.domain.image.PostImage;
+import com.musseukpeople.woorimap.post.domain.image.PostImages;
+import com.musseukpeople.woorimap.post.domain.tag.PostTag;
+import com.musseukpeople.woorimap.post.domain.tag.PostTags;
 import com.musseukpeople.woorimap.post.domain.vo.Location;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 

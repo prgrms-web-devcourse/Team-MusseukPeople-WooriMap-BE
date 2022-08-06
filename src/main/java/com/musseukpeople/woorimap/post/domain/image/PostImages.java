@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.post.domain;
+package com.musseukpeople.woorimap.post.domain.image;
 
 import static java.util.stream.Collectors.*;
 

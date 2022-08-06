@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.post.domain;
+package com.musseukpeople.woorimap.post.domain.tag;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 
 import lombok.AccessLevel;

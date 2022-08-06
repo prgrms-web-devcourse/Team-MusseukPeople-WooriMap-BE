@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.post.domain;
+package com.musseukpeople.woorimap.post.domain.tag;
 
 import java.util.ArrayList;
 import java.util.List;
