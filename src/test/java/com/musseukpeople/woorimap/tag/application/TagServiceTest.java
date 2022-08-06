@@ -50,7 +50,7 @@ class TagServiceTest extends IntegrationTest {
     @Test
     void createTag_success() {
         // given
-        tagRepository.save(new Tag("서울", "#FFFFFF", couple));
+        tagRepository.saveAll(List.of(new Tag("서울", "#FFFFFF", couple)));
         List<TagRequest> tagRequests = List.of(new TagRequest("서울", "#FFFFFF"), new TagRequest("맛집", "#AAAAAA"));
 
         // when

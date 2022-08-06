@@ -12,8 +12,6 @@ import com.musseukpeople.woorimap.tag.infrastructure.QueryTagRepository;
 
 public interface TagRepository extends Repository<Tag, Long>, QueryTagRepository {
 
-    Tag save(Tag tag);
-
     @CacheEvict(
         key = "#p0.iterator().next().couple.id",
         value = "coupleTags",
