@@ -2,9 +2,17 @@ spring:
   profiles:
     active: local
 
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: validate
+
 server:
   forward-headers-strategy: framework
-  
+
 springdoc:
   swagger-ui:
     path: /api-docs
@@ -12,11 +20,3 @@ springdoc:
     tags-sorter: alpha
   api-docs:
     path: /api-docs/json
-
-jwt:
-  issuer: local
-  secret-key: twk4jbz8a6smC4u0Xv6KvQUImMfVZ16/SCR0uKJIv3g=
-  access-token:
-    expire-length: 3600000
-  refresh-token:
-    expire-length: 3600000
