@@ -2,7 +2,7 @@
 <included>
     <include resource="appender/properties/default-properties.xml"/>
     <property name="db-log" value="logs/db/db"/>
-    <appender name="file-info-appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="file-db-appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${db-log}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${db-log}-${FILE_NAME_PATTERN}}</fileNamePattern>
