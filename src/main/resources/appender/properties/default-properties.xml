@@ -15,8 +15,6 @@
               value="${FILE_NAME_PATTERN:%d{yyyy-MM-dd}-%i.log}"/>
     <property name="FILE_LOG_PATTERN"
               value="${FILE_LOG_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger.%M{39} :%n> %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
-    <property name="FILE_DB_LOG_PATTERN"
-              value="${FILE_DB_LOG_PATTERN:%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %t %class{36}.%M L:%L %n      > %m%n}"/>
 
     <property name="ACCESS_LOG_PATTERN"
               value="--------------------------------------%n###### HTTP Request ###### %n%fullRequest###### HTTP Response ###### %n%fullResponse"/>
