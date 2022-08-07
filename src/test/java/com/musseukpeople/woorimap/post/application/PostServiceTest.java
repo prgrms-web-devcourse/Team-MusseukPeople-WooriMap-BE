@@ -18,6 +18,7 @@ import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
+import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 import com.musseukpeople.woorimap.tag.domain.TagRepository;
 import com.musseukpeople.woorimap.tag.exception.DuplicateTagException;
@@ -73,6 +74,41 @@ class PostServiceTest extends IntegrationTest {
         assertThatThrownBy(() -> postService.createPost(couple, tags, createPostRequest()))
             .isInstanceOf(DuplicateTagException.class)
             .hasMessage("태그가 중복됩니다.");
+    }
+
+    @DisplayName("게시물 수정 성공")
+    @Test
+    void modifyPost_success() {
+        // given
+        List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("cafe", "#FFFFFF", couple));
+        tagRepository.saveAll(tags);
+        CreatePostRequest request = createPostRequest();
+        Long postId = postService.createPost(couple, tags, request);
+
+        List<Tag> updateTags = List.of(
+            new Tag("seoul", "#FFFFFF", couple),
+            new Tag("갬성", "#FFFFFF", couple),
+            new Tag("부산", "#FFFFFF", couple)
+        );
+        EditPostRequest editPostRequest = editPostRequest(postId);
+
+        // when
+        Long updatePostId = postService.modifyPost(updateTags, editPostRequest);
+
+        // then
+        assertThat(postId).isEqualTo(updatePostId);
+    }
+
+    private EditPostRequest editPostRequest(Long id) {
+        return EditPostRequest.builder()
+            .id(id)
+            .title("첫 이야기")
+            .content("<h1>첫 이야기.... </h1>")
+            .imageUrls(List.of("imageUrl1", "imageUrl2"))
+            .datingDate(LocalDate.now())
+            .latitude(new BigDecimal("12.12312321"))
+            .longitude(new BigDecimal("122.3123121"))
+            .build();
     }
 
     private Couple createCouple() {
