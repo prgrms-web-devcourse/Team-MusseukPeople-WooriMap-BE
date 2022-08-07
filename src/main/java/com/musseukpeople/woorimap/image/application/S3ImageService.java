@@ -19,19 +19,27 @@ import com.musseukpeople.woorimap.image.domain.S3Image;
 import com.musseukpeople.woorimap.image.exception.ConvertFileFailedException;
 import com.musseukpeople.woorimap.image.util.FileUtils;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class S3ImageService implements ImageService {
 
     private final AmazonS3Client amazonS3Client;
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
-    @Value("${spring.profiles.active}")
-    private String activeProfile;
+
+    private final String bucketName;
+
+    private final String activeProfile;
+
+    public S3ImageService(
+        AmazonS3Client amazonS3Client,
+        @Value("${cloud.aws.s3.bucket}") String bucketName,
+        @Value("${spring.profiles.active}")String activeProfile
+    ) {
+        this.amazonS3Client = amazonS3Client;
+        this.bucketName = bucketName;
+        this.activeProfile = activeProfile;
+    }
 
     @Override
     public List<String> uploadImages(Long id, List<MultipartFile> files) {
