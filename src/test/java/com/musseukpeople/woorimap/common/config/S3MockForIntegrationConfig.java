@@ -14,12 +14,12 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import io.findify.s3mock.S3Mock;
 
 @TestConfiguration
-public class S3MockConfig {
+public class S3MockForIntegrationConfig {
 
     private final String region;
     private final String bucket;
 
-    public S3MockConfig(
+    public S3MockForIntegrationConfig(
         @Value("${cloud.aws.region.static}") String region,
         @Value("${cloud.aws.s3.bucket}") String bucket
     ) {
@@ -29,7 +29,7 @@ public class S3MockConfig {
 
     @Bean
     public S3Mock s3Mock() {
-        return new S3Mock.Builder().withPort(8001).withInMemoryBackend().build();
+        return new S3Mock.Builder().withPort(8002).withInMemoryBackend().build();
     }
 
     @Bean
@@ -37,7 +37,7 @@ public class S3MockConfig {
     public AmazonS3Client amazonS3Client(S3Mock s3Mock) {
         s3Mock.start();
         AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(
-            "http://localhost:8001", region);
+            "http://localhost:8002", region);
         AmazonS3Client client = (AmazonS3Client)AmazonS3ClientBuilder
             .standard()
             .withPathStyleAccessEnabled(true)

@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
-import com.musseukpeople.woorimap.common.config.S3MockConfig;
+import com.musseukpeople.woorimap.common.config.S3MockForIntegrationConfig;
 
 import io.findify.s3mock.S3Mock;
 
-@Import(S3MockConfig.class)
+@Import(S3MockForIntegrationConfig.class)
 @SpringBootTest
 public abstract class IntegrationTest {
 
