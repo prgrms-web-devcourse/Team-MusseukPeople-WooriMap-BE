@@ -6,6 +6,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +54,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
         log.warn(ERROR_LOG_MESSAGE, e.getClass().getSimpleName(), e.getMessage(), e);
         ErrorCode errorCode = e.getErrorCode();
+        return ResponseEntity
+            .status(errorCode.getStatus())
+            .body(ErrorResponse.of(errorCode));
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessException(MaxUploadSizeExceededException e) {
+        log.warn(ERROR_LOG_MESSAGE, e.getClass().getSimpleName(), e.getMessage(), e);
+        ErrorCode errorCode = ErrorCode.EXCEED_IMAGE_SIZE;
         return ResponseEntity
             .status(errorCode.getStatus())
             .body(ErrorResponse.of(errorCode));

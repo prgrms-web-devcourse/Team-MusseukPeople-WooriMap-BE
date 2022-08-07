@@ -39,7 +39,11 @@ public enum ErrorCode {
 
     // Post
     NOT_FOUND_POST(HttpStatus.NOT_FOUND, "P001", "존재하지 않는 게시글입니다."),
-    DUPLICATE_TAG(HttpStatus.BAD_REQUEST, "P002", "태그가 중복됩니다.");
+    DUPLICATE_TAG(HttpStatus.BAD_REQUEST, "P002", "태그가 중복됩니다."),
+
+    // Image
+    INVALID_IMAGE_EXTENSION(HttpStatus.BAD_REQUEST, "I001", "지원하지 않는 이미지 확장자입니다."),
+    EXCEED_IMAGE_SIZE(HttpStatus.BAD_REQUEST, "I002", "이미지 용량이 너무 큽니다.");
 
     private final HttpStatus status;
     private final String code;
