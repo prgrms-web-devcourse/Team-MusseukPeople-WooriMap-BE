@@ -39,4 +39,8 @@ public class PostTags {
             throw new DuplicateTagException(ErrorCode.DUPLICATE_TAG);
         }
     }
+
+    public void addPostTags(List<PostTag> postTagsToAdd) {
+        this.postTags.addAll(postTagsToAdd);
+    }
 }

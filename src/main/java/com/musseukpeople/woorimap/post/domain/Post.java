@@ -2,6 +2,7 @@ package com.musseukpeople.woorimap.post.domain;
 
 import static java.util.stream.Collectors.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -78,6 +79,32 @@ public class Post extends BaseEntity {
 
     public List<String> getImageUrls() {
         return postImages.getImageUrls();
+    }
+
+    public void changeTitle(String title) {
+        this.title = title;
+    }
+
+    public void changeContent(String content) {
+        this.content = content;
+    }
+
+    public void changeDatingDate(LocalDate datingDate) {
+        this.datingDate = datingDate;
+    }
+
+    public void changeLocation(BigDecimal latitude, BigDecimal longitude) {
+        this.location = new Location(latitude, longitude);
+    }
+
+    public void changePostImages(List<String> imageUrls) {
+        this.postImages.getPostImages().clear();
+        this.postImages.addPostImages(convertToPostImages(imageUrls));
+    }
+
+    public void changePostTags(List<Tag> tags) {
+        this.postTags.getPostTags().clear();
+        this.postTags.addPostTags(covertToPostTags(tags));
     }
 
     private List<PostTag> covertToPostTags(List<Tag> tags) {
