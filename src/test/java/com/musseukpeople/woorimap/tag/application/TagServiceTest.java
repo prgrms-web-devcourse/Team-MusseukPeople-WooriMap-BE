@@ -1,8 +1,7 @@
-package com.musseukpeople.woorimap.post.application;
+package com.musseukpeople.woorimap.tag.application;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -10,34 +9,33 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
-import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
+import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 import com.musseukpeople.woorimap.tag.domain.TagRepository;
+import com.musseukpeople.woorimap.tag.domain.Tags;
 import com.musseukpeople.woorimap.tag.exception.DuplicateTagException;
 import com.musseukpeople.woorimap.util.IntegrationTest;
 import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
 
-@SpringBootTest
-class PostServiceTest extends IntegrationTest {
+class TagServiceTest extends IntegrationTest {
 
     @Autowired
-    private PostService postService;
+    private TagService tagService;
 
     @Autowired
-    private MemberRepository memberRepository;
+    private TagRepository tagRepository;
 
     @Autowired
     private CoupleRepository coupleRepository;
 
     @Autowired
-    private TagRepository tagRepository;
+    private MemberRepository memberRepository;
 
     private Couple couple;
 
@@ -46,31 +44,28 @@ class PostServiceTest extends IntegrationTest {
         couple = createCouple();
     }
 
-    @DisplayName("게시물 생성 성공")
+    @DisplayName("태그들 생성 성공")
     @Test
-    void createPost_success() {
+    void createTag_success() {
         // given
-        List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("cafe", "#FFFFFF", couple));
-        tagRepository.saveAll(tags);
-        CreatePostRequest request = createPostRequest();
+        tagRepository.save(new Tag("서울", "#FFFFFF", couple));
+        List<TagRequest> tagRequests = List.of(new TagRequest("서울", "#FFFFFF"), new TagRequest("맛집", "#AAAAAA"));
 
         // when
-        Long postId = postService.createPost(couple, tags, request);
+        Tags tags = tagService.findOrCreateTags(couple, tagRequests);
 
         // then
-        assertThat(postId).isPositive();
+        assertThat(tags.getList()).hasSize(2);
     }
 
-    @DisplayName("중복된 태그로 인한 게시물 생성 실패")
+    @DisplayName("중복된 태그 이름으로 인한 태그들 생성 실패")
     @Test
-    void createPost_duplicateTag_fail() {
+    void createTag_duplicateTagName_fail() {
         // given
-        List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("seoul", "#FFFFFF", couple));
-        tagRepository.saveAll(tags);
+        List<TagRequest> tagRequests = List.of(new TagRequest("서울", "#FFFFFF"), new TagRequest("서울", "#AAAAAA"));
 
         // when
-        // then
-        assertThatThrownBy(() -> postService.createPost(couple, tags, createPostRequest()))
+        assertThatThrownBy(() -> tagService.findOrCreateTags(couple, tagRequests))
             .isInstanceOf(DuplicateTagException.class)
             .hasMessage("태그가 중복됩니다.");
     }
@@ -80,16 +75,5 @@ class PostServiceTest extends IntegrationTest {
         Member receiver = new TMemberBuilder().email("receiver1@gmail.com").build();
         List<Member> members = memberRepository.saveAll(List.of(inviter, receiver));
         return coupleRepository.save(new Couple(LocalDate.now(), new CoupleMembers(members)));
-    }
-
-    private CreatePostRequest createPostRequest() {
-        return CreatePostRequest.builder()
-            .title("첫 이야기")
-            .content("<h1>첫 이야기.... </h1>")
-            .imageUrls(List.of("imageUrl1", "imageUrl2"))
-            .datingDate(LocalDate.now())
-            .latitude(new BigDecimal("12.12312321"))
-            .longitude(new BigDecimal("122.3123121"))
-            .build();
     }
 }

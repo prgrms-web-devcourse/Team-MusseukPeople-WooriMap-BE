@@ -38,7 +38,8 @@ public enum ErrorCode {
     NOT_FOUND_INVITE_CODE(HttpStatus.NOT_FOUND, "I001", "존재하지 않는 코드입니다."),
 
     // Post
-    NOT_FOUND_POST(HttpStatus.NOT_FOUND, "P001", "존재하지 않는 게시글입니다.");
+    NOT_FOUND_POST(HttpStatus.NOT_FOUND, "P001", "존재하지 않는 게시글입니다."),
+    DUPLICATE_TAG(HttpStatus.BAD_REQUEST, "P002", "태그가 중복됩니다.");
 
     private final HttpStatus status;
     private final String code;

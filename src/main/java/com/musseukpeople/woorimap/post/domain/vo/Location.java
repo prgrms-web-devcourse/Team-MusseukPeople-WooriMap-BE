@@ -12,15 +12,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GPSCoordinates {
+public class Location {
 
-    @Column(columnDefinition = "decimal(10,8)")
+    @Column(columnDefinition = "decimal(10,8)", nullable = false)
     private BigDecimal latitude;
 
-    @Column(columnDefinition = "decimal(11,8)")
+    @Column(columnDefinition = "decimal(11,8)", nullable = false)
     private BigDecimal longitude;
 
-    public GPSCoordinates(BigDecimal latitude, BigDecimal longitude) {
+    public Location(BigDecimal latitude, BigDecimal longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

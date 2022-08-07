@@ -1,26 +1,26 @@
 package com.musseukpeople.woorimap.post.application.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.musseukpeople.woorimap.post.domain.PostTag;
-import com.musseukpeople.woorimap.post.domain.vo.GPSCoordinates;
-import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.post.domain.Post;
-import com.musseukpeople.woorimap.post.domain.PostImage;
+import com.musseukpeople.woorimap.post.domain.vo.Location;
+import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
+import com.musseukpeople.woorimap.tag.domain.Tag;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreatePostRequest {
 
     @Schema(description = "제목")
@@ -28,7 +28,7 @@ public class CreatePostRequest {
     private String title;
 
     @Schema(description = "내용")
-    @NotNull
+    @NotBlank
     private String content;
 
     @Schema(description = "이미지 저장 경로 리스트")
@@ -47,29 +47,31 @@ public class CreatePostRequest {
     @NotNull
     private BigDecimal longitude;
 
+    @Schema(description = "데이트 날짜")
+    @NotNull
+    private LocalDate datingDate;
+
     @Builder
-    public CreatePostRequest(String title, String content, List<String> imageUrls, List<TagRequest> tags, BigDecimal latitude,
-                             BigDecimal longitude) {
+    public CreatePostRequest(String title, String content, List<String> imageUrls, List<TagRequest> tags,
+                             BigDecimal latitude, BigDecimal longitude, LocalDate datingDate) {
         this.title = title;
         this.content = content;
         this.imageUrls = imageUrls;
         this.tags = tags;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.datingDate = datingDate;
     }
 
-    public Post toPost(Couple coupleId, List<PostTag> postTagIdList) {
+    public Post toPost(Couple couple, List<Tag> tags) {
         return Post.builder()
-            .couple(coupleId)
+            .couple(couple)
             .title(title)
             .content(content)
-            .gpsCoordinates(new GPSCoordinates(latitude, longitude))
-            .postImages(toPostImages())
-            .postTags(postTagIdList)
+            .location(new Location(latitude, longitude))
+            .datingDate(datingDate)
+            .imageUrls(imageUrls)
+            .tags(tags)
             .build();
-    }
-
-    public List<PostImage> toPostImages() {
-        return imageUrls.stream().map(PostImage::new).collect(Collectors.toList());
     }
 }

@@ -1,9 +1,11 @@
 package com.musseukpeople.woorimap.post.domain;
 
-import java.util.ArrayList;
+import static java.util.stream.Collectors.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,11 +15,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import com.musseukpeople.woorimap.common.model.BaseEntity;
 import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.post.domain.vo.GPSCoordinates;
+import com.musseukpeople.woorimap.post.domain.image.PostImage;
+import com.musseukpeople.woorimap.post.domain.image.PostImages;
+import com.musseukpeople.woorimap.post.domain.tag.PostTag;
+import com.musseukpeople.woorimap.post.domain.tag.PostTags;
+import com.musseukpeople.woorimap.post.domain.vo.Location;
+import com.musseukpeople.woorimap.tag.domain.Tag;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,52 +39,56 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "couple_id")
-    private Couple couple;
-
     private String title;
 
     @Lob
     private String content;
 
     @Embedded
-    private GPSCoordinates gpsCoordinates;
+    private Location location;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private final List<PostImage> postImages = new ArrayList<>();
+    @Column(nullable = false)
+    private LocalDate datingDate;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private final List<PostTag> postTags = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "couple_id")
+    private Couple couple;
+
+    @Embedded
+    private PostImages postImages;
+
+    @Embedded
+    private PostTags postTags;
 
     @Builder
-    public Post(Long id, Couple couple, String title, String content,
-                GPSCoordinates gpsCoordinates,
-                List<PostImage> postImages, List<PostTag> postTags) {
-        this.id = id;
+    public Post(Couple couple, String title, String content, Location location, LocalDate datingDate,
+                List<String> imageUrls, List<Tag> tags) {
         this.couple = couple;
         this.title = title;
         this.content = content;
-        this.gpsCoordinates = gpsCoordinates;
-        addPostImages(postImages);
-        addPostTags(postTags);
+        this.location = location;
+        this.datingDate = datingDate;
+        this.postImages = new PostImages(convertToPostImages(imageUrls));
+        this.postTags = new PostTags(covertToPostTags(tags));
     }
 
-    public void addPostImages(List<PostImage> postImages) {
-        postImages.forEach(this::addPostImage);
+    public String getThumbnailUrl() {
+        return postImages.getThumbnailUrl();
     }
 
-    public void addPostImage(PostImage postImage) {
-        postImage.changePost(this);
-        this.getPostImages().add(postImage);
+    public List<String> getImageUrls() {
+        return postImages.getImageUrls();
     }
 
-    public void addPostTags(List<PostTag> postTags) {
-        postTags.forEach(this::addPostTag);
+    private List<PostTag> covertToPostTags(List<Tag> tags) {
+        return tags.stream()
+            .map(tag -> new PostTag(this, tag))
+            .collect(toList());
     }
 
-    public void addPostTag(PostTag postTags) {
-        postTags.setPost(this);
-        this.getPostTags().add(postTags);
+    private List<PostImage> convertToPostImages(List<String> imageUrls) {
+        return imageUrls.stream()
+            .map(imageUrl -> new PostImage(this, imageUrl))
+            .collect(toList());
     }
 }

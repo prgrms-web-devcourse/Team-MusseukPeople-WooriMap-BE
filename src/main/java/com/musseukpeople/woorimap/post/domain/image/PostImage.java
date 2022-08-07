@@ -1,5 +1,6 @@
-package com.musseukpeople.woorimap.post.domain;
+package com.musseukpeople.woorimap.post.domain.image;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,34 +9,30 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.musseukpeople.woorimap.tag.domain.Tag;
+import com.musseukpeople.woorimap.post.domain.Post;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostTag {
+public class PostImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String imageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tag_id")
-    private Tag tag;
-
-    public PostTag(Tag tag) {
-        this.tag = tag;
-    }
-
-    public void setPost(Post post) {
+    public PostImage(Post post, String imageUrl) {
         this.post = post;
+        this.imageUrl = imageUrl;
     }
 }
