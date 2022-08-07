@@ -27,8 +27,8 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    @LoginRequired
     @Operation(summary = "단일 이미지 업로드", description = "이미지를 S3에 업로드해 url을 반환합니다.")
+    @LoginRequired
     @PostMapping("/image")
     public ResponseEntity<ApiResponse<String>> uploadImage(
         @Login LoginMember loginMember,
@@ -37,8 +37,8 @@ public class ImageController {
         return ResponseEntity.ok(new ApiResponse<>(imageService.uploadImage(loginMember.getId(), file)));
     }
 
-    @LoginRequired
     @Operation(summary = "다중 이미지 업로드", description = "이미지 리스트를 S3에 업로드해 url을 반환합니다.")
+    @LoginRequired
     @PostMapping("/images")
     public ResponseEntity<ApiResponse<List<String>>> uploadImages(
         @Login LoginMember loginMember,
