@@ -48,8 +48,8 @@ public class PostController {
     public ResponseEntity<ApiResponse<Void>> modifyPost(@Valid @RequestBody EditPostRequest editPostRequest,
                                                         @Login LoginMember member) {
         Long coupleId = member.getCoupleId();
-        Long postId = postFacade.modifyPost(coupleId, editPostRequest);
-        return ResponseEntity.created(createURI(postId)).build();
+        postFacade.modifyPost(coupleId, editPostRequest);
+        return ResponseEntity.ok().build();
     }
 
     private URI createURI(Long id) {
