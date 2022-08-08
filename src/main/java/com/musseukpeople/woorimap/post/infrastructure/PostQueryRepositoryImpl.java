@@ -2,12 +2,15 @@ package com.musseukpeople.woorimap.post.infrastructure;
 
 import static com.musseukpeople.woorimap.post.domain.QPost.*;
 import static com.musseukpeople.woorimap.post.domain.image.QPostImage.*;
+import static com.musseukpeople.woorimap.post.domain.tag.QPostTag.*;
+import static com.musseukpeople.woorimap.tag.domain.QTag.*;
 
 import java.util.List;
 import java.util.Objects;
 
 import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
-import com.musseukpeople.woorimap.post.domain.Post;
+import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -19,21 +22,36 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Post> findPostsByFilterCondition(PostFilterCondition postFilterCondition, Long coupleId) {
-
-        return jpaQueryFactory.select(post)
-            .from(post)
-            .innerJoin(post.postImages.postImages, postImage)
-            .fetchJoin()
+    public List<PostSearchResponse> findPostsByFilterCondition(PostFilterCondition postFilterCondition, Long coupleId) {
+        return jpaQueryFactory.select(
+                Projections.constructor(PostSearchResponse.class,
+                    post.id.as("postId"),
+                    post.title.as("imageUrl"),
+                    post.title.as("title"),
+                    post.createdDateTime.as("createDateTime"),
+                    post.location.latitude.as("latitude"),
+                    post.location.longitude.as("longitude")
+                )
+            )
+            .from(postImage)
+            .innerJoin(postImage.post, post)
+            .innerJoin(post.postTags.postTags, postTag)
+            .innerJoin(postTag.tag, tag)
+            .on(tag.couple.id.eq(coupleId))
             .where(
+                coupleIdEq(coupleId),
                 lastPostIdLo(postFilterCondition.getLastPostId()),
                 titleContain(postFilterCondition.getTitle()),
                 tagsIn(postFilterCondition.getTagIds())
             )
+            .groupBy(post.id)
             .orderBy(post.id.desc())
             .limit(postFilterCondition.getPaginationSize())
-            .distinct()
             .fetch();
+    }
+
+    private BooleanExpression coupleIdEq(Long coupleId) {
+        return post.couple.id.eq(coupleId);
     }
 
     private BooleanExpression lastPostIdLo(Long lastPostId) {
@@ -45,6 +63,6 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
     }
 
     private BooleanExpression tagsIn(List<Long> tagIds) {
-        return Objects.isNull(tagIds) ? null : post.postTags.postTags.any().tag.id.in(tagIds);
+        return Objects.isNull(tagIds) ? null : tag.id.in(tagIds);
     }
 }
