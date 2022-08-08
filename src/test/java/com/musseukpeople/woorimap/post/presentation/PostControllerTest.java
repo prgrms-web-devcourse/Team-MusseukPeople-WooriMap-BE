@@ -18,7 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
-import com.musseukpeople.woorimap.post.application.dto.PostRequest;
+import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
 import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
 
@@ -39,7 +39,7 @@ class PostControllerTest extends AcceptanceTest {
     @Test
     void create_post_success() throws Exception {
         // given
-        PostRequest createRequest = createPostRequest();
+        CreatePostRequest createRequest = createPostRequest();
 
         // when
         MockHttpServletResponse response = createPostApi(createRequest);
@@ -55,10 +55,10 @@ class PostControllerTest extends AcceptanceTest {
     @Test
     void modify_post_success() throws Exception {
         // given
-        PostRequest createRequest = createPostRequest();
+        CreatePostRequest createRequest = createPostRequest();
         createPostApi(createRequest);
 
-        PostRequest editRequest = editPostRequest();
+        CreatePostRequest editRequest = editPostRequest();
 
         // when
         MockHttpServletResponse response = modifyPostApi(editRequest, 1L);
@@ -67,7 +67,7 @@ class PostControllerTest extends AcceptanceTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private MockHttpServletResponse createPostApi(PostRequest request) throws Exception{
+    private MockHttpServletResponse createPostApi(CreatePostRequest request) throws Exception{
         return mockMvc.perform(post("/api/couples/posts")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, coupleAccessToken)
@@ -76,7 +76,7 @@ class PostControllerTest extends AcceptanceTest {
             .andReturn().getResponse();
     }
 
-    private MockHttpServletResponse modifyPostApi(PostRequest request, Long postId) throws Exception{
+    private MockHttpServletResponse modifyPostApi(CreatePostRequest request, Long postId) throws Exception{
         return mockMvc.perform(put("/api/couples/posts/" + postId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, coupleAccessToken)
@@ -85,8 +85,8 @@ class PostControllerTest extends AcceptanceTest {
             .andReturn().getResponse();
     }
 
-    private PostRequest editPostRequest() {
-        return PostRequest.builder()
+    private CreatePostRequest editPostRequest() {
+        return CreatePostRequest.builder()
             .title("2첫 이야기")
             .content("<h1>첫 이야기.... </h1>")
             .imageUrls(List.of("imageUrl3", "imageUrl4"))
@@ -101,8 +101,8 @@ class PostControllerTest extends AcceptanceTest {
             .build();
     }
 
-    private PostRequest createPostRequest() {
-        return PostRequest.builder()
+    private CreatePostRequest createPostRequest() {
+        return CreatePostRequest.builder()
             .title("첫 이야기")
             .content("<h1>첫 이야기.... </h1>")
             .imageUrls(List.of("imageUrl1", "imageUrl2"))

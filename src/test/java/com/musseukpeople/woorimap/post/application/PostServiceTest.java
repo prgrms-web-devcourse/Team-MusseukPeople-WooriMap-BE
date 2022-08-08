@@ -18,7 +18,8 @@ import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
-import com.musseukpeople.woorimap.post.application.dto.PostRequest;
+import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
+import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 import com.musseukpeople.woorimap.tag.domain.TagRepository;
 import com.musseukpeople.woorimap.tag.exception.DuplicateTagException;
@@ -53,7 +54,7 @@ class PostServiceTest extends IntegrationTest {
         // given
         List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("cafe", "#FFFFFF", couple));
         tagRepository.saveAll(tags);
-        PostRequest request = createPostRequest();
+        CreatePostRequest request = createPostRequest();
 
         // when
         Long postId = postService.createPost(couple, tags, request);
@@ -82,11 +83,11 @@ class PostServiceTest extends IntegrationTest {
         // given
         List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("cafe", "#FFFFFF", couple));
         tagRepository.saveAll(tags);
-        PostRequest request = createPostRequest();
+        CreatePostRequest request = createPostRequest();
         Long postId = postService.createPost(couple, tags, request);
 
         List<Tag> updateTags = new ArrayList<>();
-        PostRequest editPostRequest = editPostRequest();
+        EditPostRequest editPostRequest = editPostRequest();
 
         // when
         Long updatePostId = postService.modifyPost(updateTags, postId, editPostRequest);
@@ -95,8 +96,8 @@ class PostServiceTest extends IntegrationTest {
         assertThat(postId).isEqualTo(updatePostId);
     }
 
-    private PostRequest editPostRequest() {
-        return PostRequest.builder()
+    private EditPostRequest editPostRequest() {
+        return EditPostRequest.builder()
             .title("2첫 이야기")
             .content("<h1>첫 이야기.... </h1>")
             .imageUrls(List.of("imageUrl3", "imageUrl4"))
@@ -106,8 +107,8 @@ class PostServiceTest extends IntegrationTest {
             .build();
     }
 
-    private PostRequest createPostRequest() {
-        return PostRequest.builder()
+    private CreatePostRequest createPostRequest() {
+        return CreatePostRequest.builder()
             .title("첫 이야기")
             .content("<h1>첫 이야기.... </h1>")
             .imageUrls(List.of("imageUrl1", "imageUrl2"))
