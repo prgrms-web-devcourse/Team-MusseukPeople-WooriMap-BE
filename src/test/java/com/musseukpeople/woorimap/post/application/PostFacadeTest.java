@@ -1,7 +1,6 @@
 package com.musseukpeople.woorimap.post.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
@@ -28,9 +26,6 @@ class PostFacadeTest extends IntegrationTest {
 
     @Autowired
     private PostFacade postFacade;
-
-    @Autowired
-    private PostService postService;
 
     @Autowired
     private CoupleRepository coupleRepository;
@@ -88,7 +83,6 @@ class PostFacadeTest extends IntegrationTest {
 
 
     @DisplayName("게시물 수정 성공")
-    @Transactional
     @Test
     void modifyPost_success() {
         // given
