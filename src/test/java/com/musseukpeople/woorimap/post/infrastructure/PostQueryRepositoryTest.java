@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.TestPropertySource;
 
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
+import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.post.domain.vo.Location;
@@ -27,7 +27,6 @@ import com.musseukpeople.woorimap.util.RepositoryTest;
 import com.musseukpeople.woorimap.util.fixture.TCoupleBuilder;
 
 @RepositoryTest
-@TestPropertySource(properties = "spring.jpa.properties.hibernate.default_batch_fetch_size=1000")
 class PostQueryRepositoryTest {
 
     @Autowired
@@ -64,10 +63,11 @@ class PostQueryRepositoryTest {
         PostFilterCondition onlyTagFilter = new PostFilterCondition(tagIds, null, null);
 
         //when
-        List<Post> posts = postRepository.findPostsByFilterCondition(onlyTagFilter, coupleId);
+        List<PostSearchResponse> posts = postRepository.findPostsByFilterCondition(onlyTagFilter, coupleId);
 
         //then
         assertThat(posts).hasSize(1);
+
     }
 
     @DisplayName("게시물에 없는 tag 아이디로 검색 실패")
@@ -78,7 +78,7 @@ class PostQueryRepositoryTest {
         PostFilterCondition onlyTagFilter = new PostFilterCondition(notTagIds, null, null);
 
         //when
-        List<Post> posts = postRepository.findPostsByFilterCondition(onlyTagFilter, coupleId);
+        List<PostSearchResponse> posts = postRepository.findPostsByFilterCondition(onlyTagFilter, coupleId);
 
         //then
         assertThat(posts).isEmpty();
@@ -94,7 +94,7 @@ class PostQueryRepositoryTest {
         PostFilterCondition onlyTitleFilter = new PostFilterCondition(null, title, null);
 
         //when
-        List<Post> posts = postRepository.findPostsByFilterCondition(onlyTitleFilter, coupleId);
+        List<PostSearchResponse> posts = postRepository.findPostsByFilterCondition(onlyTitleFilter, coupleId);
 
         //then
         assertThat(posts).hasSize(1);
@@ -110,7 +110,7 @@ class PostQueryRepositoryTest {
         PostFilterCondition onlyTitleFilter = new PostFilterCondition(null, noTitle, null);
 
         //when
-        List<Post> posts = postRepository.findPostsByFilterCondition(onlyTitleFilter, coupleId);
+        List<PostSearchResponse> posts = postRepository.findPostsByFilterCondition(onlyTitleFilter, coupleId);
 
         //then
         assertThat(posts).isEmpty();
@@ -125,7 +125,7 @@ class PostQueryRepositoryTest {
         }
 
         //when
-        List<Post> posts = postRepository.findPostsByFilterCondition(
+        List<PostSearchResponse> posts = postRepository.findPostsByFilterCondition(
             new PostFilterCondition(null, null, null), coupleId);
 
         //then
@@ -143,8 +143,8 @@ class PostQueryRepositoryTest {
         }
 
         //when
-        List<Post> posts = postRepository.findPostsByFilterCondition(new PostFilterCondition(tagIds, "테스트", 54378537L),
-            coupleId);
+        List<PostSearchResponse> posts = postRepository.findPostsByFilterCondition(
+            new PostFilterCondition(tagIds, "테스트", 54378537L), coupleId);
 
         //then
         assertThat(posts).hasSize(20);
