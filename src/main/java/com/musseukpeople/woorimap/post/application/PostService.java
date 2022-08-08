@@ -43,7 +43,7 @@ public class PostService {
         return post.getId();
     }
 
-    public Post getPostById(Long id) {
+    private Post getPostById(Long id) {
         return postRepository.findById(id)
             .orElseThrow(() -> new NotFoundPostException(ErrorCode.NOT_FOUND_POST, id));
     }
