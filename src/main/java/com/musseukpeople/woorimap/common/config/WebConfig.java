@@ -31,7 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-            .allowedOriginPatterns("http://localhost:3000")
+            .allowedOrigins("http://localhost:3000", "https://woorimap.vercel.app")
             .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
             .allowCredentials(true)
             .exposedHeaders(HttpHeaders.LOCATION)
