@@ -8,7 +8,8 @@ plugins {
     id 'org.springframework.boot' version '2.7.2'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
     id 'java'
-
+    id 'jacoco'
+    id "org.sonarqube" version "3.4.0.2513"
     //Querydsl
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
@@ -83,8 +84,9 @@ dependencies {
     implementation 'dev.akkinoc.spring.boot:logback-access-spring-boot-starter:3.3.2'
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
 }
 
 processResources.dependsOn('copySubmodule')
@@ -93,6 +95,90 @@ task copySubmodule(type: Copy) {
     from 'src/main/resources/woorimap-config'
     include '*.yml'
     into './src/main/resources'
+}
+
+// jacoco
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+        xml.enabled true
+    }
+
+    def Qdomains = []
+    for (qPattern in "**/QA".."**/QZ") {
+        Qdomains.add(qPattern + "*")
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: [
+                            "**/*WoorimapApplication*",
+                            '**/*Fake*',
+                            '**/*Health*',
+                            '**/*Request*',
+                            '**/*Response*',
+                            '**/*Dto*',
+                            '**/*Exception*',
+                            '**/*Exception*',
+                            '**/common*',
+                    ] + Qdomains)
+        }))
+    }
+
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    def Qdomains = []
+    for (qPattern in '*.QA'..'*.QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+
+
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.60
+            }
+
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.60
+            }
+
+            excludes = [
+                    "**.*WoorimapApplication*",
+                    '**.*Fake*',
+                    '**.*Health*',
+                    '**.*Request*',
+                    '**.*Response*',
+                    '**.*Dto*',
+                    '**.*Interceptor*',
+                    '**.*Exception*',
+                    '**.*common*'
+            ] + Qdomains
+        }
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "prgrms-web-devcourse_Team-MusseukPeople-WooriMap-BE"
+        property "sonar.organization", "prgrms-web-devcourse"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+    }
 }
 
 //querydsl

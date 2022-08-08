@@ -8,10 +8,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -21,12 +23,16 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.presentation.dto.response.LoginResponse;
+import com.musseukpeople.woorimap.common.config.S3MockConfig;
 import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
 
+import io.findify.s3mock.S3Mock;
+
+@Import(S3MockConfig.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public abstract class AcceptanceTest {
@@ -43,6 +49,11 @@ public abstract class AcceptanceTest {
 
     @Autowired
     private DatabaseCleanup databaseCleanup;
+
+    @AfterAll
+    public static void tearDown(@Autowired S3Mock s3Mock) {
+        s3Mock.stop();
+    }
 
     @AfterEach
     void tearDown() {

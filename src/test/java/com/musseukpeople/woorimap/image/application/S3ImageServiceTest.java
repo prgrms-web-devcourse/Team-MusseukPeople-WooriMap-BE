@@ -2,31 +2,20 @@ package com.musseukpeople.woorimap.image.application;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 
 import com.google.common.io.Files;
-import com.musseukpeople.woorimap.common.config.S3MockConfig;
 import com.musseukpeople.woorimap.image.exception.NotSupportImageException;
 import com.musseukpeople.woorimap.util.IntegrationTest;
 
-import io.findify.s3mock.S3Mock;
-
-@Import(S3MockConfig.class)
 class S3ImageServiceTest extends IntegrationTest {
     @Autowired
     private S3ImageService s3ImageService;
-
-    @AfterAll
-    public static void tearDown(@Autowired S3Mock s3Mock) {
-        s3Mock.stop();
-    }
 
     @ParameterizedTest(name = "이미지 파일명 : {0}, 이미지 Content-Type: {1}")
     @CsvSource(value = {"mock.png, image/png", "mock.jpg, image/jpeg",
