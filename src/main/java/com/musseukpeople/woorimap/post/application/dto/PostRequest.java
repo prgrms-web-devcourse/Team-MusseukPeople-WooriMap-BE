@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.vo.Location;
-import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
+import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,11 +21,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class EditPostRequest {
-
-    @Schema(description = "게시글 아이드")
-    @NotNull
-    private Long id;
+public class PostRequest {
 
     @Schema(description = "제목")
     @NotBlank
@@ -56,9 +52,8 @@ public class EditPostRequest {
     private LocalDate datingDate;
 
     @Builder
-    public EditPostRequest(Long id, String title, String content, List<String> imageUrls, List<TagRequest> tags,
-                           BigDecimal latitude, BigDecimal longitude, LocalDate datingDate) {
-        this.id = id;
+    public PostRequest(String title, String content, List<String> imageUrls, List<TagRequest> tags,
+                       BigDecimal latitude, BigDecimal longitude, LocalDate datingDate) {
         this.title = title;
         this.content = content;
         this.imageUrls = imageUrls;

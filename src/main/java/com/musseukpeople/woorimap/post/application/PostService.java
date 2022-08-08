@@ -7,8 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
-import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
+import com.musseukpeople.woorimap.post.application.dto.PostRequest;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.post.exception.NotFoundPostException;
@@ -24,21 +23,21 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long createPost(Couple couple, List<Tag> tags, CreatePostRequest createPostRequest) {
+    public Long createPost(Couple couple, List<Tag> tags, PostRequest createPostRequest) {
         Post post = createPostRequest.toPost(couple, tags);
         return postRepository.save(post).getId();
     }
 
     @Transactional
-    public Long modifyPost(List<Tag> list, EditPostRequest editPostRequest) {
-        Post post = getPostById(editPostRequest.getId());
+    public Long modifyPost(List<Tag> tags, Long postId, PostRequest editPostRequest) {
+        Post post = getPostById(postId);
 
         post.changeTitle(editPostRequest.getTitle());
         post.changeContent(editPostRequest.getContent());
         post.changeDatingDate(editPostRequest.getDatingDate());
         post.changeLocation(editPostRequest.getLatitude(), editPostRequest.getLongitude());
         post.changePostImages(editPostRequest.getImageUrls());
-        post.changePostTags(list);
+        post.changePostTags(tags);
 
         return post.getId();
     }

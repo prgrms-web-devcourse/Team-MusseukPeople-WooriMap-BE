@@ -98,13 +98,11 @@ public class Post extends BaseEntity {
     }
 
     public void changePostImages(List<String> imageUrls) {
-        this.postImages.getPostImages().clear();
-        this.postImages.addPostImages(convertToPostImages(imageUrls));
+        this.postImages.changePostImages(convertToPostImages(imageUrls));
     }
 
     public void changePostTags(List<Tag> tags) {
-        this.postTags.getPostTags().clear();
-        this.postTags.addPostTags(covertToPostTags(tags));
+        this.postTags.changePostTags(covertToPostTags(tags));
     }
 
     private List<PostTag> covertToPostTags(List<Tag> tags) {

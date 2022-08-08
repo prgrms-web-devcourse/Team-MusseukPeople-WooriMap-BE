@@ -5,6 +5,7 @@ import java.net.URI;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +18,7 @@ import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.post.application.PostFacade;
-import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
-import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
+import com.musseukpeople.woorimap.post.application.dto.PostRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +35,7 @@ public class PostController {
     @Operation(summary = "게시글 생성", description = "게시글 생성 API입니다.")
     @OnlyCouple
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createPost(@Valid @RequestBody CreatePostRequest createPostRequest,
+    public ResponseEntity<ApiResponse<Void>> createPost(@Valid @RequestBody PostRequest createPostRequest,
                                                         @Login LoginMember member) {
         Long coupleId = member.getCoupleId();
         Long postId = postFacade.createPost(coupleId, createPostRequest);
@@ -44,11 +44,12 @@ public class PostController {
 
     @Operation(summary = "게시글 수정", description = "게시글 수정 API입니다.")
     @OnlyCouple
-    @PutMapping
-    public ResponseEntity<ApiResponse<Void>> modifyPost(@Valid @RequestBody EditPostRequest editPostRequest,
-                                                        @Login LoginMember member) {
+    @PutMapping("/{postId}")
+    public ResponseEntity<ApiResponse<Void>> modifyPost(@Valid @RequestBody PostRequest editPostRequest,
+                                                        @Login LoginMember member,
+                                                        @PathVariable("postId") Long postId) {
         Long coupleId = member.getCoupleId();
-        postFacade.modifyPost(coupleId, editPostRequest);
+        postFacade.modifyPost(coupleId, postId, editPostRequest);
         return ResponseEntity.ok().build();
     }
 

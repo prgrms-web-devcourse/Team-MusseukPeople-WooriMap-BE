@@ -36,7 +36,8 @@ public class PostImages {
             .collect(toList());
     }
 
-    public void addPostImages(List<PostImage> postImagesToAdd) {
+    public void changePostImages(List<PostImage> postImagesToAdd) {
+        postImages.clear();
         postImages.addAll(postImagesToAdd);
     }
 }

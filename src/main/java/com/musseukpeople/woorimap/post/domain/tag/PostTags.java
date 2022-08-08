@@ -40,7 +40,8 @@ public class PostTags {
         }
     }
 
-    public void addPostTags(List<PostTag> postTagsToAdd) {
-        this.postTags.addAll(postTagsToAdd);
+    public void changePostTags(List<PostTag> postTagsToAdd) {
+        postTags.clear();
+        postTags.addAll(postTagsToAdd);
     }
 }
