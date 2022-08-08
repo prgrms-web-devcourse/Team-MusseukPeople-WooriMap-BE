@@ -1,6 +1,7 @@
 package com.musseukpeople.woorimap.post.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
@@ -18,6 +20,8 @@ import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
+import com.musseukpeople.woorimap.post.domain.Post;
+import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import com.musseukpeople.woorimap.tag.exception.DuplicateTagException;
 import com.musseukpeople.woorimap.util.IntegrationTest;
@@ -33,6 +37,9 @@ class PostFacadeTest extends IntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     private Long coupleId;
 
@@ -79,6 +86,7 @@ class PostFacadeTest extends IntegrationTest {
 
 
     @DisplayName("게시물 수정 성공")
+    @Transactional
     @Test
     void modifyPost_success() {
         // given
@@ -90,7 +98,17 @@ class PostFacadeTest extends IntegrationTest {
         Long editPostId = postFacade.modifyPost(coupleId, postId, editRequest);
 
         // then
-        assertThat(postId).isEqualTo(editPostId);
+        Post post = postRepository.findById(editPostId).get();
+
+        assertAll(
+            () -> assertThat(postId).isEqualTo(editPostId),
+            () -> assertThat(post.getTitle()).isEqualTo(editRequest.getTitle()),
+            () -> assertThat(post.getPostTags().getPostTags()).hasSize(editRequest.getTags().size()),
+            () -> assertThat(post.getPostImages().getPostImages()).hasSize(editRequest.getImageUrls().size()),
+            () -> assertThat(post.getContent()).isEqualTo(editRequest.getContent()),
+            () -> assertThat(post.getLocation().getLongitude()).isEqualTo(editRequest.getLongitude()),
+            () -> assertThat(post.getLocation().getLatitude()).isEqualTo(editRequest.getLatitude())
+        );
     }
 
     private EditPostRequest editPostRequest() {
