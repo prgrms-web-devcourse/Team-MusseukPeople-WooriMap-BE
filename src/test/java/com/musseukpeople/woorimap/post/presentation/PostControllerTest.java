@@ -91,6 +91,21 @@ class PostControllerTest extends AcceptanceTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
     }
 
+    @DisplayName("post 삭제 완료")
+    @Test
+    void delete_post_success() throws Exception {
+        // given
+        CreatePostRequest createRequest = createPostRequest();
+        게시글_작성(coupleAccessToken, createRequest);
+
+        // when
+        MockHttpServletResponse response = 게시글_삭제(coupleAccessToken, 1L);
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+
     private CreatePostRequest editPostRequest() {
         return CreatePostRequest.builder()
             .title("2첫 이야기")

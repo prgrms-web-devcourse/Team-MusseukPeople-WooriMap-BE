@@ -125,6 +125,14 @@ public abstract class AcceptanceTest {
             .andReturn().getResponse();
     }
 
+    protected MockHttpServletResponse 게시글_삭제(String token, Long postId) throws Exception{
+        return mockMvc.perform(delete("/api/couples/posts/" + postId)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, token))
+            .andDo(print())
+            .andReturn().getResponse();
+    }
+
     protected ErrorResponse getErrorResponse(MockHttpServletResponse response) throws IOException {
         return objectMapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
     }
