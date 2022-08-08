@@ -5,7 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.couple.application.CoupleService;
 import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.post.application.dto.PostRequest;
+import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
+import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
 import com.musseukpeople.woorimap.tag.application.TagService;
 import com.musseukpeople.woorimap.tag.domain.Tags;
 
@@ -20,14 +21,14 @@ public class PostFacade {
     private final CoupleService coupleService;
 
     @Transactional
-    public Long createPost(Long coupleId, PostRequest createPostRequest) {
+    public Long createPost(Long coupleId, CreatePostRequest createPostRequest) {
         Couple couple = coupleService.getCoupleById(coupleId);
         Tags tags = tagService.findOrCreateTags(couple, createPostRequest.getTags());
         return postService.createPost(couple, tags.getList(), createPostRequest);
     }
 
     @Transactional
-    public Long modifyPost(Long coupleId, Long postId, PostRequest editPostRequest) {
+    public Long modifyPost(Long coupleId, Long postId, EditPostRequest editPostRequest) {
         Couple couple = coupleService.getCoupleById(coupleId);
         Tags tags = tagService.findOrCreateTags(couple, editPostRequest.getTags());
         return postService.modifyPost(tags.getList(), postId, editPostRequest);

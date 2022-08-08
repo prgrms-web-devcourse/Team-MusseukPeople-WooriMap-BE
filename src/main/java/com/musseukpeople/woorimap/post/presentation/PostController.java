@@ -18,7 +18,8 @@ import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.post.application.PostFacade;
-import com.musseukpeople.woorimap.post.application.dto.PostRequest;
+import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
+import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +36,7 @@ public class PostController {
     @Operation(summary = "게시글 생성", description = "게시글 생성 API입니다.")
     @OnlyCouple
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createPost(@Valid @RequestBody PostRequest createPostRequest,
+    public ResponseEntity<ApiResponse<Void>> createPost(@Valid @RequestBody CreatePostRequest createPostRequest,
                                                         @Login LoginMember member) {
         Long coupleId = member.getCoupleId();
         Long postId = postFacade.createPost(coupleId, createPostRequest);
@@ -45,7 +46,7 @@ public class PostController {
     @Operation(summary = "게시글 수정", description = "게시글 수정 API입니다.")
     @OnlyCouple
     @PutMapping("/{postId}")
-    public ResponseEntity<ApiResponse<Void>> modifyPost(@Valid @RequestBody PostRequest editPostRequest,
+    public ResponseEntity<ApiResponse<Void>> modifyPost(@Valid @RequestBody EditPostRequest editPostRequest,
                                                         @Login LoginMember member,
                                                         @PathVariable("postId") Long postId) {
         Long coupleId = member.getCoupleId();

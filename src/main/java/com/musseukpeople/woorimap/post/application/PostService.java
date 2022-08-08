@@ -7,7 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.post.application.dto.PostRequest;
+import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
+import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.post.exception.NotFoundPostException;
@@ -23,13 +24,13 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long createPost(Couple couple, List<Tag> tags, PostRequest createPostRequest) {
+    public Long createPost(Couple couple, List<Tag> tags, CreatePostRequest createPostRequest) {
         Post post = createPostRequest.toPost(couple, tags);
         return postRepository.save(post).getId();
     }
 
     @Transactional
-    public Long modifyPost(List<Tag> tags, Long postId, PostRequest editPostRequest) {
+    public Long modifyPost(List<Tag> tags, Long postId, EditPostRequest editPostRequest) {
         Post post = getPostById(postId);
 
         post.changeTitle(editPostRequest.getTitle());
