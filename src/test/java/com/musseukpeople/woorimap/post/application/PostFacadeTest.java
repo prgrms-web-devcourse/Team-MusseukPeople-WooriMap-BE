@@ -18,11 +18,7 @@ import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
-import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
-import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
-import com.musseukpeople.woorimap.post.domain.Post;
-import com.musseukpeople.woorimap.post.domain.image.PostImage;
-import com.musseukpeople.woorimap.post.domain.tag.PostTag;
+import com.musseukpeople.woorimap.post.application.dto.PostRequest;
 import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
 import com.musseukpeople.woorimap.tag.exception.DuplicateTagException;
 import com.musseukpeople.woorimap.util.IntegrationTest;
@@ -53,7 +49,7 @@ class PostFacadeTest extends IntegrationTest {
     @Test
     void createPost_success() {
         // given
-        CreatePostRequest request = CreatePostRequest.builder()
+        PostRequest request = PostRequest.builder()
             .title("첫 이야기")
             .content("<h1>첫 이야기.... </h1>")
             .imageUrls(List.of("imageUrl1", "imageUrl2"))
@@ -74,7 +70,7 @@ class PostFacadeTest extends IntegrationTest {
     @Test
     void createPost_duplicateTagRequest_fail() {
         // given
-        CreatePostRequest request = CreatePostRequest.builder()
+        PostRequest request = PostRequest.builder()
             .title("첫 이야기")
             .content("<h1>첫 이야기.... </h1>")
             .imageUrls(List.of("imageUrl1", "imageUrl2"))
@@ -96,7 +92,7 @@ class PostFacadeTest extends IntegrationTest {
     @Test
     void modifyPost_success() {
         // given
-        CreatePostRequest request = CreatePostRequest.builder()
+        PostRequest request = PostRequest.builder()
             .title("첫 이야기")
             .content("<h1>첫 이야기.... </h1>")
             .imageUrls(List.of("imageUrl1", "imageUrl2"))
@@ -107,8 +103,7 @@ class PostFacadeTest extends IntegrationTest {
             .build();
         Long postId = postFacade.createPost(coupleId, request);
 
-        EditPostRequest editRequest = EditPostRequest.builder()
-            .id(postId)
+        PostRequest editRequest = PostRequest.builder()
             .title("2첫 이야기")
             .content("<h1>22첫 이야기.... </h1>")
             .imageUrls(List.of("imageUrl1", "imageUrl2", "imageUrl3"))
@@ -123,19 +118,10 @@ class PostFacadeTest extends IntegrationTest {
             .build();
 
         // when
-        Long editPostId = postFacade.modifyPost(coupleId, editRequest);
+        Long editPostId = postFacade.modifyPost(coupleId, postId, editRequest);
 
         // then
-        Post post = postService.getPostById(editPostId);
-        assertAll(
-            () -> assertThat(postId).isEqualTo(editPostId),
-            () -> assertThat(post.getTitle()).isEqualTo(editRequest.getTitle()),
-            () -> assertThat(post.getPostTags().getPostTags()).hasSize(editRequest.getTags().size()),
-            () -> assertThat(post.getPostImages().getPostImages()).hasSize(editRequest.getImageUrls().size()),
-            () -> assertThat(post.getContent()).isEqualTo(editRequest.getContent()),
-            () -> assertThat(post.getLocation().getLongitude()).isEqualTo(editRequest.getLongitude()),
-            () -> assertThat(post.getLocation().getLatitude()).isEqualTo(editRequest.getLatitude())
-        );
+        assertThat(postId).isEqualTo(editPostId);
     }
 
     private Couple createCouple() {
