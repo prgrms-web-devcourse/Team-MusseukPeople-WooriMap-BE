@@ -9,6 +9,8 @@ import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
+import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
+import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.post.exception.NotFoundPostException;
@@ -27,6 +29,11 @@ public class PostService {
     public Long createPost(Couple couple, List<Tag> tags, CreatePostRequest createPostRequest) {
         Post post = createPostRequest.toPost(couple, tags);
         return postRepository.save(post).getId();
+    }
+
+    public List<PostSearchResponse> searchPosts(PostFilterCondition postFilterCondition, Long coupleId) {
+        List<Post> posts = postRepository.findPostsByFilterCondition(postFilterCondition, coupleId);
+        return PostSearchResponse.from(posts);
     }
 
     @Transactional

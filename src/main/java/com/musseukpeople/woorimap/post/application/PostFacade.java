@@ -1,5 +1,7 @@
 package com.musseukpeople.woorimap.post.application;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,7 +10,9 @@ import com.musseukpeople.woorimap.couple.application.CoupleService;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
+import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
 import com.musseukpeople.woorimap.post.application.dto.response.PostResponse;
+import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.exception.PostNotBelongToCoupleException;
 import com.musseukpeople.woorimap.tag.application.TagService;
@@ -30,6 +34,10 @@ public class PostFacade {
         Couple couple = coupleService.getCoupleById(coupleId);
         Tags tags = tagService.findOrCreateTags(couple, createPostRequest.getTags());
         return postService.createPost(couple, tags.getList(), createPostRequest);
+    }
+
+    public List<PostSearchResponse> searchPosts(PostFilterCondition postFilterCondition, Long coupleId) {
+        return postService.searchPosts(postFilterCondition, coupleId);
     }
 
     @Transactional
