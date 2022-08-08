@@ -19,7 +19,7 @@ public class QueryTagRepositoryImpl implements QueryTagRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Tag> findExistTagByCoupleId(Couple couple, List<String> tagNames) {
+    public List<Tag> findExistTagByCouple(Couple couple, List<String> tagNames) {
         return jpaQueryFactory.selectFrom(tag)
             .where(
                 tag.couple.eq(couple),

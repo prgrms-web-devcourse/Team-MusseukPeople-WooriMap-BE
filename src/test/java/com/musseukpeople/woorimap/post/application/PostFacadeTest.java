@@ -17,7 +17,7 @@ import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
-import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
+import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import com.musseukpeople.woorimap.tag.exception.DuplicateTagException;
 import com.musseukpeople.woorimap.util.IntegrationTest;
 import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;

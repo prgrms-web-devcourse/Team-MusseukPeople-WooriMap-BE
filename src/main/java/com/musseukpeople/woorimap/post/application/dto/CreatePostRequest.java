@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.vo.Location;
-import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
+import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 
 import io.swagger.v3.oas.annotations.media.Schema;

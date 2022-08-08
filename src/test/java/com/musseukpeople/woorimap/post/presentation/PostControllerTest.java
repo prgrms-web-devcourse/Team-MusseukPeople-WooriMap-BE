@@ -2,8 +2,6 @@ package com.musseukpeople.woorimap.post.presentation;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,13 +12,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
-import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
+import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
 
 class PostControllerTest extends AcceptanceTest {
@@ -52,12 +49,7 @@ class PostControllerTest extends AcceptanceTest {
             .build();
 
         // when
-        MockHttpServletResponse response = mockMvc.perform(post("/api/couples/posts")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, coupleAccessToken)
-                .content(objectMapper.writeValueAsString(request)))
-            .andDo(print())
-            .andReturn().getResponse();
+        MockHttpServletResponse response = 게시글_작성(coupleAccessToken, request);
 
         // then
         assertAll(

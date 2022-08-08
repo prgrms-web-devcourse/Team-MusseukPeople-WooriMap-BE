@@ -1,6 +1,4 @@
-package com.musseukpeople.woorimap.tag.application.dto;
-
-import javax.validation.constraints.NotBlank;
+package com.musseukpeople.woorimap.tag.application.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -9,17 +7,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class TagRequest {
+public class TagResponse {
 
     @Schema(description = "태그 이름")
-    @NotBlank
     private String name;
 
     @Schema(description = "태그 색깔")
-    @NotBlank
     private String color;
 
-    public TagRequest(String name, String color) {
+    public TagResponse(String name, String color) {
         this.name = name;
         this.color = color;
     }
