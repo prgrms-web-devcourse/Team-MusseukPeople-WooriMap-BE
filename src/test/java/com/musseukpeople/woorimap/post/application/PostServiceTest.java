@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
@@ -26,6 +27,10 @@ import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
+import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
+import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
+import com.musseukpeople.woorimap.post.domain.Post;
+import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 import com.musseukpeople.woorimap.tag.domain.TagRepository;
 import com.musseukpeople.woorimap.tag.exception.DuplicateTagException;
@@ -89,6 +94,48 @@ class PostServiceTest extends IntegrationTest {
             .hasMessage("태그가 중복됩니다.");
     }
 
+    @DisplayName("검색 성공")
+    @Test
+    void search_success() {
+        //given
+        Long coupleId = couple.getId();
+
+        tagRepository.saveAll(
+            List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("changwon", "#FFFFFF", couple)));
+        List<Tag> tags = tagRepository.findAllByCoupleId(coupleId);
+
+        CreatePostRequest postRequest = createPostRequest();
+        postService.createPost(couple, tags, postRequest);
+        List<Long> tagIds = tags.stream().map(Tag::getId).collect(Collectors.toList());
+        PostFilterCondition filterCondition = new PostFilterCondition(tagIds, "이야기", null);
+
+        //when
+        List<PostSearchResponse> searchPosts = postService.searchPosts(filterCondition, coupleId);
+
+        //then
+        assertThat(searchPosts).hasSize(1);
+    }
+
+    @DisplayName("필터 없을 시 전체 조회")
+    @Test
+    void search_noFilter_success() {
+        //given
+        tagRepository.saveAll(
+            List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("changwon", "#FFFFFF", couple)));
+        Long coupleId = couple.getId();
+        List<Tag> tags = tagRepository.findAllByCoupleId(coupleId);
+
+        CreatePostRequest postRequest = createPostRequest();
+        postService.createPost(couple, tags, postRequest);
+        PostFilterCondition filterCondition = new PostFilterCondition(null, null, null);
+
+        //when
+        List<PostSearchResponse> searchPosts = postService.searchPosts(filterCondition, coupleId);
+
+        //then
+        assertThat(searchPosts).hasSize(1);
+    }
+
     @DisplayName("게시물 수정 성공")
     @Test
     void modifyPost_success() {
@@ -108,24 +155,6 @@ class PostServiceTest extends IntegrationTest {
         assertThat(postId).isEqualTo(updatePostId);
     }
 
-    @DisplayName("게시물 삭제 성공")
-    @Test
-    void deletePost_success() {
-        // given
-        List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("cafe", "#FFFFFF", couple));
-        tagRepository.saveAll(tags);
-        CreatePostRequest request = createPostRequest();
-        Long postId = postService.createPost(couple, tags, request);
-
-        // when
-        postService.removePost(postId);
-
-        //then
-        Optional<Post> foundPost = postRepository.findById(postId);
-
-        assertThat(foundPost).isEmpty();
-    }
-
     @DisplayName("게시글 단건 조회 성공")
     @Transactional
     @Test
@@ -142,6 +171,24 @@ class PostServiceTest extends IntegrationTest {
 
         // then
         assertThat(post.getImageUrls()).isNotNull();
+    }
+
+    @DisplayName("게시물 삭제 성공")
+    @Test
+    void deletePost_success() {
+        // given
+        List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("cafe", "#FFFFFF", couple));
+        tagRepository.saveAll(tags);
+        CreatePostRequest request = createPostRequest();
+        Long postId = postService.createPost(couple, tags, request);
+
+        // when
+        postService.removePost(postId);
+
+        //then
+        Optional<Post> foundPost = postRepository.findById(postId);
+
+        assertThat(foundPost).isEmpty();
     }
 
     private EditPostRequest editPostRequest() {
