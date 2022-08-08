@@ -6,9 +6,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
-
+import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
