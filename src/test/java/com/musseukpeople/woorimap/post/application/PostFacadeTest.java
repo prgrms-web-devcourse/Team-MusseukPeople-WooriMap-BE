@@ -18,7 +18,7 @@ import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
-import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
+import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import com.musseukpeople.woorimap.tag.exception.DuplicateTagException;
 import com.musseukpeople.woorimap.util.IntegrationTest;
 import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
@@ -45,15 +45,7 @@ class PostFacadeTest extends IntegrationTest {
     @Test
     void createPost_success() {
         // given
-        CreatePostRequest request = CreatePostRequest.builder()
-            .title("첫 이야기")
-            .content("<h1>첫 이야기.... </h1>")
-            .imageUrls(List.of("imageUrl1", "imageUrl2"))
-            .datingDate(LocalDate.now())
-            .tags(List.of(new TagRequest("서울", "#FFFFFF"), new TagRequest("부산", "#FFFFFF")))
-            .latitude(new BigDecimal("12.12312321"))
-            .longitude(new BigDecimal("122.3123121"))
-            .build();
+        CreatePostRequest request = createPostRequest();
 
         // when
         Long postId = postFacade.createPost(coupleId, request);
@@ -70,7 +62,10 @@ class PostFacadeTest extends IntegrationTest {
             .title("첫 이야기")
             .content("<h1>첫 이야기.... </h1>")
             .imageUrls(List.of("imageUrl1", "imageUrl2"))
-            .tags(List.of(new TagRequest("서울", "#FFFFFF"), new TagRequest("서울", "#FFFFF1")))
+            .tags(List.of(
+                new TagRequest("서울", "#FFFFFF"),
+                new TagRequest("서울", "#FFFFF1"))
+            )
             .latitude(new BigDecimal("12.12312321"))
             .longitude(new BigDecimal("122.3123121"))
             .build();
@@ -87,18 +82,19 @@ class PostFacadeTest extends IntegrationTest {
     @Test
     void modifyPost_success() {
         // given
-        CreatePostRequest request = CreatePostRequest.builder()
-            .title("첫 이야기")
-            .content("<h1>첫 이야기.... </h1>")
-            .imageUrls(List.of("imageUrl1", "imageUrl2"))
-            .datingDate(LocalDate.now())
-            .tags(List.of(new TagRequest("서울", "#FFFFFF"), new TagRequest("부산", "#FFFFFF")))
-            .latitude(new BigDecimal("12.12312321"))
-            .longitude(new BigDecimal("122.3123121"))
-            .build();
+        CreatePostRequest request = createPostRequest();
         Long postId = postFacade.createPost(coupleId, request);
+        EditPostRequest editRequest = editPostRequest();
 
-        EditPostRequest editRequest = EditPostRequest.builder()
+        // when
+        Long editPostId = postFacade.modifyPost(coupleId, postId, editRequest);
+
+        // then
+        assertThat(postId).isEqualTo(editPostId);
+    }
+
+    private EditPostRequest editPostRequest() {
+        return EditPostRequest.builder()
             .title("2첫 이야기")
             .content("<h1>22첫 이야기.... </h1>")
             .imageUrls(List.of("imageUrl1", "imageUrl2", "imageUrl3"))
@@ -111,12 +107,21 @@ class PostFacadeTest extends IntegrationTest {
             .latitude(new BigDecimal("32.12312321"))
             .longitude(new BigDecimal("322.3123121"))
             .build();
+    }
 
-        // when
-        Long editPostId = postFacade.modifyPost(coupleId, postId, editRequest);
-
-        // then
-        assertThat(postId).isEqualTo(editPostId);
+    private CreatePostRequest createPostRequest() {
+        return CreatePostRequest.builder()
+            .title("첫 이야기")
+            .content("<h1>첫 이야기.... </h1>")
+            .imageUrls(List.of("imageUrl1", "imageUrl2"))
+            .datingDate(LocalDate.now())
+            .tags(List.of(
+                new TagRequest("서울", "#FFFFFF"),
+                new TagRequest("카페", "#FFFFFF")
+            ))
+            .latitude(new BigDecimal("12.12312321"))
+            .longitude(new BigDecimal("122.3123121"))
+            .build();
     }
 
     private Couple createCouple() {
@@ -125,5 +130,4 @@ class PostFacadeTest extends IntegrationTest {
         List<Member> members = memberRepository.saveAll(List.of(inviter, receiver));
         return coupleRepository.save(new Couple(LocalDate.now(), new CoupleMembers(members)));
     }
-
 }

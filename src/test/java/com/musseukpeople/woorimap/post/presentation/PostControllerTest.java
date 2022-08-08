@@ -2,8 +2,6 @@ package com.musseukpeople.woorimap.post.presentation;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,12 +12,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
-import com.musseukpeople.woorimap.tag.application.dto.TagRequest;
+import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
 
 class PostControllerTest extends AcceptanceTest {
@@ -42,7 +39,7 @@ class PostControllerTest extends AcceptanceTest {
         CreatePostRequest createRequest = createPostRequest();
 
         // when
-        MockHttpServletResponse response = createPostApi(createRequest);
+        MockHttpServletResponse response = 게시글_작성(coupleAccessToken, createRequest);
 
         // then
         assertAll(
@@ -56,33 +53,15 @@ class PostControllerTest extends AcceptanceTest {
     void modify_post_success() throws Exception {
         // given
         CreatePostRequest createRequest = createPostRequest();
-        createPostApi(createRequest);
+        게시글_작성(coupleAccessToken, createRequest);
 
         CreatePostRequest editRequest = editPostRequest();
 
         // when
-        MockHttpServletResponse response = modifyPostApi(editRequest, 1L);
+        MockHttpServletResponse response = 게시글_수정(coupleAccessToken, editRequest, 1L);
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    private MockHttpServletResponse createPostApi(CreatePostRequest request) throws Exception{
-        return mockMvc.perform(post("/api/couples/posts")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, coupleAccessToken)
-                .content(objectMapper.writeValueAsString(request)))
-            .andDo(print())
-            .andReturn().getResponse();
-    }
-
-    private MockHttpServletResponse modifyPostApi(CreatePostRequest request, Long postId) throws Exception{
-        return mockMvc.perform(put("/api/couples/posts/" + postId)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, coupleAccessToken)
-                .content(objectMapper.writeValueAsString(request)))
-            .andDo(print())
-            .andReturn().getResponse();
     }
 
     private CreatePostRequest editPostRequest() {
