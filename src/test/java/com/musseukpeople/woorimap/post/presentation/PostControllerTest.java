@@ -16,6 +16,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
@@ -50,6 +53,33 @@ class PostControllerTest extends AcceptanceTest {
             () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value()),
             () -> assertThat(response.getHeader(HttpHeaders.LOCATION)).isNotNull()
         );
+    }
+
+    @DisplayName("검색 API 성공")
+    @Test
+    void search_success() throws Exception {
+        //given
+        int savePostSize = 10;
+        for (int i = 0; i < savePostSize; i++) {
+            게시글_작성(coupleAccessToken, createPostRequest());
+        }
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("tagIds", "1,2,3,4,5,6,7,8,9,10");
+        params.add("title", "첫");
+
+        //when
+        MockHttpServletResponse response = mockMvc.perform(get("/api/couples/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, coupleAccessToken)
+                .params(params))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(print())
+            .andReturn().getResponse();
+
+        //then
+        List posts = getResponseObject(response, List.class);
+        assertThat(posts).hasSize(savePostSize);
     }
 
     @DisplayName("게시물 단건 조회 성공")
