@@ -39,4 +39,9 @@ public class PostTags {
             throw new DuplicateTagException(ErrorCode.DUPLICATE_TAG);
         }
     }
+
+    public void changePostTags(List<PostTag> postTagsToAdd) {
+        postTags.clear();
+        postTags.addAll(postTagsToAdd);
+    }
 }

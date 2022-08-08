@@ -116,6 +116,15 @@ public abstract class AcceptanceTest {
             .andReturn().getResponse();
     }
 
+    protected MockHttpServletResponse 게시글_수정(String token, CreatePostRequest request, Long postId) throws Exception{
+        return mockMvc.perform(put("/api/couples/posts/" + postId)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andReturn().getResponse();
+    }
+
     protected ErrorResponse getErrorResponse(MockHttpServletResponse response) throws IOException {
         return objectMapper.readValue(response.getContentAsString(StandardCharsets.UTF_8), ErrorResponse.class);
     }
