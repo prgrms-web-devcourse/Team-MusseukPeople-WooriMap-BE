@@ -52,4 +52,9 @@ public class PostService {
         return postRepository.findById(id)
             .orElseThrow(() -> new NotFoundPostException(ErrorCode.NOT_FOUND_POST, id));
     }
+
+    @Transactional
+    public void removePost(Long postId) {
+        postRepository.deleteById(postId);
+    }
 }

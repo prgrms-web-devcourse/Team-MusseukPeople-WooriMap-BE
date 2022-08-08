@@ -39,6 +39,11 @@ public class PostFacade {
         return postService.modifyPost(tags.getList(), postId, editPostRequest);
     }
 
+    @Transactional
+    public void removePost(Long postId) {
+        postService.removePost(postId);
+    }
+
     public PostResponse getPost(Long coupleId, Long postId) {
         Couple couple = coupleService.getCoupleById(coupleId);
         Post post = postService.getPostWithFetchById(postId);

@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -64,6 +65,16 @@ public class PostController {
         postFacade.modifyPost(coupleId, postId, editPostRequest);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "게시글 삭제", description = "게시글 삭제 API입니다.")
+    @OnlyCouple
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ApiResponse<Void>> deletePost(@Login LoginMember member,
+                                                        @PathVariable("postId") Long postId) {
+        postFacade.removePost(postId);
+        return ResponseEntity.noContent().build();
+    }
+
 
     private URI createURI(Long id) {
         return ServletUriComponentsBuilder.fromCurrentRequest()
