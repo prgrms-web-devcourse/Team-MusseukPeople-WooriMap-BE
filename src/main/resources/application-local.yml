@@ -5,15 +5,6 @@ spring:
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-  jpa:
-    open-in-view: false
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-    hibernate:
-      ddl-auto: validate
-
   flyway:
     enabled: true
     baseline-on-migrate: true
@@ -28,9 +19,13 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
-logging:
-  level:
-    org.hibernate.descriptor.sql: debug
+jwt:
+  issuer: local
+  secret-key: twk4jbz8a6smC4u0Xv6KvQUImMfVZ16/SCR0uKJIv3g=
+  access-token:
+    expire-length: 3600000
+  refresh-token:
+    expire-length: 3600000
 
 cloud:
   aws:

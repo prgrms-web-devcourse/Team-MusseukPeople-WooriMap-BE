@@ -1,7 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <included>
-    <appender name="CLOUDWATCH_LOG" class="ca.pjer.logback.AwsLogsAppender">
+    <include resource="appender/properties/default-properties.xml"/>
+    <appender name="cloudwatch-appender" class="ca.pjer.logback.AwsLogsAppender">
         <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
         </encoder>
 
         <if condition='"${spring.profiles.active}".contains("dev")'>
