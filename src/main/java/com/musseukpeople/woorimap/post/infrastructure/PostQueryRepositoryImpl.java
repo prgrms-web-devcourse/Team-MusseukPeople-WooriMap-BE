@@ -22,11 +22,11 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
 
     @Override
     public List<Post> findPostsByFilterCondition(PostFilterCondition postFilterCondition, Long coupleId) {
-        return jpaQueryFactory.selectFrom(post)
-            .innerJoin(post.postImages.postImages, postImage)
-            .fetchJoin()
+        List<Long> postIds = jpaQueryFactory.select(post.id)
+            .from(post)
             .innerJoin(post.postTags.postTags, postTag)
             .innerJoin(postTag.tag, tag)
+            .on(tag.couple.id.eq(coupleId))
             .distinct()
             .where(
                 coupleIdEq(coupleId),
@@ -34,8 +34,19 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
                 titleContain(postFilterCondition.getTitle()),
                 tagsIn(postFilterCondition.getTagIds())
             )
+            .groupBy(post.id)
             .orderBy(post.id.desc())
             .limit(postFilterCondition.getPaginationSize())
+            .fetch();
+
+        return jpaQueryFactory.selectFrom(post)
+            .innerJoin(post.postImages.postImages, postImage)
+            .fetchJoin()
+            .where(
+                post.id.in(postIds)
+            )
+            .distinct()
+            .orderBy(post.id.desc())
             .fetch();
     }
 
