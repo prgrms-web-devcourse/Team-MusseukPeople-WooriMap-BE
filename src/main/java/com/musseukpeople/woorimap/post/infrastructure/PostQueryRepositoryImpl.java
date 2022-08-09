@@ -7,10 +7,9 @@ import static com.musseukpeople.woorimap.tag.domain.QTag.*;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
-import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
+import com.musseukpeople.woorimap.post.domain.Post;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -22,9 +21,10 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<PostSearchResponse> findPostsByFilterCondition(PostFilterCondition postFilterCondition, Long coupleId) {
-        List<Long> postIds = jpaQueryFactory.select(post.id)
-            .from(post)
+    public List<Post> findPostsByFilterCondition(PostFilterCondition postFilterCondition, Long coupleId) {
+        return jpaQueryFactory.selectFrom(post)
+            .innerJoin(post.postImages.postImages, postImage)
+            .fetchJoin()
             .innerJoin(post.postTags.postTags, postTag)
             .innerJoin(postTag.tag, tag)
             .distinct()
@@ -34,32 +34,9 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
                 titleContain(postFilterCondition.getTitle()),
                 tagsIn(postFilterCondition.getTagIds())
             )
-            .groupBy(post.id)
             .orderBy(post.id.desc())
             .limit(postFilterCondition.getPaginationSize())
             .fetch();
-
-        return jpaQueryFactory.selectFrom(post)
-            .innerJoin(post.postImages.postImages, postImage)
-            .fetchJoin()
-            .where(
-                post.id.in(postIds)
-            )
-            .distinct()
-            .orderBy(post.id.desc())
-            .fetch()
-            .stream()
-            .map(
-                findPost -> new PostSearchResponse(
-                    findPost.getId(),
-                    findPost.getPostImages().getPostImages().get(0).getImageUrl(),
-                    findPost.getTitle(),
-                    findPost.getCreatedDateTime(),
-                    findPost.getLocation().getLatitude(),
-                    findPost.getLocation().getLongitude()
-                )
-            )
-            .collect(Collectors.toList());
     }
 
     private BooleanExpression coupleIdEq(Long coupleId) {
