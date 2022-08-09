@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 public class PostResponse {
 
     private Long id;
-
     private String title;
     private String content;
     private List<String> imageUrls;
