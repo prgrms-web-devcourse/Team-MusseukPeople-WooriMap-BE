@@ -2,6 +2,10 @@ package com.musseukpeople.woorimap.post.application.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.musseukpeople.woorimap.post.domain.Post;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -40,5 +44,16 @@ public class PostSearchResponse {
         this.createDateTime = createDateTime;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public static List<PostSearchResponse> from(List<Post> posts) {
+        return posts.stream().map(post -> new PostSearchResponse(
+            post.getId(),
+            post.getThumbnailUrl(),
+            post.getTitle(),
+            post.getCreatedDateTime(),
+            post.getLocation().getLatitude(),
+            post.getLocation().getLongitude()
+        )).collect(Collectors.toList());
     }
 }
