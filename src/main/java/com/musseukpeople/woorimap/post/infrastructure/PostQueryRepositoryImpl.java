@@ -7,11 +7,10 @@ import static com.musseukpeople.woorimap.tag.domain.QTag.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
 import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
-import com.musseukpeople.woorimap.post.domain.image.QPostImages;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -24,38 +23,11 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
 
     @Override
     public List<PostSearchResponse> findPostsByFilterCondition(PostFilterCondition postFilterCondition, Long coupleId) {
-        // List<PostSearchResponse> responses = jpaQueryFactory.select(
-        //         Projections.constructor(PostSearchResponse.class,
-        //             post.id.as("postId"),
-        //             postImage.imageUrl.as("imageUrl"),
-        //             post.title.as("title"),
-        //             post.createdDateTime.as("createDateTime"),
-        //             post.location.latitude.as("latitude"),
-        //             post.location.longitude.as("longitude")
-        //         )
-        //     )
-        //     .distinct()
-        //     .from(postImage)
-        //     .innerJoin(postImage.post, post)
-        //     .groupBy(post.id)
-        //     .fetch();
-
-        return jpaQueryFactory.select(
-                Projections.constructor(PostSearchResponse.class,
-                    post.id.as("postId"),
-                    QPostImages.postImages1.postImages.any().imageUrl.as("imageUrl"),
-                    post.title.as("title"),
-                    post.createdDateTime.as("createDateTime"),
-                    post.location.latitude.as("latitude"),
-                    post.location.longitude.as("longitude")
-                )
-            )
-            .distinct()
-            .from(postImage)
-            .innerJoin(postImage.post, post)
+        List<Long> postIds = jpaQueryFactory.select(post.id)
+            .from(post)
             .innerJoin(post.postTags.postTags, postTag)
             .innerJoin(postTag.tag, tag)
-            .on(tag.couple.id.eq(coupleId))
+            .distinct()
             .where(
                 coupleIdEq(coupleId),
                 lastPostIdLo(postFilterCondition.getLastPostId()),
@@ -66,6 +38,28 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
             .orderBy(post.id.desc())
             .limit(postFilterCondition.getPaginationSize())
             .fetch();
+
+        return jpaQueryFactory.selectFrom(post)
+            .innerJoin(post.postImages.postImages, postImage)
+            .fetchJoin()
+            .where(
+                post.id.in(postIds)
+            )
+            .distinct()
+            .orderBy(post.id.desc())
+            .fetch()
+            .stream()
+            .map(
+                findPost -> new PostSearchResponse(
+                    findPost.getId(),
+                    findPost.getPostImages().getPostImages().get(0).getImageUrl(),
+                    findPost.getTitle(),
+                    findPost.getCreatedDateTime(),
+                    findPost.getLocation().getLatitude(),
+                    findPost.getLocation().getLongitude()
+                )
+            )
+            .collect(Collectors.toList());
     }
 
     private BooleanExpression coupleIdEq(Long coupleId) {
