@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.post.domain.Post;
@@ -33,10 +34,12 @@ public class CreatePostRequest {
 
     @Schema(description = "이미지 저장 경로 리스트")
     @NotNull
+    @Size(min = 1, max = 5, message = "이미지는 1개 이상 5개 이하로 등록이 가능합니다")
     private List<String> imageUrls;
 
     @Schema(description = "태그 리스트")
     @NotNull
+    @Size(min = 1, message = "태그는 1개 이상 등록해야합니다")
     private List<TagRequest> tags;
 
     @Schema(description = "위도")
