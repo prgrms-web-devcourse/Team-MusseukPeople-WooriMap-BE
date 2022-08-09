@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
-import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.post.domain.vo.Location;
@@ -63,7 +62,7 @@ class PostQueryRepositoryTest {
         PostFilterCondition onlyTagFilter = new PostFilterCondition(tagIds, null, null);
 
         //when
-        List<PostSearchResponse> posts = postRepository.findPostsByFilterCondition(onlyTagFilter, coupleId);
+        List<Post> posts = postRepository.findPostsByFilterCondition(onlyTagFilter, coupleId);
 
         //then
         assertThat(posts).hasSize(1);
@@ -78,7 +77,7 @@ class PostQueryRepositoryTest {
         PostFilterCondition onlyTagFilter = new PostFilterCondition(notTagIds, null, null);
 
         //when
-        List<PostSearchResponse> posts = postRepository.findPostsByFilterCondition(onlyTagFilter, coupleId);
+        List<Post> posts = postRepository.findPostsByFilterCondition(onlyTagFilter, coupleId);
 
         //then
         assertThat(posts).isEmpty();
@@ -94,7 +93,7 @@ class PostQueryRepositoryTest {
         PostFilterCondition onlyTitleFilter = new PostFilterCondition(null, title, null);
 
         //when
-        List<PostSearchResponse> posts = postRepository.findPostsByFilterCondition(onlyTitleFilter, coupleId);
+        List<Post> posts = postRepository.findPostsByFilterCondition(onlyTitleFilter, coupleId);
 
         //then
         assertThat(posts).hasSize(1);
@@ -110,7 +109,7 @@ class PostQueryRepositoryTest {
         PostFilterCondition onlyTitleFilter = new PostFilterCondition(null, noTitle, null);
 
         //when
-        List<PostSearchResponse> posts = postRepository.findPostsByFilterCondition(onlyTitleFilter, coupleId);
+        List<Post> posts = postRepository.findPostsByFilterCondition(onlyTitleFilter, coupleId);
 
         //then
         assertThat(posts).isEmpty();
@@ -125,7 +124,7 @@ class PostQueryRepositoryTest {
         }
 
         //when
-        List<PostSearchResponse> posts = postRepository.findPostsByFilterCondition(
+        List<Post> posts = postRepository.findPostsByFilterCondition(
             new PostFilterCondition(null, null, null), coupleId);
 
         //then
@@ -143,7 +142,7 @@ class PostQueryRepositoryTest {
         }
 
         //when
-        List<PostSearchResponse> posts = postRepository.findPostsByFilterCondition(
+        List<Post> posts = postRepository.findPostsByFilterCondition(
             new PostFilterCondition(tagIds, "테스트", 54378537L), coupleId);
 
         //then
@@ -174,9 +173,7 @@ class PostQueryRepositoryTest {
             "http://wooriemap.aws.com/2.jpg",
             "http://wooriemap.aws.com/3.jpg",
             "http://wooriemap.aws.com/4.jpg",
-            "http://wooriemap.aws.com/5.jpg",
-            "http://wooriemap.aws.com/6.jpg",
-            "http://wooriemap.aws.com/7.jpg");
+            "http://wooriemap.aws.com/5.jpg");
     }
 
     private List<Tag> createTestTags(Couple couple) {
