@@ -28,7 +28,7 @@ import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
-import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
+import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 
 import io.findify.s3mock.S3Mock;
 
@@ -116,7 +116,7 @@ public abstract class AcceptanceTest {
             .andReturn().getResponse();
     }
 
-    protected MockHttpServletResponse 게시글_수정(String token, CreatePostRequest request, Long postId) throws Exception{
+    protected MockHttpServletResponse 게시글_수정(String token, CreatePostRequest request, Long postId) throws Exception {
         return mockMvc.perform(put("/api/couples/posts/" + postId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, token)

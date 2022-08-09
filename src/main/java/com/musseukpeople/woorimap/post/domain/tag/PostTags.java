@@ -1,7 +1,8 @@
 package com.musseukpeople.woorimap.post.domain.tag;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -21,11 +22,11 @@ import lombok.NoArgsConstructor;
 public class PostTags {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<PostTag> postTags = new ArrayList<>();
+    private Set<PostTag> postTags = new HashSet<>();
 
     public PostTags(List<PostTag> postTags) {
         validateDuplicate(postTags);
-        this.postTags = postTags;
+        this.postTags = new HashSet<>(postTags);
     }
 
     private void validateDuplicate(List<PostTag> postTags) {

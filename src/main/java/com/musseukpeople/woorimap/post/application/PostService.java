@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
-import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
+import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
+import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.post.exception.NotFoundPostException;
@@ -41,6 +41,11 @@ public class PostService {
         post.changePostTags(tags);
 
         return post.getId();
+    }
+
+    public Post getPostWithFetchById(Long id) {
+        return postRepository.findPostWithFetchById(id)
+            .orElseThrow(() -> new NotFoundPostException(ErrorCode.NOT_FOUND_POST, id));
     }
 
     private Post getPostById(Long id) {

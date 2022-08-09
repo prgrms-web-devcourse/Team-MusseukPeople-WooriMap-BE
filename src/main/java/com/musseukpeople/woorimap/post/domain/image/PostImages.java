@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostImages {
 
-    public static final int THUMNAIL_INDEX = 0;
+    public static final int THUMBNAIL_INDEX = 0;
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<PostImage> postImages = new ArrayList<>();
 
@@ -27,7 +27,7 @@ public class PostImages {
     }
 
     public String getThumbnailUrl() {
-        return postImages.get(THUMNAIL_INDEX).getImageUrl();
+        return postImages.get(THUMBNAIL_INDEX).getImageUrl();
     }
 
     public List<String> getImageUrls() {

@@ -62,4 +62,8 @@ public class Couple extends BaseEntity {
 
         this.startDate = modifyDate;
     }
+
+    public boolean isSame(Couple couple) {
+        return this.id.equals(couple.id);
+    }
 }

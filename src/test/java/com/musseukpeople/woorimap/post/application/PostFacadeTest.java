@@ -18,8 +18,8 @@ import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
-import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
-import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
+import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
+import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
@@ -83,7 +83,6 @@ class PostFacadeTest extends IntegrationTest {
             .isInstanceOf(DuplicateTagException.class)
             .hasMessage("태그가 중복됩니다.");
     }
-
 
     @DisplayName("게시물 수정 성공")
     @Transactional
