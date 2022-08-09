@@ -19,16 +19,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TagColor {
 
-    private static final int COLOR_MIN = 7;
-    private static final int COLOR_MAX = 25;
+    private static final int COLOR_MIN_LENGTH = 7;
+    private static final int COLOR_MAX_LENGTH = 25;
 
-    @Column(name = "color", nullable = false, length = COLOR_MAX)
+    @Column(name = "color", nullable = false, length = COLOR_MAX_LENGTH)
     private String value;
 
     public TagColor(String color) {
         checkArgument(!StringUtils.isBlank(color), "태그 색깔은 비어있을 수 없습니다.");
-        checkArgument(color.trim().length() >= COLOR_MIN, format("태그 색깔 길이는 {0} 이상이어야 합니다.", COLOR_MIN));
-        checkArgument(color.trim().length() <= COLOR_MAX, format("태그 색깔 길이는 {0} 이하이어야 합니다.", COLOR_MAX));
+        checkArgument(color.trim().length() >= COLOR_MIN_LENGTH, format("태그 색깔 길이는 {0} 이상이어야 합니다.", COLOR_MIN_LENGTH));
+        checkArgument(color.trim().length() <= COLOR_MAX_LENGTH, format("태그 색깔 길이는 {0} 이하이어야 합니다.", COLOR_MAX_LENGTH));
         value = color.trim();
     }
 }
