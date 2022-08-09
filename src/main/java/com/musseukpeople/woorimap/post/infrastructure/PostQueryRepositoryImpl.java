@@ -26,7 +26,6 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
             .from(post)
             .innerJoin(post.postTags.postTags, postTag)
             .innerJoin(postTag.tag, tag)
-            .on(tag.couple.id.eq(coupleId))
             .distinct()
             .where(
                 coupleIdEq(coupleId),
