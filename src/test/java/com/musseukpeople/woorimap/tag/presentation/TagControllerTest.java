@@ -18,7 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
-import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
+import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import com.musseukpeople.woorimap.tag.application.dto.response.TagResponse;
 import com.musseukpeople.woorimap.util.AcceptanceTest;

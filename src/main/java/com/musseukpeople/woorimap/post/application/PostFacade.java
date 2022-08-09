@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.couple.application.CoupleService;
 import com.musseukpeople.woorimap.couple.domain.Couple;
-import com.musseukpeople.woorimap.post.application.dto.CreatePostRequest;
-import com.musseukpeople.woorimap.post.application.dto.EditPostRequest;
+import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
+import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
 import com.musseukpeople.woorimap.tag.application.TagService;
 import com.musseukpeople.woorimap.tag.domain.Tags;
 

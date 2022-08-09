@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.post.application.dto;
+package com.musseukpeople.woorimap.post.application.dto.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -6,7 +6,13 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.musseukpeople.woorimap.couple.domain.Couple;
+import com.musseukpeople.woorimap.post.domain.Post;
+import com.musseukpeople.woorimap.post.domain.vo.Location;
 import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
+import com.musseukpeople.woorimap.tag.domain.Tag;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,7 +21,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class EditPostRequest {
+public class CreatePostRequest {
 
     @Schema(description = "제목")
     @NotBlank
@@ -46,8 +52,8 @@ public class EditPostRequest {
     private LocalDate datingDate;
 
     @Builder
-    public EditPostRequest(String title, String content, List<String> imageUrls, List<TagRequest> tags,
-                           BigDecimal latitude, BigDecimal longitude, LocalDate datingDate) {
+    public CreatePostRequest(String title, String content, List<String> imageUrls, List<TagRequest> tags,
+                             BigDecimal latitude, BigDecimal longitude, LocalDate datingDate) {
         this.title = title;
         this.content = content;
         this.imageUrls = imageUrls;
@@ -55,5 +61,17 @@ public class EditPostRequest {
         this.latitude = latitude;
         this.longitude = longitude;
         this.datingDate = datingDate;
+    }
+
+    public Post toPost(Couple couple, List<Tag> tags) {
+        return Post.builder()
+            .couple(couple)
+            .title(title)
+            .content(content)
+            .location(new Location(latitude, longitude))
+            .datingDate(datingDate)
+            .imageUrls(imageUrls)
+            .tags(tags)
+            .build();
     }
 }
