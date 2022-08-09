@@ -10,6 +10,7 @@ import java.util.Objects;
 
 import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
 import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
+import com.musseukpeople.woorimap.post.domain.image.QPostImages;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,16 +24,33 @@ public class PostQueryRepositoryImpl implements PostQueryRepository {
 
     @Override
     public List<PostSearchResponse> findPostsByFilterCondition(PostFilterCondition postFilterCondition, Long coupleId) {
+        // List<PostSearchResponse> responses = jpaQueryFactory.select(
+        //         Projections.constructor(PostSearchResponse.class,
+        //             post.id.as("postId"),
+        //             postImage.imageUrl.as("imageUrl"),
+        //             post.title.as("title"),
+        //             post.createdDateTime.as("createDateTime"),
+        //             post.location.latitude.as("latitude"),
+        //             post.location.longitude.as("longitude")
+        //         )
+        //     )
+        //     .distinct()
+        //     .from(postImage)
+        //     .innerJoin(postImage.post, post)
+        //     .groupBy(post.id)
+        //     .fetch();
+
         return jpaQueryFactory.select(
                 Projections.constructor(PostSearchResponse.class,
                     post.id.as("postId"),
-                    post.title.as("imageUrl"),
+                    QPostImages.postImages1.postImages.any().imageUrl.as("imageUrl"),
                     post.title.as("title"),
                     post.createdDateTime.as("createDateTime"),
                     post.location.latitude.as("latitude"),
                     post.location.longitude.as("longitude")
                 )
             )
+            .distinct()
             .from(postImage)
             .innerJoin(postImage.post, post)
             .innerJoin(post.postTags.postTags, postTag)
