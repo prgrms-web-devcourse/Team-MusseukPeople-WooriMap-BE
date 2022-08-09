@@ -47,7 +47,7 @@ public class PostController {
 
     @Operation(summary = "게시물 단건 조회", description = "게시물 단건 조회 API입니다.")
     @OnlyCouple
-    @GetMapping("{postId}")
+    @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> showPost(@Login LoginMember loginMember,
                                                               @PathVariable("postId") Long postId) {
         PostResponse postResponse = postFacade.getPost(loginMember.getCoupleId(), postId);
