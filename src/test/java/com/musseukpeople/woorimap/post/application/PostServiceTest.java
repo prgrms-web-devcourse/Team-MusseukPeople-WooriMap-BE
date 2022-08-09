@@ -7,11 +7,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
@@ -20,6 +23,7 @@ import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
+import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 import com.musseukpeople.woorimap.tag.domain.TagRepository;
 import com.musseukpeople.woorimap.tag.exception.DuplicateTagException;
@@ -40,6 +44,9 @@ class PostServiceTest extends IntegrationTest {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     private Couple couple;
 
@@ -94,6 +101,24 @@ class PostServiceTest extends IntegrationTest {
 
         // then
         assertThat(postId).isEqualTo(updatePostId);
+    }
+
+    @DisplayName("게시글 단건 조회 성공")
+    @Transactional
+    @Test
+    void getPostWithFetchById_success() {
+        // given
+        List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("cafe", "#FFFFFF", couple));
+        tagRepository.saveAll(tags);
+        CreatePostRequest request = createPostRequest();
+        Long postId = postService.createPost(couple, tags, request);
+        entityManager.clear();
+
+        // when
+        Post post = postService.getPostWithFetchById(postId);
+
+        // then
+        assertThat(post.getImageUrls()).isNotNull();
     }
 
     private EditPostRequest editPostRequest() {
