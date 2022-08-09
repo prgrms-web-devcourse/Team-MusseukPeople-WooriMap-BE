@@ -40,7 +40,12 @@ public class PostFacade {
     }
 
     @Transactional
-    public void removePost(Long postId) {
+    public void removePost(Long coupleId, Long postId) {
+        Couple couple = coupleService.getCoupleById(coupleId);
+        Post post = postService.getPostById(postId);
+        if (post.isNotWrittenBy(couple)) {
+            throw new PostNotBelongToCoupleException(coupleId, postId, ErrorCode.NOT_BELONG_TO_COUPLE);
+        }
         postService.removePost(postId);
     }
 

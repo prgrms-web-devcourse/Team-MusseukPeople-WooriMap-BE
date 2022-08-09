@@ -71,10 +71,9 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(@Login LoginMember loginMember,
                                                         @PathVariable("postId") Long postId) {
-        postFacade.removePost(postId);
+        postFacade.removePost(loginMember.getCoupleId(), postId);
         return ResponseEntity.noContent().build();
     }
-
 
     private URI createURI(Long id) {
         return ServletUriComponentsBuilder.fromCurrentRequest()
