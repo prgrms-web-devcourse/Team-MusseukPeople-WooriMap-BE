@@ -17,6 +17,7 @@ import com.musseukpeople.woorimap.tag.domain.Tags;
 import lombok.RequiredArgsConstructor;
 
 @Component
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostFacade {
 
