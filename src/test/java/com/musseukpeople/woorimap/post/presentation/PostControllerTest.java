@@ -2,6 +2,8 @@ package com.musseukpeople.woorimap.post.presentation;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,10 +14,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
+import com.musseukpeople.woorimap.post.application.dto.response.PostResponse;
 import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
 
@@ -45,6 +49,29 @@ class PostControllerTest extends AcceptanceTest {
         assertAll(
             () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value()),
             () -> assertThat(response.getHeader(HttpHeaders.LOCATION)).isNotNull()
+        );
+    }
+
+    @DisplayName("게시물 단건 조회 성공")
+    @Test
+    void showPost_success() throws Exception {
+        // given
+        CreatePostRequest createRequest = createPostRequest();
+        MockHttpServletResponse createPostResponse = 게시글_작성(coupleAccessToken, createRequest);
+        Long postId = getPostId(createPostResponse);
+
+        // when
+        MockHttpServletResponse response = mockMvc.perform(get("/api/couples/posts/{postId}", postId)
+                .header(HttpHeaders.AUTHORIZATION, coupleAccessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andDo(print())
+            .andReturn().getResponse();
+
+        // then
+        PostResponse postResponse = getResponseObject(response, PostResponse.class);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(postResponse.getId()).isPositive()
         );
     }
 
@@ -94,5 +121,10 @@ class PostControllerTest extends AcceptanceTest {
             .latitude(new BigDecimal("12.12312321"))
             .longitude(new BigDecimal("122.3123121"))
             .build();
+    }
+
+    private Long getPostId(MockHttpServletResponse response) {
+        String[] locationHeader = response.getHeader(HttpHeaders.LOCATION).split("/");
+        return Long.valueOf(locationHeader[locationHeader.length - 1]);
     }
 }

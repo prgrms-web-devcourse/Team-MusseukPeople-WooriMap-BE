@@ -5,6 +5,7 @@ import java.net.URI;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +21,7 @@ import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.post.application.PostFacade;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
+import com.musseukpeople.woorimap.post.application.dto.response.PostResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +43,14 @@ public class PostController {
         Long coupleId = member.getCoupleId();
         Long postId = postFacade.createPost(coupleId, createPostRequest);
         return ResponseEntity.created(createURI(postId)).build();
+    }
+
+    @Operation(summary = "게시물 단건 조회", description = "게시물 단건 조회 API입니다.")
+    @OnlyCouple
+    @GetMapping("{postId}")
+    public ResponseEntity<ApiResponse<PostResponse>> showPost(@Login LoginMember loginMember,
+                                                              @PathVariable("postId") Long postId) {
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "게시글 수정", description = "게시글 수정 API입니다.")
