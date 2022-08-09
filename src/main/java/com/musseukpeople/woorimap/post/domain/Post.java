@@ -75,14 +75,6 @@ public class Post extends BaseEntity {
         this.postTags = new PostTags(covertToPostTags(tags));
     }
 
-    public String getThumbnailUrl() {
-        return postImages.getThumbnailUrl();
-    }
-
-    public List<String> getImageUrls() {
-        return postImages.getImageUrls();
-    }
-
     public void changeTitle(String title) {
         this.title = title;
     }
@@ -105,6 +97,18 @@ public class Post extends BaseEntity {
 
     public void changePostTags(List<Tag> tags) {
         this.postTags.changePostTags(covertToPostTags(tags));
+    }
+
+    public boolean isNotWrittenBy(Couple couple) {
+        return !this.couple.isSame(couple);
+    }
+
+    public String getThumbnailUrl() {
+        return postImages.getThumbnailUrl();
+    }
+
+    public List<String> getImageUrls() {
+        return postImages.getImageUrls();
     }
 
     private List<PostTag> covertToPostTags(List<Tag> tags) {
