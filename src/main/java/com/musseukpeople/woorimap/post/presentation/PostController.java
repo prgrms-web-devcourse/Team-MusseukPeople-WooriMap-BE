@@ -50,7 +50,8 @@ public class PostController {
     @GetMapping("{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> showPost(@Login LoginMember loginMember,
                                                               @PathVariable("postId") Long postId) {
-        return ResponseEntity.ok().build();
+        PostResponse postResponse = postFacade.getPost(loginMember.getCoupleId(), postId);
+        return ResponseEntity.ok(new ApiResponse<>(postResponse));
     }
 
     @Operation(summary = "게시글 수정", description = "게시글 수정 API입니다.")
