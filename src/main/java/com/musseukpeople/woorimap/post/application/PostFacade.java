@@ -33,7 +33,9 @@ public class PostFacade {
     public Long createPost(Long coupleId, CreatePostRequest createPostRequest) {
         Couple couple = coupleService.getCoupleById(coupleId);
         Tags tags = tagService.findOrCreateTags(couple, createPostRequest.getTags());
-        return postService.createPost(couple, tags.getList(), createPostRequest);
+
+        Post post = postService.createPost(couple, tags.getList(), createPostRequest);
+        return post.getId();
     }
 
     public List<PostSearchResponse> searchPosts(PostFilterCondition postFilterCondition, Long coupleId) {
@@ -44,7 +46,9 @@ public class PostFacade {
     public Long modifyPost(Long coupleId, Long postId, EditPostRequest editPostRequest) {
         Couple couple = coupleService.getCoupleById(coupleId);
         Tags tags = tagService.findOrCreateTags(couple, editPostRequest.getTags());
-        return postService.modifyPost(tags.getList(), postId, editPostRequest);
+
+        Post post = postService.modifyPost(tags.getList(), postId, editPostRequest);
+        return post.getId();
     }
 
     @Transactional

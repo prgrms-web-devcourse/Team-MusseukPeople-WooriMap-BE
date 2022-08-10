@@ -74,7 +74,7 @@ class PostServiceTest extends IntegrationTest {
         CreatePostRequest request = createPostRequest();
 
         // when
-        Long postId = postService.createPost(couple, tags, request);
+        Long postId = postService.createPost(couple, tags, request).getId();
 
         // then
         assertThat(postId).isPositive();
@@ -143,13 +143,13 @@ class PostServiceTest extends IntegrationTest {
         List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("cafe", "#FFFFFF", couple));
         tagRepository.saveAll(tags);
         CreatePostRequest request = createPostRequest();
-        Long postId = postService.createPost(couple, tags, request);
+        Long postId = postService.createPost(couple, tags, request).getId();
 
         List<Tag> updateTags = new ArrayList<>();
         EditPostRequest editPostRequest = editPostRequest();
 
         // when
-        Long updatePostId = postService.modifyPost(updateTags, postId, editPostRequest);
+        Long updatePostId = postService.modifyPost(updateTags, postId, editPostRequest).getId();
 
         // then
         assertThat(postId).isEqualTo(updatePostId);
@@ -163,7 +163,7 @@ class PostServiceTest extends IntegrationTest {
         List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("cafe", "#FFFFFF", couple));
         tagRepository.saveAll(tags);
         CreatePostRequest request = createPostRequest();
-        Long postId = postService.createPost(couple, tags, request);
+        Long postId = postService.createPost(couple, tags, request).getId();
         entityManager.clear();
 
         // when
