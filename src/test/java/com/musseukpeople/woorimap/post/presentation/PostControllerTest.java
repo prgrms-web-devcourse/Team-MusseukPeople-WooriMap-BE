@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +24,9 @@ import org.springframework.util.MultiValueMap;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.response.PostResponse;
+import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
 import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
+import com.musseukpeople.woorimap.tag.application.dto.response.TagResponse;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
 
 class PostControllerTest extends AcceptanceTest {
@@ -64,21 +67,21 @@ class PostControllerTest extends AcceptanceTest {
             게시글_작성(coupleAccessToken, createPostRequest());
         }
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("tagIds", "1,2,3,4,5,6,7,8,9,10");
-        params.add("title", "첫");
+        String tags = 태그_조회(coupleAccessToken).toString();
+        String tagIds = tags.substring(1, tags.length() - 1);
 
         //when
         MockHttpServletResponse response = mockMvc.perform(get("/api/couples/posts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, coupleAccessToken)
-                .params(params))
+                .param("title", "첫")
+                .param("tagIds", tagIds))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(print())
             .andReturn().getResponse();
 
         //then
-        List posts = getResponseObject(response, List.class);
+        List<PostSearchResponse> posts = getResponseList(response, PostSearchResponse.class);
         assertThat(posts).hasSize(savePostSize);
     }
 
@@ -172,5 +175,14 @@ class PostControllerTest extends AcceptanceTest {
     private Long getPostId(MockHttpServletResponse response) {
         String[] locationHeader = response.getHeader(HttpHeaders.LOCATION).split("/");
         return Long.valueOf(locationHeader[locationHeader.length - 1]);
+    }
+
+    private List<Long> 태그_조회(String coupleAccessToken) throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get("/api/couples/tags")
+                .header(HttpHeaders.AUTHORIZATION, coupleAccessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andReturn().getResponse();
+        List<TagResponse> tagResponses = getResponseList(response, TagResponse.class);
+        return tagResponses.stream().map(TagResponse::getId).collect(Collectors.toList());
     }
 }
