@@ -31,11 +31,6 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public List<PostSearchResponse> searchPosts(PostFilterCondition postFilterCondition, Long coupleId) {
-        List<Post> posts = postRepository.findPostsByFilterCondition(postFilterCondition, coupleId);
-        return PostSearchResponse.from(posts);
-    }
-
     @Transactional
     public Post modifyPost(List<Tag> tags, Long postId, EditPostRequest editPostRequest) {
         Post post = getPostById(postId);
@@ -50,6 +45,16 @@ public class PostService {
         return post;
     }
 
+    @Transactional
+    public void removePost(Long postId) {
+        postRepository.deleteById(postId);
+    }
+
+    public List<PostSearchResponse> searchPosts(PostFilterCondition postFilterCondition, Long coupleId) {
+        List<Post> posts = postRepository.findPostsByFilterCondition(postFilterCondition, coupleId);
+        return PostSearchResponse.from(posts);
+    }
+
     public Post getPostWithFetchById(Long id) {
         return postRepository.findPostWithFetchById(id)
             .orElseThrow(() -> new NotFoundPostException(ErrorCode.NOT_FOUND_POST, id));
@@ -58,10 +63,5 @@ public class PostService {
     public Post getPostById(Long id) {
         return postRepository.findById(id)
             .orElseThrow(() -> new NotFoundPostException(ErrorCode.NOT_FOUND_POST, id));
-    }
-
-    @Transactional
-    public void removePost(Long postId) {
-        postRepository.deleteById(postId);
     }
 }

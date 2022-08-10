@@ -39,10 +39,6 @@ public class PostFacade {
         return post.getId();
     }
 
-    public List<PostSearchResponse> searchPosts(PostFilterCondition postFilterCondition, Long coupleId) {
-        return postService.searchPosts(postFilterCondition, coupleId);
-    }
-
     @Transactional
     public Long modifyPost(LoginMember loginMember, Long postId, EditPostRequest editPostRequest) {
         Couple couple = coupleService.getCoupleById(loginMember.getCoupleId());
@@ -69,5 +65,9 @@ public class PostFacade {
             throw new PostNotBelongToCoupleException(coupleId, postId, ErrorCode.NOT_BELONG_TO_COUPLE);
         }
         return PostResponse.from(post);
+    }
+
+    public List<PostSearchResponse> searchPosts(PostFilterCondition postFilterCondition, Long coupleId) {
+        return postService.searchPosts(postFilterCondition, coupleId);
     }
 }
