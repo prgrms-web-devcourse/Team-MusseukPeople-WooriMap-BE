@@ -1,6 +1,7 @@
 package com.musseukpeople.woorimap.post.presentation;
 
-import java.net.URI;
+import static com.musseukpeople.woorimap.common.util.LocationUriUtil.*;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.musseukpeople.woorimap.auth.aop.OnlyCouple;
 import com.musseukpeople.woorimap.auth.domain.login.Login;
@@ -45,7 +45,7 @@ public class PostController {
     public ResponseEntity<ApiResponse<Void>> createPost(@Valid @RequestBody CreatePostRequest createPostRequest,
                                                         @Login LoginMember loginMember) {
         Long postId = postFacade.createPost(loginMember, createPostRequest);
-        return ResponseEntity.created(createURI(postId)).build();
+        return ResponseEntity.created(createLocationUri(postId)).build();
     }
 
     @Operation(summary = "게시글 다건 조회", description = "게시물 다건 조회 및 검색 API입니다.")
@@ -84,12 +84,5 @@ public class PostController {
                                                         @PathVariable("postId") Long postId) {
         postFacade.removePost(loginMember.getCoupleId(), postId);
         return ResponseEntity.noContent().build();
-    }
-
-    private URI createURI(Long id) {
-        return ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(id)
-            .toUri();
     }
 }
