@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.image.util;
+package com.musseukpeople.woorimap.common.util;
 
 import java.io.File;
 
@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class FileUtils {
+public class FileUtil {
 
     public static boolean removeFile(File file) {
         return file.delete();

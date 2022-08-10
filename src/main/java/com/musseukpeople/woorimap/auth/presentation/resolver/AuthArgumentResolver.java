@@ -14,8 +14,8 @@ import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.domain.login.Login;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
-import com.musseukpeople.woorimap.auth.infrastructure.AuthorizationExtractor;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.common.util.AuthorizationExtractor;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.RequiredTypeException;

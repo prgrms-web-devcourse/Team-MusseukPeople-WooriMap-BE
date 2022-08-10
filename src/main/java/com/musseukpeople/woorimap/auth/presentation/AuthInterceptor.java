@@ -15,8 +15,8 @@ import com.musseukpeople.woorimap.auth.application.BlackListService;
 import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.auth.exception.UnauthorizedException;
-import com.musseukpeople.woorimap.auth.infrastructure.AuthorizationExtractor;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.common.util.AuthorizationExtractor;
 
 import lombok.RequiredArgsConstructor;
 

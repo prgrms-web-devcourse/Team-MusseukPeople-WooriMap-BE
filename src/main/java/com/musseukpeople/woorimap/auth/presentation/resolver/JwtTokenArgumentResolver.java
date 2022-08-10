@@ -10,9 +10,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.google.common.base.Strings;
 import com.musseukpeople.woorimap.auth.exception.UnauthorizedException;
-import com.musseukpeople.woorimap.auth.infrastructure.AuthorizationExtractor;
-import com.musseukpeople.woorimap.auth.presentation.util.CookieUtil;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.common.util.AuthorizationExtractor;
+import com.musseukpeople.woorimap.common.util.CookieUtil;
 
 public class JwtTokenArgumentResolver implements HandlerMethodArgumentResolver {
 

@@ -5,7 +5,7 @@
     <appender name="file-db-appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${db-log}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${db-log}-${FILE_NAME_PATTERN}</fileNamePattern>
+            <fileNamePattern>${db-log}-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>15MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>

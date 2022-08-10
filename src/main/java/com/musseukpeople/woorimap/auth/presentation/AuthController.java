@@ -22,8 +22,8 @@ import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.auth.presentation.dto.response.LoginResponse;
 import com.musseukpeople.woorimap.auth.presentation.resolver.JwtToken;
 import com.musseukpeople.woorimap.auth.presentation.resolver.RequestTokens;
-import com.musseukpeople.woorimap.auth.presentation.util.CookieUtil;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
+import com.musseukpeople.woorimap.common.util.CookieUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

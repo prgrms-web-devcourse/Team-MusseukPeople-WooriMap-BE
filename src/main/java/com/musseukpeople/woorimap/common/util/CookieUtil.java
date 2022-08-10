@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.auth.presentation.util;
+package com.musseukpeople.woorimap.common.util;
 
 import java.time.Duration;
 import java.util.Arrays;

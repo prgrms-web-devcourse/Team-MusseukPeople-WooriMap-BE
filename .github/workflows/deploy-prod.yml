@@ -55,7 +55,7 @@ jobs:
           port: 22
           script: |
             sudo docker rm -f $(docker ps -qa)
-            sudo docker pull ${{ secrets.DOCKER_REPO }}/woorimap-prod
+            docker-compose pull
             docker-compose up -d
             docker image prune -f
 
