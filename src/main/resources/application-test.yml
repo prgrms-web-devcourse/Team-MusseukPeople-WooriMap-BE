@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:test;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        default_batch_fetch_size: 1000
+        format_sql: true
+
+  flyway:
+    enabled: false
+
+  redis:
+    host: localhost
+    password: test
+    port: 6379
+
+jwt:
+  issuer: test
+  secret-key: twk4jbz8a6smC4u0Xv6KvQUImMfVZ16/SCR0uKJIv3g=
+  access-token:
+    expire-length: 3600000
+  refresh-token:
+    expire-length: 3600000
+
+cloud:
+  aws:
+    credentials:
+      access-key: test
+      secret-key: test
+    s3:
+      bucket: test
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false

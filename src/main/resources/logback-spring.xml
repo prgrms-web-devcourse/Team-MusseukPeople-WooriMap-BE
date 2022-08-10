@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="appender/console-appender.xml"/>
+    <include resource="appender/file-info-appender.xml"/>
+    <include resource="appender/file-warn-appender.xml"/>
+    <include resource="appender/file-error-appender.xml"/>
+    <include resource="appender/file-db-appender.xml"/>
+    <include resource="appender/cloudwatch-appender.xml"/>
+
+    <springProfile name="local,test">
+        <logger name="com.musseukpeople.woorimap" level="DEBUG">
+            <appender-ref ref="console-appender"/>
+        </logger>
+
+        <logger name="org.springframework" level="INFO">
+            <appender-ref ref="console-appender"/>
+        </logger>
+
+        <logger name="org.hibernate.SQL" level="DEBUG">
+            <appender-ref ref="console-query-appender"/>
+        </logger>
+
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additivity="false">
+            <appender-ref ref="console-db-appender"/>
+        </logger>
+
+        <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="TRACE" additivity="false">
+            <appender-ref ref="console-db-appender"/>
+        </logger>
+
+        <logger name="org.hibernate.SQL_SLOW" level="INFO">
+            <appender-ref ref="console-db-appender"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="dev, prod">
+        <logger name="com.musseukpeople.woorimap" level="INFO">
+            <appender-ref ref="file-info-appender"/>
+            <appender-ref ref="file-warn-appender"/>
+            <appender-ref ref="file-error-appender"/>
+            <appender-ref ref="cloudwatch-appender"/>
+        </logger>
+
+        <logger name="org.springframework" level="INFO">
+            <appender-ref ref="file-info-appender"/>
+            <appender-ref ref="file-warn-appender"/>
+            <appender-ref ref="file-error-appender"/>
+            <appender-ref ref="cloudwatch-appender"/>
+        </logger>
+
+        <logger name="org.hibernate.SQL" level="DEBUG">
+            <appender-ref ref="file-db-appender"/>
+        </logger>
+
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additivity="false">
+            <appender-ref ref="file-db-appender"/>
+        </logger>
+
+        <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="TRACE" additivity="false">
+            <appender-ref ref="file-db-appender"/>
+        </logger>
+
+        <logger name="org.hibernate.SQL_SLOW" level="INFO">
+            <appender-ref ref="file-db-appender"/>
+        </logger>
+    </springProfile>
+</configuration>

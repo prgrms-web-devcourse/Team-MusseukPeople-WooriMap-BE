@@ -16,3 +16,12 @@ out/
 ### MAC OS ###
 .DS_Store
 
+### log ###
+logs
+
+### Submodules ###
+src/main/resources/application-dev.yml
+
+### .env ###
+.env
+

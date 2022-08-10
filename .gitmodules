@@ -1,0 +1,3 @@
+[submodule "src/main/resources/woorimap-config"]
+	path = src/main/resources/woorimap-config
+	url = https://github.com/dya-mond/woorimap-config.git
