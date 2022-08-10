@@ -43,7 +43,7 @@ public class TagService {
     public List<TagResponse> getCoupleTags(Long coupleId) {
         List<Tag> result = tagRepository.findAllByCoupleId(coupleId);
         return result.stream()
-            .map(tag -> new TagResponse(tag.getName(), tag.getColor()))
+            .map(tag -> new TagResponse(tag.getId(), tag.getName(), tag.getColor()))
             .collect(toList());
     }
 

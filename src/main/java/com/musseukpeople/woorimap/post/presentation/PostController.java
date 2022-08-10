@@ -1,6 +1,7 @@
 package com.musseukpeople.woorimap.post.presentation;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -22,6 +23,8 @@ import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.post.application.PostFacade;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
+import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
+import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
 import com.musseukpeople.woorimap.post.application.dto.response.PostResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,6 +47,16 @@ public class PostController {
         Long coupleId = loginMember.getCoupleId();
         Long postId = postFacade.createPost(coupleId, createPostRequest);
         return ResponseEntity.created(createURI(postId)).build();
+    }
+
+    @Operation(summary = "게시글 다건 조회", description = "게시물 다건 조회 및 검색 API입니다.")
+    @OnlyCouple
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<PostSearchResponse>>> getPosts(PostFilterCondition postFilterCondition,
+                                                                          @Login LoginMember member) {
+        Long coupleId = member.getCoupleId();
+        List<PostSearchResponse> postSearchResponses = postFacade.searchPosts(postFilterCondition, coupleId);
+        return ResponseEntity.ok(new ApiResponse<>(postSearchResponses));
     }
 
     @Operation(summary = "게시물 단건 조회", description = "게시물 단건 조회 API입니다.")
