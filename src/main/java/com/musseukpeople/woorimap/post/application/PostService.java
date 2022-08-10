@@ -48,8 +48,13 @@ public class PostService {
             .orElseThrow(() -> new NotFoundPostException(ErrorCode.NOT_FOUND_POST, id));
     }
 
-    private Post getPostById(Long id) {
+    public Post getPostById(Long id) {
         return postRepository.findById(id)
             .orElseThrow(() -> new NotFoundPostException(ErrorCode.NOT_FOUND_POST, id));
+    }
+
+    @Transactional
+    public void removePost(Long postId) {
+        postRepository.deleteById(postId);
     }
 }

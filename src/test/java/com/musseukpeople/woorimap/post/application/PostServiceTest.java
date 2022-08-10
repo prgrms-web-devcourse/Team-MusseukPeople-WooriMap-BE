@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
@@ -21,9 +22,10 @@ import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
+import com.musseukpeople.woorimap.post.domain.Post;
+import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
-import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 import com.musseukpeople.woorimap.tag.domain.TagRepository;
 import com.musseukpeople.woorimap.tag.exception.DuplicateTagException;
@@ -35,6 +37,9 @@ class PostServiceTest extends IntegrationTest {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private PostRepository postRepository;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -101,6 +106,24 @@ class PostServiceTest extends IntegrationTest {
 
         // then
         assertThat(postId).isEqualTo(updatePostId);
+    }
+
+    @DisplayName("게시물 삭제 성공")
+    @Test
+    void deletePost_success() {
+        // given
+        List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("cafe", "#FFFFFF", couple));
+        tagRepository.saveAll(tags);
+        CreatePostRequest request = createPostRequest();
+        Long postId = postService.createPost(couple, tags, request);
+
+        // when
+        postService.removePost(postId);
+
+        //then
+        Optional<Post> foundPost = postRepository.findById(postId);
+
+        assertThat(foundPost).isEmpty();
     }
 
     @DisplayName("게시글 단건 조회 성공")

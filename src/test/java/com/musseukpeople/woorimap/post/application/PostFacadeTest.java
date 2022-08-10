@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,8 @@ import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest
 import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
 import com.musseukpeople.woorimap.post.domain.Post;
 import com.musseukpeople.woorimap.post.domain.PostRepository;
+import com.musseukpeople.woorimap.post.exception.NotFoundPostException;
+import com.musseukpeople.woorimap.post.exception.PostNotBelongToCoupleException;
 import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import com.musseukpeople.woorimap.tag.exception.DuplicateTagException;
 import com.musseukpeople.woorimap.util.IntegrationTest;
@@ -110,6 +113,54 @@ class PostFacadeTest extends IntegrationTest {
         );
     }
 
+    @DisplayName("게시물 삭제 성공")
+    @Transactional
+    @Test
+    void deletePost_success() {
+        // given
+        CreatePostRequest request = createPostRequest();
+        Long postId = postFacade.createPost(coupleId, request);
+
+        // when
+        postFacade.removePost(coupleId, postId);
+
+        // then
+        Optional<Post> foundPost = postRepository.findById(postId);
+
+        assertThat(foundPost).isEmpty();
+    }
+
+    @DisplayName("게시물 삭제 실패 - 존재하지 않은 post")
+    @Transactional
+    @Test
+    void deletePostDoesNotExistPost_fail() {
+        // given
+        CreatePostRequest request = createPostRequest();
+        Long postId = postFacade.createPost(coupleId, request);
+
+        // when
+        // then
+        assertThatThrownBy(() -> postFacade.removePost(coupleId, postId+1))
+            .isInstanceOf(NotFoundPostException.class);
+    }
+
+    @DisplayName("게시물 삭제 실패 - 다른 커플의 post 삭제")
+    @Transactional
+    @Test
+    void deletePostNotBelongToCouple_fail() {
+        // given
+        CreatePostRequest request = createPostRequest();
+        postFacade.createPost(coupleId, request);
+
+        Couple couple2 = createCouple2();
+        Long postId2 = postFacade.createPost(couple2.getId(), request);
+
+        // when
+        // then
+        assertThatThrownBy(() -> postFacade.removePost(coupleId, postId2))
+            .isInstanceOf(PostNotBelongToCoupleException.class);
+    }
+
     private EditPostRequest editPostRequest() {
         return EditPostRequest.builder()
             .title("2첫 이야기")
@@ -144,6 +195,13 @@ class PostFacadeTest extends IntegrationTest {
     private Couple createCouple() {
         Member inviter = new TMemberBuilder().email("inviter1@gmail.com").build();
         Member receiver = new TMemberBuilder().email("receiver1@gmail.com").build();
+        List<Member> members = memberRepository.saveAll(List.of(inviter, receiver));
+        return coupleRepository.save(new Couple(LocalDate.now(), new CoupleMembers(members)));
+    }
+
+    private Couple createCouple2() {
+        Member inviter = new TMemberBuilder().email("inviter2@gmail.com").build();
+        Member receiver = new TMemberBuilder().email("receiver2@gmail.com").build();
         List<Member> members = memberRepository.saveAll(List.of(inviter, receiver));
         return coupleRepository.save(new Couple(LocalDate.now(), new CoupleMembers(members)));
     }

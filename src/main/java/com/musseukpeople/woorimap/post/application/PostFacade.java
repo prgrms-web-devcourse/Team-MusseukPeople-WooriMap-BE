@@ -39,6 +39,16 @@ public class PostFacade {
         return postService.modifyPost(tags.getList(), postId, editPostRequest);
     }
 
+    @Transactional
+    public void removePost(Long coupleId, Long postId) {
+        Couple couple = coupleService.getCoupleById(coupleId);
+        Post post = postService.getPostById(postId);
+        if (post.isNotWrittenBy(couple)) {
+            throw new PostNotBelongToCoupleException(coupleId, postId, ErrorCode.NOT_BELONG_TO_COUPLE);
+        }
+        postService.removePost(postId);
+    }
+
     public PostResponse getPost(Long coupleId, Long postId) {
         Couple couple = coupleService.getCoupleById(coupleId);
         Post post = postService.getPostWithFetchById(postId);

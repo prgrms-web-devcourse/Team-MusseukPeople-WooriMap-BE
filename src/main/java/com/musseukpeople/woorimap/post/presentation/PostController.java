@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -39,8 +40,8 @@ public class PostController {
     @OnlyCouple
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createPost(@Valid @RequestBody CreatePostRequest createPostRequest,
-                                                        @Login LoginMember member) {
-        Long coupleId = member.getCoupleId();
+                                                        @Login LoginMember loginMember) {
+        Long coupleId = loginMember.getCoupleId();
         Long postId = postFacade.createPost(coupleId, createPostRequest);
         return ResponseEntity.created(createURI(postId)).build();
     }
@@ -58,11 +59,20 @@ public class PostController {
     @OnlyCouple
     @PutMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> modifyPost(@Valid @RequestBody EditPostRequest editPostRequest,
-                                                        @Login LoginMember member,
+                                                        @Login LoginMember loginMember,
                                                         @PathVariable("postId") Long postId) {
-        Long coupleId = member.getCoupleId();
+        Long coupleId = loginMember.getCoupleId();
         postFacade.modifyPost(coupleId, postId, editPostRequest);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "게시글 삭제", description = "게시글 삭제 API입니다.")
+    @OnlyCouple
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ApiResponse<Void>> deletePost(@Login LoginMember loginMember,
+                                                        @PathVariable("postId") Long postId) {
+        postFacade.removePost(loginMember.getCoupleId(), postId);
+        return ResponseEntity.noContent().build();
     }
 
     private URI createURI(Long id) {
