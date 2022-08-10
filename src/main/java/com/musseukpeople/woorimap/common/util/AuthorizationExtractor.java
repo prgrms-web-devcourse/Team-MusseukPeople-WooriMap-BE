@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.auth.infrastructure;
+package com.musseukpeople.woorimap.common.util;
 
 import static org.springframework.http.HttpHeaders.*;
 

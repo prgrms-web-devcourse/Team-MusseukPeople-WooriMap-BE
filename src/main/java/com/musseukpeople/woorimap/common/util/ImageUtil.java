@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.common.validator;
+package com.musseukpeople.woorimap.common.util;
 
 import java.io.IOException;
 import java.net.URL;

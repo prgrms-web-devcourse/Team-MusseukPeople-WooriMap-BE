@@ -15,9 +15,9 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
+import com.musseukpeople.woorimap.common.util.FileUtil;
 import com.musseukpeople.woorimap.image.domain.S3Image;
 import com.musseukpeople.woorimap.image.exception.ConvertFileFailedException;
-import com.musseukpeople.woorimap.image.util.FileUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +34,7 @@ public class S3ImageService implements ImageService {
     public S3ImageService(
         AmazonS3Client amazonS3Client,
         @Value("${cloud.aws.s3.bucket}") String bucketName,
-        @Value("${spring.profiles.active}")String activeProfile
+        @Value("${spring.profiles.active}") String activeProfile
     ) {
         this.amazonS3Client = amazonS3Client;
         this.bucketName = bucketName;
@@ -61,7 +61,7 @@ public class S3ImageService implements ImageService {
 
     private String upload(Long id, S3Image s3Image, File file) {
         String s3ImageUrl = putS3(file, s3Image.generateS3FileName(id, activeProfile));
-        FileUtils.removeFile(file);
+        FileUtil.removeFile(file);
         return s3ImageUrl;
     }
 

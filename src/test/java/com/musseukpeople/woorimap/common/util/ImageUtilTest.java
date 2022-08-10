@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.common.validator;
+package com.musseukpeople.woorimap.common.util;
 
 import static org.assertj.core.api.Assertions.*;
 
