@@ -80,12 +80,13 @@ class PostControllerTest extends AcceptanceTest {
     void modify_post_success() throws Exception {
         // given
         CreatePostRequest createRequest = createPostRequest();
-        게시글_작성(coupleAccessToken, createRequest);
+        MockHttpServletResponse createPostResponse = 게시글_작성(coupleAccessToken, createRequest);
+        Long postId = getPostId(createPostResponse);
 
         CreatePostRequest editRequest = editPostRequest();
 
         // when
-        MockHttpServletResponse response = 게시글_수정(coupleAccessToken, editRequest, 1L);
+        MockHttpServletResponse response = 게시글_수정(coupleAccessToken, editRequest, postId);
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
@@ -96,15 +97,15 @@ class PostControllerTest extends AcceptanceTest {
     void delete_post_success() throws Exception {
         // given
         CreatePostRequest createRequest = createPostRequest();
-        게시글_작성(coupleAccessToken, createRequest);
+        MockHttpServletResponse createPostResponse = 게시글_작성(coupleAccessToken, createRequest);
+        Long postId = getPostId(createPostResponse);
 
         // when
-        MockHttpServletResponse response = 게시글_삭제(coupleAccessToken, 1L);
+        MockHttpServletResponse response = 게시글_삭제(coupleAccessToken, postId);
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
-
 
     private CreatePostRequest editPostRequest() {
         return CreatePostRequest.builder()
