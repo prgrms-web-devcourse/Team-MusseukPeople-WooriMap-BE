@@ -55,7 +55,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            sudo docker rm -f $(docker ps -qa)
+            docker rm -f woorimap-dev
             docker-compose pull
             docker-compose up -d
             docker image prune -f
