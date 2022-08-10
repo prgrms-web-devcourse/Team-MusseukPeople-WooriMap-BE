@@ -6,8 +6,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,8 +24,8 @@ import com.musseukpeople.woorimap.post.application.PostFacade;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
-import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
 import com.musseukpeople.woorimap.post.application.dto.response.PostResponse;
+import com.musseukpeople.woorimap.post.application.dto.response.PostSearchResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,8 +44,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createPost(@Valid @RequestBody CreatePostRequest createPostRequest,
                                                         @Login LoginMember loginMember) {
-        Long coupleId = loginMember.getCoupleId();
-        Long postId = postFacade.createPost(coupleId, createPostRequest);
+        Long postId = postFacade.createPost(loginMember, createPostRequest);
         return ResponseEntity.created(createURI(postId)).build();
     }
 
@@ -74,8 +73,7 @@ public class PostController {
     public ResponseEntity<ApiResponse<Void>> modifyPost(@Valid @RequestBody EditPostRequest editPostRequest,
                                                         @Login LoginMember loginMember,
                                                         @PathVariable("postId") Long postId) {
-        Long coupleId = loginMember.getCoupleId();
-        postFacade.modifyPost(coupleId, postId, editPostRequest);
+        postFacade.modifyPost(loginMember, postId, editPostRequest);
         return ResponseEntity.ok().build();
     }
 

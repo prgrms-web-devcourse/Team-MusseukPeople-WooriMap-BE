@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
@@ -44,11 +45,13 @@ class PostFacadeTest extends IntegrationTest {
     @Autowired
     private PostRepository postRepository;
 
+    private LoginMember loginMember;
     private Long coupleId;
 
     @BeforeEach
     void setUp() {
-        coupleId = createCouple().getId();
+        loginMember = createCoupleMember();
+        coupleId = loginMember.getCoupleId();
     }
 
     @DisplayName("게시물 생성 성공")
@@ -58,7 +61,7 @@ class PostFacadeTest extends IntegrationTest {
         CreatePostRequest request = createPostRequest();
 
         // when
-        Long postId = postFacade.createPost(coupleId, request);
+        Long postId = postFacade.createPost(loginMember, request);
 
         // then
         assertThat(postId).isPositive();
@@ -82,7 +85,7 @@ class PostFacadeTest extends IntegrationTest {
 
         // when
         // then
-        assertThatThrownBy(() -> postFacade.createPost(coupleId, request))
+        assertThatThrownBy(() -> postFacade.createPost(loginMember, request))
             .isInstanceOf(DuplicateTagException.class)
             .hasMessage("태그가 중복됩니다.");
     }
@@ -93,11 +96,11 @@ class PostFacadeTest extends IntegrationTest {
     void modifyPost_success() {
         // given
         CreatePostRequest request = createPostRequest();
-        Long postId = postFacade.createPost(coupleId, request);
+        Long postId = postFacade.createPost(loginMember, request);
         EditPostRequest editRequest = editPostRequest();
 
         // when
-        Long editPostId = postFacade.modifyPost(coupleId, postId, editRequest);
+        Long editPostId = postFacade.modifyPost(loginMember, postId, editRequest);
 
         // then
         Post post = postRepository.findById(editPostId).get();
@@ -119,7 +122,7 @@ class PostFacadeTest extends IntegrationTest {
     void deletePost_success() {
         // given
         CreatePostRequest request = createPostRequest();
-        Long postId = postFacade.createPost(coupleId, request);
+        Long postId = postFacade.createPost(loginMember, request);
 
         // when
         postFacade.removePost(coupleId, postId);
@@ -136,11 +139,11 @@ class PostFacadeTest extends IntegrationTest {
     void deletePostDoesNotExistPost_fail() {
         // given
         CreatePostRequest request = createPostRequest();
-        Long postId = postFacade.createPost(coupleId, request);
+        Long postId = postFacade.createPost(loginMember, request);
 
         // when
         // then
-        assertThatThrownBy(() -> postFacade.removePost(coupleId, postId+1))
+        assertThatThrownBy(() -> postFacade.removePost(coupleId, postId + 1))
             .isInstanceOf(NotFoundPostException.class);
     }
 
@@ -150,10 +153,10 @@ class PostFacadeTest extends IntegrationTest {
     void deletePostNotBelongToCouple_fail() {
         // given
         CreatePostRequest request = createPostRequest();
-        postFacade.createPost(coupleId, request);
+        postFacade.createPost(loginMember, request);
 
-        Couple couple2 = createCouple2();
-        Long postId2 = postFacade.createPost(couple2.getId(), request);
+        LoginMember otherCoupleMember = createOtherCoupleMember();
+        Long postId2 = postFacade.createPost(otherCoupleMember, request);
 
         // when
         // then
@@ -192,17 +195,19 @@ class PostFacadeTest extends IntegrationTest {
             .build();
     }
 
-    private Couple createCouple() {
+    private LoginMember createCoupleMember() {
         Member inviter = new TMemberBuilder().email("inviter1@gmail.com").build();
         Member receiver = new TMemberBuilder().email("receiver1@gmail.com").build();
         List<Member> members = memberRepository.saveAll(List.of(inviter, receiver));
-        return coupleRepository.save(new Couple(LocalDate.now(), new CoupleMembers(members)));
+        Long coupleId = coupleRepository.save(new Couple(LocalDate.now(), new CoupleMembers(members))).getId();
+        return new LoginMember(receiver.getId(), coupleId, "accessToken");
     }
 
-    private Couple createCouple2() {
+    private LoginMember createOtherCoupleMember() {
         Member inviter = new TMemberBuilder().email("inviter2@gmail.com").build();
         Member receiver = new TMemberBuilder().email("receiver2@gmail.com").build();
         List<Member> members = memberRepository.saveAll(List.of(inviter, receiver));
-        return coupleRepository.save(new Couple(LocalDate.now(), new CoupleMembers(members)));
+        Long coupleId = coupleRepository.save(new Couple(LocalDate.now(), new CoupleMembers(members))).getId();
+        return new LoginMember(receiver.getId(), coupleId, "accessToken");
     }
 }

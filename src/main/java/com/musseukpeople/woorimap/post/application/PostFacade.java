@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.couple.application.CoupleService;
 import com.musseukpeople.woorimap.couple.domain.Couple;
@@ -30,8 +31,8 @@ public class PostFacade {
     private final CoupleService coupleService;
 
     @Transactional
-    public Long createPost(Long coupleId, CreatePostRequest createPostRequest) {
-        Couple couple = coupleService.getCoupleById(coupleId);
+    public Long createPost(LoginMember loginMember, CreatePostRequest createPostRequest) {
+        Couple couple = coupleService.getCoupleById(loginMember.getCoupleId());
         Tags tags = tagService.findOrCreateTags(couple, createPostRequest.getTags());
 
         Post post = postService.createPost(couple, tags.getList(), createPostRequest);
@@ -43,8 +44,8 @@ public class PostFacade {
     }
 
     @Transactional
-    public Long modifyPost(Long coupleId, Long postId, EditPostRequest editPostRequest) {
-        Couple couple = coupleService.getCoupleById(coupleId);
+    public Long modifyPost(LoginMember loginMember, Long postId, EditPostRequest editPostRequest) {
+        Couple couple = coupleService.getCoupleById(loginMember.getCoupleId());
         Tags tags = tagService.findOrCreateTags(couple, editPostRequest.getTags());
 
         Post post = postService.modifyPost(tags.getList(), postId, editPostRequest);

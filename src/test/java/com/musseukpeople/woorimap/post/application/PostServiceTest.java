@@ -23,8 +23,6 @@ import com.musseukpeople.woorimap.couple.domain.CoupleRepository;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
-import com.musseukpeople.woorimap.post.domain.Post;
-import com.musseukpeople.woorimap.post.domain.PostRepository;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
@@ -180,7 +178,7 @@ class PostServiceTest extends IntegrationTest {
         List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("cafe", "#FFFFFF", couple));
         tagRepository.saveAll(tags);
         CreatePostRequest request = createPostRequest();
-        Long postId = postService.createPost(couple, tags, request);
+        Long postId = postService.createPost(couple, tags, request).getId();
 
         // when
         postService.removePost(postId);
