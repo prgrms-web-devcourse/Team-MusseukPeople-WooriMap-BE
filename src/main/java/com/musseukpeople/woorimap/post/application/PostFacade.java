@@ -2,6 +2,7 @@ package com.musseukpeople.woorimap.post.application;
 
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,6 +10,7 @@ import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.couple.application.CoupleService;
 import com.musseukpeople.woorimap.couple.domain.Couple;
+import com.musseukpeople.woorimap.event.domain.PostEvent;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
@@ -29,6 +31,7 @@ public class PostFacade {
     private final PostService postService;
     private final TagService tagService;
     private final CoupleService coupleService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Long createPost(LoginMember loginMember, CreatePostRequest createPostRequest) {
@@ -36,6 +39,7 @@ public class PostFacade {
         Tags tags = tagService.findOrCreateTags(couple, createPostRequest.getTags());
 
         Post post = postService.createPost(couple, tags.getList(), createPostRequest);
+        eventPublisher.publishEvent(PostEvent.of(loginMember.getId(), post));
         return post.getId();
     }
 
@@ -45,6 +49,7 @@ public class PostFacade {
         Tags tags = tagService.findOrCreateTags(couple, editPostRequest.getTags());
 
         Post post = postService.modifyPost(tags.getList(), postId, editPostRequest);
+        eventPublisher.publishEvent(PostEvent.of(loginMember.getId(), post));
         return post.getId();
     }
 

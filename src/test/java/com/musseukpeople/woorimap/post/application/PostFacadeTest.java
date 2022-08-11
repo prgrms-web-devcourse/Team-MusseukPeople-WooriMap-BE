@@ -198,16 +198,22 @@ class PostFacadeTest extends IntegrationTest {
     private LoginMember createCoupleMember() {
         Member inviter = new TMemberBuilder().email("inviter1@gmail.com").build();
         Member receiver = new TMemberBuilder().email("receiver1@gmail.com").build();
-        List<Member> members = memberRepository.saveAll(List.of(inviter, receiver));
-        Long coupleId = coupleRepository.save(new Couple(LocalDate.now(), new CoupleMembers(members))).getId();
-        return new LoginMember(receiver.getId(), coupleId, "accessToken");
+        List<Member> members = List.of(inviter, receiver);
+        memberRepository.saveAll(members);
+        Couple couple = coupleRepository.save(new Couple(LocalDate.now(), new CoupleMembers(members)));
+        members.forEach(member -> member.changeCouple(couple));
+        memberRepository.saveAll(members);
+        return new LoginMember(receiver.getId(), couple.getId(), "accessToken");
     }
 
     private LoginMember createOtherCoupleMember() {
         Member inviter = new TMemberBuilder().email("inviter2@gmail.com").build();
         Member receiver = new TMemberBuilder().email("receiver2@gmail.com").build();
-        List<Member> members = memberRepository.saveAll(List.of(inviter, receiver));
-        Long coupleId = coupleRepository.save(new Couple(LocalDate.now(), new CoupleMembers(members))).getId();
-        return new LoginMember(receiver.getId(), coupleId, "accessToken");
+        List<Member> members = List.of(inviter, receiver);
+        memberRepository.saveAll(members);
+        Couple couple = coupleRepository.save(new Couple(LocalDate.now(), new CoupleMembers(members)));
+        members.forEach(member -> member.changeCouple(couple));
+        memberRepository.saveAll(members);
+        return new LoginMember(receiver.getId(), couple.getId(), "accessToken");
     }
 }
