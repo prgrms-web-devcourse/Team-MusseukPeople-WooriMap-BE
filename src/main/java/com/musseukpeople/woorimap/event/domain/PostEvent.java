@@ -9,21 +9,24 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.musseukpeople.woorimap.post.domain.Post;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostEvent implements Serializable {
 
     private static final long serialVersionUID = 5576120921802674645L;
 
-    private final Long sourceId;
-    private final Long destinationId;
-    private final Long postId;
-    private final String content;
+    private Long sourceId;
+    private Long destinationId;
+    private Long postId;
+    private String content;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private final LocalDateTime publishDateTime;
+    private LocalDateTime publishDateTime;
 
     public PostEvent(Long sourceId, Long destinationId, Long postId, String content, LocalDateTime publishDateTime) {
         this.sourceId = sourceId;
