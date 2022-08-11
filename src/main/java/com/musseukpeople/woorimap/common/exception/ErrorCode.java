@@ -35,13 +35,13 @@ public enum ErrorCode {
     NOT_MAPPING_COUPLE_MEMBER(HttpStatus.BAD_REQUEST, "CP005", "커플 멤버 정보 매핑 실패"),
 
     // InviteCode
-    NOT_FOUND_INVITE_CODE(HttpStatus.NOT_FOUND, "I001", "존재하지 않는 코드입니다."),
+    NOT_FOUND_INVITE_CODE(HttpStatus.NOT_FOUND, "N001", "존재하지 않는 코드입니다."),
 
     // Post
     NOT_FOUND_POST(HttpStatus.NOT_FOUND, "P001", "존재하지 않는 게시글입니다."),
     DUPLICATE_TAG(HttpStatus.BAD_REQUEST, "P002", "태그가 중복됩니다."),
     NOT_BELONG_TO_COUPLE(HttpStatus.FORBIDDEN, "P003", "해당하는 사용자의 게시물이 아닙니다."),
-    
+
     // Image
     INVALID_IMAGE_EXTENSION(HttpStatus.BAD_REQUEST, "I001", "지원하지 않는 이미지 확장자입니다."),
     EXCEED_IMAGE_SIZE(HttpStatus.BAD_REQUEST, "I002", "이미지 용량이 너무 큽니다.");
