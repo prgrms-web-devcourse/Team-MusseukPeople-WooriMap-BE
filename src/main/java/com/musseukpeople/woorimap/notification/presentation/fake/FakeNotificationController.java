@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.notification.fake;
+package com.musseukpeople.woorimap.notification.presentation.fake;
 
 import java.io.IOException;
 import java.util.Map;
