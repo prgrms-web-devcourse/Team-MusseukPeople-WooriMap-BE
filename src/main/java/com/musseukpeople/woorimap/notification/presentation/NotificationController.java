@@ -8,17 +8,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
+import com.musseukpeople.woorimap.notification.application.NotificationService;
 import com.musseukpeople.woorimap.notification.presentation.resolver.LoginForNoti;
 import com.musseukpeople.woorimap.notification.presentation.resolver.LoginRequiredForNoti;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class NotificationController {
+
+    private final NotificationService notificationService;
 
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @LoginRequiredForNoti
     public SseEmitter subscribe(@LoginForNoti LoginMember loginMember,
                                 @RequestHeader(value = "last-event-id", required = false, defaultValue = "") String lastEventId) {
-        return new SseEmitter();
+        return notificationService.subscribe(loginMember.getId(), lastEventId);
     }
 }

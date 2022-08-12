@@ -15,7 +15,7 @@ import com.musseukpeople.woorimap.util.AcceptanceTest;
 
 class NotificationControllerTest extends AcceptanceTest {
 
-    @DisplayName("SSE 연결 성공")
+    @DisplayName("알림 구독 성공")
     @Test
     void subscribe_success() throws Exception {
         // given
