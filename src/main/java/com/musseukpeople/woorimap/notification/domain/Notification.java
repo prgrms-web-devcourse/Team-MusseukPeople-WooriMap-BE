@@ -53,13 +53,11 @@ public class Notification {
     private LocalDateTime createdDateTime;
 
     @Builder
-    public Notification(Long id, Long senderId, Long receiverId, Long contentId, NotificationType notificationType,
-                        String content) {
-        this.id = id;
+    public Notification(Long senderId, Long receiverId, Long contentId, NotificationType type, String content) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.contentId = contentId;
-        this.notificationType = notificationType;
+        this.notificationType = type;
         this.content = content;
     }
 
@@ -67,7 +65,22 @@ public class Notification {
         this.isRead = true;
     }
 
+    public String getEventName() {
+        return this.notificationType.getName();
+    }
+
     public enum NotificationType {
-        POST_CREATED, POST_MODIFIED
+        POST_CREATED("created"),
+        POST_MODIFIED("modified");
+
+        private final String name;
+
+        NotificationType(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return this.name;
+        }
     }
 }
