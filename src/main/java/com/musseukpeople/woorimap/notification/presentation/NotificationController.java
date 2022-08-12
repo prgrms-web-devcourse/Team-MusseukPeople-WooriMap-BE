@@ -35,6 +35,7 @@ public class NotificationController {
     @PatchMapping("/notifications/{id}")
     @LoginRequired
     public ResponseEntity<Void> readNotification(@PathVariable("id") Long id) {
+        notificationService.readNotification(id);
         return ResponseEntity.noContent().build();
     }
 }

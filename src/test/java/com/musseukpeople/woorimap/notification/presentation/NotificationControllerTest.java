@@ -2,6 +2,7 @@ package com.musseukpeople.woorimap.notification.presentation;
 
 import static com.musseukpeople.woorimap.notification.domain.Notification.NotificationType.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.notification.domain.Notification;
 import com.musseukpeople.woorimap.notification.domain.NotificationRepository;
@@ -48,16 +50,38 @@ class NotificationControllerTest extends AcceptanceTest {
         Long notificationId = getNotificationId();
 
         // when
-        MockHttpServletResponse response = mockMvc.perform(patch("/api/notifications/{id}", notificationId)
-                .header(HttpHeaders.AUTHORIZATION, accessToken))
-            .andReturn().getResponse();
+        MockHttpServletResponse response = readNotification(accessToken, notificationId);
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("존재 하지 않는 알림으로 인한 읽음 처리 실패")
+    @Test
+    void readNotification_notFound_success() throws Exception {
+        // given
+        String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test"));
+        Long notificationId = 1L;
+
+        // when
+        MockHttpServletResponse response = readNotification(accessToken, notificationId);
+
+        // then
+        ErrorResponse errorResponse = getErrorResponse(response);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value()),
+            () -> assertThat(errorResponse.getMessage()).isEqualTo("존재하지 않는 알림입니다.")
+        );
+    }
+
     private Long getNotificationId() {
         return notificationRepository.save(new Notification(1L, 1L, 1L, POST_CREATED, "test")).getId();
+    }
+
+    private MockHttpServletResponse readNotification(String accessToken, Long notificationId) throws Exception {
+        return mockMvc.perform(patch("/api/notifications/{id}", notificationId)
+                .header(HttpHeaders.AUTHORIZATION, accessToken))
+            .andReturn().getResponse();
     }
 
 }
