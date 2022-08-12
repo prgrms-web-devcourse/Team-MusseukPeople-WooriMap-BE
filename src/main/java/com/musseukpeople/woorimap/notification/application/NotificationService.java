@@ -23,6 +23,7 @@ public class NotificationService {
 
     private final EmitterRepository emitterRepository;
 
+    // TODO : lastEventId로 유실된 이벤트 전송해야 함
     public SseEmitter subscribe(Long memberId, String lastEventId) {
         String emitterId = memberId + "_" + System.currentTimeMillis();
         SseEmitter sseEmitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
@@ -42,7 +43,7 @@ public class NotificationService {
                 .data(data));
         } catch (IOException e) {
             emitterRepository.deleteById(emitterId);
-            log.info("sse 연결이 되지 않았습니다. emitterId : {}", emitterId);
+            log.info("이벤트 전송을 실패했습니다. emitterId : {}", emitterId);
         }
     }
 }
