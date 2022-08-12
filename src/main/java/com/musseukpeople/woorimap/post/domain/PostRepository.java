@@ -11,7 +11,6 @@ import com.musseukpeople.woorimap.post.infrastructure.PostQueryRepository;
 public interface PostRepository extends JpaRepository<Post, Long>, PostQueryRepository {
 
     @Query("SELECT p FROM Post p "
-        + "JOIN FETCH p.postImages.postImages "
         + "JOIN FETCH p.postTags.postTags pt "
         + "JOIN FETCH pt.tag "
         + "JOIN FETCH p.couple "
