@@ -55,7 +55,7 @@ class NotificationServiceTest {
         Long receiverId = 2L;
         SseEmitter mockSseEmitter = mock(SseEmitter.class);
         PostEvent postEvent = new PostEvent(1L, receiverId, 1L, EventType.POST_CREATED, "test", LocalDateTime.now());
-        given(emitterRepository.findAllStartWithById(anyString())).willReturn(
+        given(emitterRepository.findAllStartWithByMemberId(anyString())).willReturn(
             Map.of(String.valueOf(receiverId), mockSseEmitter));
 
         // when

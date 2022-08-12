@@ -55,7 +55,7 @@ public class NotificationService {
         Notification notification = notificationRepository.save(createNotification(postEvent));
         String id = notification.getReceiverId() + ID_DELIMITER;
         String eventId = createEmitterId(notification.getReceiverId());
-        Map<String, SseEmitter> emitters = emitterRepository.findAllStartWithById(id);
+        Map<String, SseEmitter> emitters = emitterRepository.findAllStartWithByMemberId(id);
         NotificationResponse notificationResponse = NotificationResponse.from(notification);
         emitters.forEach((key, emitter) -> {
                 emitterRepository.saveEventCache(key, notificationResponse);
@@ -87,7 +87,7 @@ public class NotificationService {
     }
 
     private void sendLostEvent(Long memberId, String lastEventId, String emitterId, SseEmitter sseEmitter) {
-        Map<String, Object> events = emitterRepository.findAllEventCacheStartWithById(memberId + ID_DELIMITER);
+        Map<String, Object> events = emitterRepository.findAllEventCacheStartWithByMemberId(memberId + ID_DELIMITER);
         events.entrySet().stream()
             .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
             .forEach(entry -> sendNotification(sseEmitter, entry.getKey(), emitterId, entry.getValue()));

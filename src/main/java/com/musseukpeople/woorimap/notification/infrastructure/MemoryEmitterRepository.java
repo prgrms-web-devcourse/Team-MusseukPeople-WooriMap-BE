@@ -18,27 +18,27 @@ public class MemoryEmitterRepository implements EmitterRepository {
     private final Map<String, Object> eventCache = new ConcurrentHashMap<>();
 
     @Override
-    public SseEmitter save(String emitterId, SseEmitter sseEmitter) {
-        emitters.put(emitterId, sseEmitter);
+    public SseEmitter save(String id, SseEmitter sseEmitter) {
+        emitters.put(id, sseEmitter);
         return sseEmitter;
     }
 
     @Override
-    public void saveEventCache(String emitterId, Object data) {
-        eventCache.put(emitterId, data);
+    public void saveEventCache(String id, Object data) {
+        eventCache.put(id, data);
     }
 
     @Override
-    public Map<String, Object> findAllEventCacheStartWithById(String id) {
+    public Map<String, Object> findAllEventCacheStartWithByMemberId(String memberId) {
         return eventCache.entrySet().stream()
-            .filter(entry -> entry.getKey().startsWith(id))
+            .filter(entry -> entry.getKey().startsWith(memberId))
             .collect(toMap(Entry::getKey, Entry::getValue));
     }
 
     @Override
-    public Map<String, SseEmitter> findAllStartWithById(String id) {
+    public Map<String, SseEmitter> findAllStartWithByMemberId(String memberId) {
         return emitters.entrySet().stream()
-            .filter(entry -> entry.getKey().startsWith(id))
+            .filter(entry -> entry.getKey().startsWith(memberId))
             .collect(toMap(Entry::getKey, Entry::getValue));
     }
 

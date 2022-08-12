@@ -6,13 +6,13 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface EmitterRepository {
 
-    SseEmitter save(String emitterId, SseEmitter sseEmitter);
+    SseEmitter save(String id, SseEmitter sseEmitter);
 
-    void saveEventCache(String emitterId, Object data);
+    void saveEventCache(String id, Object data);
 
-    Map<String, Object> findAllEventCacheStartWithById(String id);
+    Map<String, Object> findAllEventCacheStartWithByMemberId(String memberId);
+
+    Map<String, SseEmitter> findAllStartWithByMemberId(String memberId);
 
     void deleteById(String id);
-
-    Map<String, SseEmitter> findAllStartWithById(String id);
 }

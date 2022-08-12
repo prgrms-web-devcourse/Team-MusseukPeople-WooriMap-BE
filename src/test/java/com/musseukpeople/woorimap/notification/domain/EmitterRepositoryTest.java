@@ -32,7 +32,7 @@ class EmitterRepositoryTest {
         emitterRepository.save(emitterId, sseEmitter);
 
         // then
-        assertThat(emitterRepository.findAllStartWithById(emitterId)).hasSize(1);
+        assertThat(emitterRepository.findAllStartWithByMemberId(emitterId)).hasSize(1);
     }
 
     @DisplayName("수신한 이벤트 저장 성공")
@@ -46,7 +46,7 @@ class EmitterRepositoryTest {
         emitterRepository.saveEventCache(id, data);
 
         // then
-        Map<String, Object> events = emitterRepository.findAllEventCacheStartWithById(id);
+        Map<String, Object> events = emitterRepository.findAllEventCacheStartWithByMemberId(id);
         assertThat(events).hasSize(1);
     }
 
@@ -62,7 +62,7 @@ class EmitterRepositoryTest {
         emitterRepository.deleteById(emitterId);
 
         // then
-        assertThat(emitterRepository.findAllStartWithById(emitterId)).isEmpty();
+        assertThat(emitterRepository.findAllStartWithByMemberId(emitterId)).isEmpty();
     }
 
     @DisplayName("회원이 접속한 모든 Emitter 조회 성공")
@@ -77,7 +77,7 @@ class EmitterRepositoryTest {
         emitterRepository.save(otherEmitterId, new SseEmitter());
 
         // when
-        Map<String, SseEmitter> result = emitterRepository.findAllStartWithById(memberId);
+        Map<String, SseEmitter> result = emitterRepository.findAllStartWithByMemberId(memberId);
 
         // then
         assertThat(result).hasSize(2);
@@ -95,7 +95,7 @@ class EmitterRepositoryTest {
         emitterRepository.saveEventCache(otherEmitterId, "test");
 
         // when
-        Map<String, Object> events = emitterRepository.findAllEventCacheStartWithById(memberId);
+        Map<String, Object> events = emitterRepository.findAllEventCacheStartWithByMemberId(memberId);
 
         // then
         assertThat(events).hasSize(2);
