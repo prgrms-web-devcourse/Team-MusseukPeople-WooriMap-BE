@@ -26,7 +26,7 @@ class EventServiceTest {
     @Test
     void publishEvent_success() {
         // given
-        PostEvent postEvent = new PostEvent(1L, 2L, 1L, "타이틀", LocalDateTime.now());
+        PostEvent postEvent = new PostEvent(1L, 2L, 1L, PostEvent.EventType.POST_CREATED, "타이틀", LocalDateTime.now());
 
         // when
         eventService.publishEvent(postEvent);

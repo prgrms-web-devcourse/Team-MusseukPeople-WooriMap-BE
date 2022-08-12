@@ -30,7 +30,7 @@ class RedisMessageSubscriberTest {
     @Test
     void onMessage_success() throws JsonProcessingException {
         // given
-        PostEvent postEvent = new PostEvent(1L, 2L, 1L, "test", LocalDateTime.now());
+        PostEvent postEvent = new PostEvent(1L, 2L, 1L, PostEvent.EventType.POST_CREATED, "test", LocalDateTime.now());
         Message message = new DefaultMessage("2L".getBytes(), objectMapper.writeValueAsBytes(postEvent));
 
         // when

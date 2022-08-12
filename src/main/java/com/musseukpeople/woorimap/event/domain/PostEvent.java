@@ -22,27 +22,36 @@ public class PostEvent implements Serializable {
     private Long sourceId;
     private Long destinationId;
     private Long postId;
+
+    private EventType eventType;
     private String content;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime publishDateTime;
 
-    public PostEvent(Long sourceId, Long destinationId, Long postId, String content, LocalDateTime publishDateTime) {
+    public PostEvent(Long sourceId, Long destinationId, Long postId, EventType eventType, String content,
+                     LocalDateTime publishDateTime) {
         this.sourceId = sourceId;
         this.destinationId = destinationId;
         this.postId = postId;
+        this.eventType = eventType;
         this.content = content;
         this.publishDateTime = publishDateTime;
     }
 
-    public static PostEvent of(Long sourceId, Post post) {
+    public static PostEvent of(Long sourceId, Post post, EventType eventType) {
         return new PostEvent(
             sourceId,
             post.getCouple().getOpponentMember(sourceId).getId(),
             post.getId(),
+            eventType,
             post.getContent(),
             LocalDateTime.now()
         );
+    }
+
+    public enum EventType {
+        POST_CREATED, POST_MODIFIED
     }
 }

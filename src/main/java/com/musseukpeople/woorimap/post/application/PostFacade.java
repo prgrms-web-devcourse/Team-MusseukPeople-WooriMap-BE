@@ -1,5 +1,7 @@
 package com.musseukpeople.woorimap.post.application;
 
+import static com.musseukpeople.woorimap.event.domain.PostEvent.EventType.*;
+
 import java.util.List;
 
 import org.springframework.context.ApplicationEventPublisher;
@@ -39,7 +41,7 @@ public class PostFacade {
         Tags tags = tagService.findOrCreateTags(couple, createPostRequest.getTags());
 
         Post post = postService.createPost(couple, tags.getList(), createPostRequest);
-        eventPublisher.publishEvent(PostEvent.of(loginMember.getId(), post));
+        eventPublisher.publishEvent(PostEvent.of(loginMember.getId(), post, POST_CREATED));
         return post.getId();
     }
 
@@ -49,7 +51,7 @@ public class PostFacade {
         Tags tags = tagService.findOrCreateTags(couple, editPostRequest.getTags());
 
         Post post = postService.modifyPost(tags.getList(), postId, editPostRequest);
-        eventPublisher.publishEvent(PostEvent.of(loginMember.getId(), post));
+        eventPublisher.publishEvent(PostEvent.of(loginMember.getId(), post, POST_CREATED));
         return post.getId();
     }
 
