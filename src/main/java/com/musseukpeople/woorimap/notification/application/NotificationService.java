@@ -84,7 +84,7 @@ public class NotificationService {
     }
 
     public List<NotificationResponse> getUnreadNotifications(Long memberId) {
-        List<Notification> notifications = notificationRepository.findUnreadAllByMemerId(memberId);
+        List<Notification> notifications = notificationRepository.findUnreadAllByMemberId(memberId);
         return notifications.stream()
             .map(NotificationResponse::from)
             .collect(toList());
