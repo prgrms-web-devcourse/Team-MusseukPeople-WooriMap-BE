@@ -1,13 +1,18 @@
 package com.musseukpeople.woorimap.post.application;
 
+import static com.musseukpeople.woorimap.event.domain.PostEvent.EventType.*;
+
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.couple.application.CoupleService;
 import com.musseukpeople.woorimap.couple.domain.Couple;
+import com.musseukpeople.woorimap.event.domain.PostEvent;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.EditPostRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.PostFilterCondition;
@@ -28,23 +33,26 @@ public class PostFacade {
     private final PostService postService;
     private final TagService tagService;
     private final CoupleService coupleService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public Long createPost(Long coupleId, CreatePostRequest createPostRequest) {
-        Couple couple = coupleService.getCoupleById(coupleId);
+    public Long createPost(LoginMember loginMember, CreatePostRequest createPostRequest) {
+        Couple couple = coupleService.getCoupleById(loginMember.getCoupleId());
         Tags tags = tagService.findOrCreateTags(couple, createPostRequest.getTags());
-        return postService.createPost(couple, tags.getList(), createPostRequest);
-    }
 
-    public List<PostSearchResponse> searchPosts(PostFilterCondition postFilterCondition, Long coupleId) {
-        return postService.searchPosts(postFilterCondition, coupleId);
+        Post post = postService.createPost(couple, tags.getList(), createPostRequest);
+        eventPublisher.publishEvent(PostEvent.of(loginMember.getId(), post, POST_CREATED));
+        return post.getId();
     }
 
     @Transactional
-    public Long modifyPost(Long coupleId, Long postId, EditPostRequest editPostRequest) {
-        Couple couple = coupleService.getCoupleById(coupleId);
+    public Long modifyPost(LoginMember loginMember, Long postId, EditPostRequest editPostRequest) {
+        Couple couple = coupleService.getCoupleById(loginMember.getCoupleId());
         Tags tags = tagService.findOrCreateTags(couple, editPostRequest.getTags());
-        return postService.modifyPost(tags.getList(), postId, editPostRequest);
+
+        Post post = postService.modifyPost(tags.getList(), postId, editPostRequest);
+        eventPublisher.publishEvent(PostEvent.of(loginMember.getId(), post, POST_CREATED));
+        return post.getId();
     }
 
     @Transactional
@@ -64,5 +72,9 @@ public class PostFacade {
             throw new PostNotBelongToCoupleException(coupleId, postId, ErrorCode.NOT_BELONG_TO_COUPLE);
         }
         return PostResponse.from(post);
+    }
+
+    public List<PostSearchResponse> searchPosts(PostFilterCondition postFilterCondition, Long coupleId) {
+        return postService.searchPosts(postFilterCondition, coupleId);
     }
 }

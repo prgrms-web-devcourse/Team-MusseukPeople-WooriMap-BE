@@ -26,18 +26,13 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long createPost(Couple couple, List<Tag> tags, CreatePostRequest createPostRequest) {
+    public Post createPost(Couple couple, List<Tag> tags, CreatePostRequest createPostRequest) {
         Post post = createPostRequest.toPost(couple, tags);
-        return postRepository.save(post).getId();
-    }
-
-    public List<PostSearchResponse> searchPosts(PostFilterCondition postFilterCondition, Long coupleId) {
-        List<Post> posts = postRepository.findPostsByFilterCondition(postFilterCondition, coupleId);
-        return PostSearchResponse.from(posts);
+        return postRepository.save(post);
     }
 
     @Transactional
-    public Long modifyPost(List<Tag> tags, Long postId, EditPostRequest editPostRequest) {
+    public Post modifyPost(List<Tag> tags, Long postId, EditPostRequest editPostRequest) {
         Post post = getPostById(postId);
 
         post.changeTitle(editPostRequest.getTitle());
@@ -47,7 +42,17 @@ public class PostService {
         post.changePostImages(editPostRequest.getImageUrls());
         post.changePostTags(tags);
 
-        return post.getId();
+        return post;
+    }
+
+    @Transactional
+    public void removePost(Long postId) {
+        postRepository.deleteById(postId);
+    }
+
+    public List<PostSearchResponse> searchPosts(PostFilterCondition postFilterCondition, Long coupleId) {
+        List<Post> posts = postRepository.findPostsByFilterCondition(postFilterCondition, coupleId);
+        return PostSearchResponse.from(posts);
     }
 
     public Post getPostWithFetchById(Long id) {
@@ -58,10 +63,5 @@ public class PostService {
     public Post getPostById(Long id) {
         return postRepository.findById(id)
             .orElseThrow(() -> new NotFoundPostException(ErrorCode.NOT_FOUND_POST, id));
-    }
-
-    @Transactional
-    public void removePost(Long postId) {
-        postRepository.deleteById(postId);
     }
 }
