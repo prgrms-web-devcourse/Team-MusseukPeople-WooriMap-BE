@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class RedisPublisher implements Publisher {
 
-    public static final String CHANNEL_PREFIX = "channel/";
+    public static final String POST_CHANNEL_PREFIX = "post/";
 
     private final RedisTemplate<String, PostEvent> redisTemplate;
 
@@ -27,6 +27,6 @@ public class RedisPublisher implements Publisher {
     @Override
     public void publish(PostEvent postEvent) {
         String channel = String.valueOf(postEvent.getDestinationId());
-        redisTemplate.convertAndSend(CHANNEL_PREFIX + channel, postEvent);
+        redisTemplate.convertAndSend(POST_CHANNEL_PREFIX + channel, postEvent);
     }
 }
