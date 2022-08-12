@@ -32,8 +32,7 @@ public class NotificationService {
 
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
-
-    // TODO : lastEventId로 유실된 이벤트 전송해야 함
+    
     @Transactional
     public SseEmitter subscribe(Long memberId, String lastEventId) {
         String emitterId = createEmitterId(memberId);
@@ -52,9 +51,11 @@ public class NotificationService {
         String id = notification.getReceiverId() + ID_DELIMITER;
         String eventId = createEmitterId(notification.getReceiverId());
         Map<String, SseEmitter> emitters = emitterRepository.findAllStartWithById(id);
-        emitters.forEach(
-            (key, emitter) -> sendNotification(emitter, eventId, notification.getEventName(), key,
-                NotificationResponse.from(notification))
+        NotificationResponse notificationResponse = NotificationResponse.from(notification);
+        emitters.forEach((key, emitter) -> {
+                emitterRepository.saveEventCache(key, notificationResponse);
+                sendNotification(emitter, eventId, notification.getEventName(), key, notificationResponse);
+            }
         );
     }
 

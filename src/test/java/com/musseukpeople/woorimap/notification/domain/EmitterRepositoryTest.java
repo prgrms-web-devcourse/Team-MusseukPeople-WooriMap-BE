@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.musseukpeople.woorimap.notification.application.dto.response.NotificationResponse;
 import com.musseukpeople.woorimap.notification.infrastructure.MemoryEmitterRepository;
 
 class EmitterRepositoryTest {
@@ -24,15 +25,29 @@ class EmitterRepositoryTest {
     @Test
     void save_success() {
         // given
-        String emitterId = "1L";
+        String emitterId = "1";
         SseEmitter sseEmitter = new SseEmitter();
 
         // when
         emitterRepository.save(emitterId, sseEmitter);
 
         // then
-        SseEmitter findEmitter = emitterRepository.findById(emitterId).get();
-        assertThat(findEmitter).isEqualTo(sseEmitter);
+        assertThat(emitterRepository.findAllStartWithById(emitterId)).hasSize(1);
+    }
+
+    @DisplayName("수신한 이벤트 저장 성공")
+    @Test
+    void saveEventCache_success() {
+        // given
+        String id = "1";
+        NotificationResponse data = new NotificationResponse(1L, 1L, "test", "content");
+
+        // when
+        emitterRepository.saveEventCache(id, data);
+
+        // then
+        Map<String, Object> events = emitterRepository.findAllEventCacheStartWithById(id);
+        assertThat(events).hasSize(1);
     }
 
     @DisplayName("Emitter 삭제 성공")
@@ -47,7 +62,7 @@ class EmitterRepositoryTest {
         emitterRepository.deleteById(emitterId);
 
         // then
-        assertThat(emitterRepository.findById(emitterId)).isEmpty();
+        assertThat(emitterRepository.findAllStartWithById(emitterId)).isEmpty();
     }
 
     @DisplayName("회원이 접속한 모든 Emitter 조회 성공")
@@ -66,5 +81,23 @@ class EmitterRepositoryTest {
 
         // then
         assertThat(result).hasSize(2);
+    }
+
+    @DisplayName("회원에게 수신된 이벤트 조회 성공")
+    @Test
+    void findAllEventCacheStartWithById_success() {
+        // given
+        String memberId = "1";
+        String emitterId = memberId + "_" + System.currentTimeMillis();
+        emitterRepository.saveEventCache(emitterId, "test");
+
+        String otherEmitterId = memberId + "_" + System.currentTimeMillis();
+        emitterRepository.saveEventCache(otherEmitterId, "test");
+
+        // when
+        Map<String, Object> events = emitterRepository.findAllEventCacheStartWithById(memberId);
+
+        // then
+        assertThat(events).hasSize(2);
     }
 }
