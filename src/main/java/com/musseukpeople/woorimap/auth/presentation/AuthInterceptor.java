@@ -17,11 +17,14 @@ import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.auth.exception.UnauthorizedException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.common.util.AuthorizationExtractor;
+import com.musseukpeople.woorimap.notification.presentation.resolver.LoginRequiredForNoti;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
+
+    private static final String TOKEN_PARAMETER_NAME = "token";
 
     private final JwtProvider jwtProvider;
     private final BlackListService blackListService;
@@ -34,10 +37,18 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String accessToken = AuthorizationExtractor.extract(request);
+        String accessToken = getAccessToken(request, handler);
         validateAccessToken(accessToken);
         validateBlackList(accessToken);
         return true;
+    }
+
+    private String getAccessToken(HttpServletRequest request, Object handler) {
+        LoginRequiredForNoti auth = ((HandlerMethod)handler).getMethodAnnotation(LoginRequiredForNoti.class);
+        if (Objects.nonNull(auth)) {
+            return request.getParameter(TOKEN_PARAMETER_NAME);
+        }
+        return AuthorizationExtractor.extract(request);
     }
 
     private void validateBlackList(String accessToken) {
