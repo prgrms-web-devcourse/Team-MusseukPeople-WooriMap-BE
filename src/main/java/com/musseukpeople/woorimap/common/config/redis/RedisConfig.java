@@ -8,6 +8,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
@@ -18,6 +19,8 @@ import com.musseukpeople.woorimap.notification.application.message.RedisMessageS
 @EnableRedisRepositories
 public class RedisConfig {
 
+    private static final ChannelTopic POST_CHANNEL = ChannelTopic.of("post");
+    
     private final String host;
     private final String password;
     private final int port;
@@ -41,9 +44,11 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory,
+                                                                       RedisMessageSubscriber redisMessageSubscriber) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
+        container.addMessageListener(redisMessageSubscriber, POST_CHANNEL);
         return container;
     }
 
