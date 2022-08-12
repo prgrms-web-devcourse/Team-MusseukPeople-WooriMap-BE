@@ -13,16 +13,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.musseukpeople.woorimap.event.domain.PostEvent;
 import com.musseukpeople.woorimap.event.domain.PostEvent.EventType;
 import com.musseukpeople.woorimap.notification.domain.EmitterRepository;
-import com.musseukpeople.woorimap.util.IntegrationTest;
 
 @ExtendWith(MockitoExtension.class)
-class NotificationServiceTest extends IntegrationTest {
+@SpringBootTest
+class NotificationServiceTest {
 
     @Autowired
     private NotificationService notificationService;
