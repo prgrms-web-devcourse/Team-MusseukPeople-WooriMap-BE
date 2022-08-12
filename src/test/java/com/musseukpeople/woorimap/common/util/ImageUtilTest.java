@@ -13,7 +13,7 @@ class ImageUtilTest {
     @Test
     void isImageUrl_success() {
         // given
-        String url = "https://main.dwkg3ddyxqleg.amplifyapp.com/8c7f4d11b6e0b8ac08f0.png";
+        String url = "https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_272x92dp.png";
 
         // when
         boolean result = ImageUtil.isImageUrl(url);
