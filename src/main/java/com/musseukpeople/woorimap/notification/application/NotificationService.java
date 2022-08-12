@@ -6,11 +6,13 @@ import static java.lang.String.*;
 import java.io.IOException;
 import java.util.Map;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.musseukpeople.woorimap.event.domain.PostEvent;
+import com.musseukpeople.woorimap.notification.application.dto.ChannelAddEvent;
 import com.musseukpeople.woorimap.notification.application.dto.response.NotificationResponse;
 import com.musseukpeople.woorimap.notification.domain.EmitterRepository;
 import com.musseukpeople.woorimap.notification.domain.Notification;
@@ -32,8 +34,10 @@ public class NotificationService {
 
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     // TODO : lastEventId로 유실된 이벤트 전송해야 함
+    @Transactional
     public SseEmitter subscribe(Long memberId, String lastEventId) {
         String emitterId = createEmitterId(memberId);
         SseEmitter sseEmitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
@@ -42,9 +46,11 @@ public class NotificationService {
         sseEmitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
 
         sendConnectNotification(sseEmitter, emitterId, memberId);
+        applicationEventPublisher.publishEvent(new ChannelAddEvent(memberId));
         return sseEmitter;
     }
 
+    @Transactional
     public void sendPostNotification(PostEvent postEvent) {
         Notification notification = notificationRepository.save(createNotification(postEvent));
         String id = notification.getReceiverId() + ID_DELIMITER;
