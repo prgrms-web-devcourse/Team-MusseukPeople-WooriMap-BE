@@ -64,6 +64,12 @@ public class NotificationService {
         );
     }
 
+    @Transactional
+    public void deleteAllEmitterByMemberId(String memberId) {
+        emitterRepository.deleteAllStartWithByMemberId(memberId);
+        emitterRepository.deleteAllEventCacheStartWithByMemberId(memberId);
+    }
+
     private boolean hasLostEvent(String lastEventId) {
         return !lastEventId.isEmpty();
     }
