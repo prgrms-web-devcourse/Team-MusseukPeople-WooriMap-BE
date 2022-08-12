@@ -65,22 +65,8 @@ public class Notification {
         this.isRead = true;
     }
 
-    public String getEventName() {
-        return this.notificationType.getName();
-    }
-
     public enum NotificationType {
-        POST_CREATED("created"),
-        POST_MODIFIED("modified");
-
-        private final String name;
-
-        NotificationType(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return this.name;
-        }
+        POST_CREATED,
+        POST_MODIFIED
     }
 }

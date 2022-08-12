@@ -26,13 +26,13 @@ import lombok.extern.slf4j.Slf4j;
 public class NotificationService {
 
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
-    private static final String CONNECT_EVENT_NAME = "connect check";
+    private static final String EVENT_NAME = "sse";
     private static final String CONNECT_EVENT_MESSAGE_FORMAT = "EventStream Created. [userId= %d]";
     private static final String ID_DELIMITER = "_";
 
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
-    
+
     @Transactional
     public SseEmitter subscribe(Long memberId, String lastEventId) {
         String emitterId = createEmitterId(memberId);
@@ -42,6 +42,11 @@ public class NotificationService {
         sseEmitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
 
         sendConnectNotification(sseEmitter, emitterId, memberId);
+
+        if (hasLostEvent(lastEventId)) {
+            sendLostEvent(memberId, lastEventId, emitterId, sseEmitter);
+        }
+
         return sseEmitter;
     }
 
@@ -54,27 +59,17 @@ public class NotificationService {
         NotificationResponse notificationResponse = NotificationResponse.from(notification);
         emitters.forEach((key, emitter) -> {
                 emitterRepository.saveEventCache(key, notificationResponse);
-                sendNotification(emitter, eventId, notification.getEventName(), key, notificationResponse);
+                sendNotification(emitter, eventId, key, notificationResponse);
             }
         );
     }
 
-    private void sendConnectNotification(SseEmitter sseEmitter, String emitterId, Long memberId) {
-        sendNotification(sseEmitter, emitterId, CONNECT_EVENT_NAME, emitterId,
-            format(CONNECT_EVENT_MESSAGE_FORMAT, memberId));
+    private boolean hasLostEvent(String lastEventId) {
+        return !lastEventId.isEmpty();
     }
 
-    private void sendNotification(SseEmitter sseEmitter, String eventId, String eventName, String emitterId,
-                                  Object data) {
-        try {
-            sseEmitter.send(SseEmitter.event()
-                .id(eventId)
-                .name(eventName)
-                .data(data));
-        } catch (IOException e) {
-            emitterRepository.deleteById(emitterId);
-            log.info("이벤트 전송을 실패했습니다. emitterId : {}", emitterId);
-        }
+    private String createEmitterId(Long memberId) {
+        return memberId + ID_DELIMITER + System.currentTimeMillis();
     }
 
     private Notification createNotification(PostEvent postEvent) {
@@ -87,7 +82,26 @@ public class NotificationService {
             .build();
     }
 
-    private String createEmitterId(Long memberId) {
-        return memberId + ID_DELIMITER + System.currentTimeMillis();
+    private void sendConnectNotification(SseEmitter sseEmitter, String emitterId, Long memberId) {
+        sendNotification(sseEmitter, emitterId, emitterId, format(CONNECT_EVENT_MESSAGE_FORMAT, memberId));
+    }
+
+    private void sendLostEvent(Long memberId, String lastEventId, String emitterId, SseEmitter sseEmitter) {
+        Map<String, Object> events = emitterRepository.findAllEventCacheStartWithById(memberId + ID_DELIMITER);
+        events.entrySet().stream()
+            .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
+            .forEach(entry -> sendNotification(sseEmitter, entry.getKey(), emitterId, entry.getValue()));
+    }
+
+    private void sendNotification(SseEmitter sseEmitter, String eventId, String emitterId, Object data) {
+        try {
+            sseEmitter.send(SseEmitter.event()
+                .id(eventId)
+                .name(EVENT_NAME)
+                .data(data));
+        } catch (IOException e) {
+            emitterRepository.deleteById(emitterId);
+            log.info("이벤트 전송을 실패했습니다. emitterId : {}", emitterId);
+        }
     }
 }
