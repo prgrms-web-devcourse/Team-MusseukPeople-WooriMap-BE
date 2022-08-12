@@ -2,6 +2,8 @@ package com.musseukpeople.woorimap.notification.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,5 +48,23 @@ class EmitterRepositoryTest {
 
         // then
         assertThat(emitterRepository.findById(emitterId)).isEmpty();
+    }
+
+    @DisplayName("회원이 접속한 모든 Emitter 조회 성공")
+    @Test
+    void findAllStartWithById_success() {
+        // given
+        String memberId = "1";
+        String emitterId = memberId + "_" + System.currentTimeMillis();
+        emitterRepository.save(emitterId, new SseEmitter());
+
+        String otherEmitterId = memberId + "_" + System.currentTimeMillis();
+        emitterRepository.save(otherEmitterId, new SseEmitter());
+
+        // when
+        Map<String, SseEmitter> result = emitterRepository.findAllStartWithById(memberId);
+
+        // then
+        assertThat(result).hasSize(2);
     }
 }
