@@ -36,7 +36,7 @@ class NotificationServiceTest {
     void subscribe_success() {
         // given
         Long id = 1L;
-        String lastEventId = null;
+        String lastEventId = "";
 
         // when
         SseEmitter sseEmitter = notificationService.subscribe(id, lastEventId);
