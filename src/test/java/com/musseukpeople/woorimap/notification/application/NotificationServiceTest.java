@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.musseukpeople.woorimap.event.domain.PostEvent;
 import com.musseukpeople.woorimap.event.domain.PostEvent.EventType;
-import com.musseukpeople.woorimap.notification.domain.EmitterRepository;
+import com.musseukpeople.woorimap.notification.infrastructure.EmitterRepository;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest

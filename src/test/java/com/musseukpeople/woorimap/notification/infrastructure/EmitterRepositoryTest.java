@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.notification.domain;
+package com.musseukpeople.woorimap.notification.infrastructure;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.musseukpeople.woorimap.notification.application.dto.response.NotificationResponse;
-import com.musseukpeople.woorimap.notification.infrastructure.MemoryEmitterRepository;
 
 class EmitterRepositoryTest {
 

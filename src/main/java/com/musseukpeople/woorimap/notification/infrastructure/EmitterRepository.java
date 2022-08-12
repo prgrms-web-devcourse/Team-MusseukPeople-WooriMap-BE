@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.notification.domain;
+package com.musseukpeople.woorimap.notification.infrastructure;
 
 import java.util.Map;
 

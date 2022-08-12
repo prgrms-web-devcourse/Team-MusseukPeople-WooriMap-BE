@@ -12,9 +12,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.musseukpeople.woorimap.event.domain.PostEvent;
 import com.musseukpeople.woorimap.notification.application.dto.response.NotificationResponse;
-import com.musseukpeople.woorimap.notification.domain.EmitterRepository;
 import com.musseukpeople.woorimap.notification.domain.Notification;
 import com.musseukpeople.woorimap.notification.domain.NotificationRepository;
+import com.musseukpeople.woorimap.notification.infrastructure.EmitterRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

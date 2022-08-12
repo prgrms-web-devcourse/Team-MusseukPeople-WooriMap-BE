@@ -9,8 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import com.musseukpeople.woorimap.notification.domain.EmitterRepository;
-
 @Repository
 public class MemoryEmitterRepository implements EmitterRepository {
 
