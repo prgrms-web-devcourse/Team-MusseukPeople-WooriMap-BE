@@ -1,11 +1,9 @@
-package com.musseukpeople.woorimap.notification.application;
+package com.musseukpeople.woorimap.notification.application.message;
 
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
-
-import com.musseukpeople.woorimap.notification.application.dto.ChannelAddEvent;
 
 import lombok.RequiredArgsConstructor;
 

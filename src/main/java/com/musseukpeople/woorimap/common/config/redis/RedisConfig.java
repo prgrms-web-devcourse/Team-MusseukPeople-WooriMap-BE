@@ -12,7 +12,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
-import com.musseukpeople.woorimap.notification.application.RedisMessageSubscriber;
+import com.musseukpeople.woorimap.notification.application.message.RedisMessageSubscriber;
 
 @Configuration
 @EnableRedisRepositories

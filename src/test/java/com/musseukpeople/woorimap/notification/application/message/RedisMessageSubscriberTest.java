@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.notification.application;
+package com.musseukpeople.woorimap.notification.application.message;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +15,7 @@ import org.springframework.data.redis.connection.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musseukpeople.woorimap.event.domain.PostEvent;
+import com.musseukpeople.woorimap.notification.application.NotificationService;
 
 class RedisMessageSubscriberTest {
 

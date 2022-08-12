@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.musseukpeople.woorimap.event.domain.PostEvent;
-import com.musseukpeople.woorimap.notification.application.dto.ChannelAddEvent;
 import com.musseukpeople.woorimap.notification.application.dto.response.NotificationResponse;
+import com.musseukpeople.woorimap.notification.application.message.ChannelAddEvent;
 import com.musseukpeople.woorimap.notification.domain.EmitterRepository;
 import com.musseukpeople.woorimap.notification.domain.Notification;
 import com.musseukpeople.woorimap.notification.domain.NotificationRepository;

@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.notification.application.dto;
+package com.musseukpeople.woorimap.notification.application.message;
 
 import lombok.Getter;
 

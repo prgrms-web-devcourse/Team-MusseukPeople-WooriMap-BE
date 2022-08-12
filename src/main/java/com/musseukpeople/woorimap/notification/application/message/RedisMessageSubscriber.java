@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimap.notification.application;
+package com.musseukpeople.woorimap.notification.application.message;
 
 import java.io.IOException;
 
@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musseukpeople.woorimap.event.domain.PostEvent;
+import com.musseukpeople.woorimap.notification.application.NotificationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
