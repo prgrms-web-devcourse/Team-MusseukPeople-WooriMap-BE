@@ -44,4 +44,22 @@ public class MemoryEmitterRepository implements EmitterRepository {
     public void deleteById(String id) {
         emitters.remove(id);
     }
+
+    @Override
+    public void deleteAllStartWithByMemberId(String memberId) {
+        for (String key : emitters.keySet()) {
+            if (key.startsWith(memberId)) {
+                emitters.remove(key);
+            }
+        }
+    }
+
+    @Override
+    public void deleteAllEventCacheStartWithByMemberId(String memberId) {
+        for (String key : eventCache.keySet()) {
+            if (key.startsWith(memberId)) {
+                eventCache.remove(key);
+            }
+        }
+    }
 }

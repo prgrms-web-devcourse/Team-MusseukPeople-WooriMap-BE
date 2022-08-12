@@ -87,10 +87,10 @@ class EmitterRepositoryTest {
     void findAllEventCacheStartWithById_success() {
         // given
         String memberId = "1";
-        String emitterId = memberId + "_" + System.currentTimeMillis();
+        String emitterId = memberId + "_" + "1";
         emitterRepository.saveEventCache(emitterId, "test");
 
-        String otherEmitterId = memberId + "_" + System.currentTimeMillis();
+        String otherEmitterId = memberId + "_" + "2";
         emitterRepository.saveEventCache(otherEmitterId, "test");
 
         // when
@@ -98,5 +98,41 @@ class EmitterRepositoryTest {
 
         // then
         assertThat(events).hasSize(2);
+    }
+
+    @DisplayName("회원의 모든 SseEmitter 삭제 성공")
+    @Test
+    void deleteAllStartWithByMemberId_success() {
+        // given
+        String memberId = "1";
+        String emitterId = memberId + "_" + "1";
+        emitterRepository.save(emitterId, new SseEmitter());
+
+        String otherEmitterId = memberId + "_" + "2";
+        emitterRepository.save(otherEmitterId, new SseEmitter());
+
+        // when
+        emitterRepository.deleteAllStartWithByMemberId(memberId);
+
+        // then
+        assertThat(emitterRepository.findAllStartWithByMemberId(memberId)).isEmpty();
+    }
+
+    @DisplayName("회원이 수신한 모든 이벤트 삭제 성공")
+    @Test
+    void deleteAllEventCacheStartWithByMemberId_success() {
+        // given
+        String memberId = "1";
+        String emitterId = memberId + "_" + "1";
+        emitterRepository.saveEventCache(emitterId, "test");
+
+        String otherEmitterId = memberId + "_" + "2";
+        emitterRepository.saveEventCache(otherEmitterId, "test");
+
+        // when
+        emitterRepository.deleteAllEventCacheStartWithByMemberId(memberId);
+
+        // then
+        assertThat(emitterRepository.findAllEventCacheStartWithByMemberId(memberId)).isEmpty();
     }
 }

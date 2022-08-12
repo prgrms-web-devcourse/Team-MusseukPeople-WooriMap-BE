@@ -15,4 +15,8 @@ public interface EmitterRepository {
     Map<String, SseEmitter> findAllStartWithByMemberId(String memberId);
 
     void deleteById(String id);
+
+    void deleteAllStartWithByMemberId(String memberId);
+
+    void deleteAllEventCacheStartWithByMemberId(String memberId);
 }
