@@ -69,10 +69,10 @@ class EmitterRepositoryTest {
     void findAllStartWithById_success() {
         // given
         String memberId = "1";
-        String emitterId = memberId + "_" + System.currentTimeMillis();
+        String emitterId = memberId + "_" + "1";
         emitterRepository.save(emitterId, new SseEmitter());
 
-        String otherEmitterId = memberId + "_" + System.currentTimeMillis();
+        String otherEmitterId = memberId + "_" + "2";
         emitterRepository.save(otherEmitterId, new SseEmitter());
 
         // when
