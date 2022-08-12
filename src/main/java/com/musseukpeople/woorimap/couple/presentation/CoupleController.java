@@ -82,8 +82,7 @@ public class CoupleController {
         AccessTokenResponse accessTokenResponse = new AccessTokenResponse(tokenDto.getValue());
 
         return ResponseEntity
-            .status(HttpStatus.NO_CONTENT)
-            .body(new ApiResponse<>(accessTokenResponse));
+            .ok(new ApiResponse<>(accessTokenResponse));
     }
 
     @Operation(summary = "커플 확인", description = "커플 확인 API입니다.")
