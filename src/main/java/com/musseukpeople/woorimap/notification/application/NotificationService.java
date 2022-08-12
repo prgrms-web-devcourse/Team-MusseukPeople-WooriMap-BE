@@ -2,8 +2,10 @@ package com.musseukpeople.woorimap.notification.application;
 
 import static com.musseukpeople.woorimap.notification.domain.Notification.*;
 import static java.lang.String.*;
+import static java.util.stream.Collectors.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -79,6 +81,13 @@ public class NotificationService {
             .orElseThrow(() -> new NotFoundNotificationException(id, ErrorCode.NOT_FOUND_NOTIFICATION));
 
         notification.read();
+    }
+
+    public List<NotificationResponse> getUnreadNotifications(Long memberId) {
+        List<Notification> notifications = notificationRepository.findUnreadAllByMemerId(memberId);
+        return notifications.stream()
+            .map(NotificationResponse::from)
+            .collect(toList());
     }
 
     private boolean hasLostEvent(String lastEventId) {
