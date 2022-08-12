@@ -19,6 +19,7 @@ import com.musseukpeople.woorimap.notification.infrastructure.EmitterRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+// TODO : Facade로 변경
 @Slf4j
 @Service
 @RequiredArgsConstructor

@@ -55,6 +55,8 @@ public class AuthFacade {
 
         registerBlackList(accessToken);
         refreshTokenService.removeByMemberId(memberId);
+
+        // TODO : 서버 분리 시 API로 변경
         notificationService.deleteAllEmitterByMemberId(memberId);
     }
 

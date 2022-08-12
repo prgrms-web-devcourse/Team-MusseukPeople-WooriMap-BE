@@ -26,6 +26,7 @@ public class NotificationResponse {
         return new NotificationResponse(
             notification.getId(),
             notification.getContentId(),
+            // TODO : API를 통해 NickName 반환받도록 변경
             String.valueOf(notification.getSenderId()),
             notification.getContent()
         );
