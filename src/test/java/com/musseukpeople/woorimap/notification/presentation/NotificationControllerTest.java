@@ -64,7 +64,7 @@ class NotificationControllerTest extends AcceptanceTest {
     void readNotification_notFound_success() throws Exception {
         // given
         String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test"));
-        Long notificationId = 1L;
+        Long notificationId = 100L;
 
         // when
         MockHttpServletResponse response = readNotification(accessToken, notificationId);
