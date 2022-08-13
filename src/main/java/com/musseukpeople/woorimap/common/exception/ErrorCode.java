@@ -44,7 +44,10 @@ public enum ErrorCode {
 
     // Image
     INVALID_IMAGE_EXTENSION(HttpStatus.BAD_REQUEST, "I001", "지원하지 않는 이미지 확장자입니다."),
-    EXCEED_IMAGE_SIZE(HttpStatus.BAD_REQUEST, "I002", "이미지 용량이 너무 큽니다.");
+    EXCEED_IMAGE_SIZE(HttpStatus.BAD_REQUEST, "I002", "이미지 용량이 너무 큽니다."),
+
+    // Notification
+    NOT_FOUND_NOTIFICATION(HttpStatus.NOT_FOUND, "N001", "존재하지 않는 알림입니다.");
 
     private final HttpStatus status;
     private final String code;

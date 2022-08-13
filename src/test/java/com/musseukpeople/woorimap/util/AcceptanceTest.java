@@ -28,6 +28,7 @@ import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
+import com.musseukpeople.woorimap.notification.infrastructure.EmitterRepository;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 
 import io.findify.s3mock.S3Mock;
@@ -48,6 +49,9 @@ public abstract class AcceptanceTest {
     protected ObjectMapper objectMapper;
 
     @Autowired
+    private EmitterRepository emitterRepository;
+
+    @Autowired
     private DatabaseCleanup databaseCleanup;
 
     @AfterAll
@@ -58,6 +62,8 @@ public abstract class AcceptanceTest {
     @AfterEach
     void tearDown() {
         databaseCleanup.execute();
+        emitterRepository.deleteAllStartWithByMemberId("");
+        emitterRepository.deleteAllEventCacheStartWithByMemberId("");
     }
 
     protected MockHttpServletResponse 회원가입(SignupRequest signupRequest) throws Exception {
@@ -125,7 +131,7 @@ public abstract class AcceptanceTest {
             .andReturn().getResponse();
     }
 
-    protected MockHttpServletResponse 게시글_삭제(String token, Long postId) throws Exception{
+    protected MockHttpServletResponse 게시글_삭제(String token, Long postId) throws Exception {
         return mockMvc.perform(delete("/api/couples/posts/" + postId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, token))

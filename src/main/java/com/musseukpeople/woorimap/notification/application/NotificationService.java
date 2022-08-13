@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.event.domain.PostEvent;
 import com.musseukpeople.woorimap.notification.application.dto.response.NotificationResponse;
 import com.musseukpeople.woorimap.notification.domain.Notification;
 import com.musseukpeople.woorimap.notification.domain.NotificationRepository;
+import com.musseukpeople.woorimap.notification.exception.NotFoundNotificationException;
 import com.musseukpeople.woorimap.notification.infrastructure.EmitterRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -69,6 +71,14 @@ public class NotificationService {
     public void deleteAllEmitterByMemberId(String memberId) {
         emitterRepository.deleteAllStartWithByMemberId(memberId);
         emitterRepository.deleteAllEventCacheStartWithByMemberId(memberId);
+    }
+
+    @Transactional
+    public void readNotification(Long id) {
+        Notification notification = notificationRepository.findById(id)
+            .orElseThrow(() -> new NotFoundNotificationException(id, ErrorCode.NOT_FOUND_NOTIFICATION));
+
+        notification.read();
     }
 
     private boolean hasLostEvent(String lastEventId) {
