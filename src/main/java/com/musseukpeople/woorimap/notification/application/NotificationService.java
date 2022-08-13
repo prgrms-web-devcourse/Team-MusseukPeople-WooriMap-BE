@@ -100,7 +100,7 @@ public class NotificationService {
 
     private Notification createNotification(PostEvent postEvent) {
         return Notification.builder()
-            .senderId(postEvent.getSourceId())
+            .senderNickName(postEvent.getSourceNickName())
             .receiverId(postEvent.getDestinationId())
             .contentId(postEvent.getPostId())
             .content(postEvent.getContent())

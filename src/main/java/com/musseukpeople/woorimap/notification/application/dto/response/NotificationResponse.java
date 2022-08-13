@@ -31,7 +31,7 @@ public class NotificationResponse {
             notification.getId(),
             notification.getContentId(),
             notification.getNotificationType(),
-            String.valueOf(notification.getSenderId()),
+            notification.getSenderNickName(),
             notification.getContent()
         );
     }
