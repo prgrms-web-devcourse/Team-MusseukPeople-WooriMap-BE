@@ -16,8 +16,11 @@ import com.musseukpeople.woorimap.notification.application.NotificationService;
 import com.musseukpeople.woorimap.notification.presentation.resolver.LoginForNoti;
 import com.musseukpeople.woorimap.notification.presentation.resolver.LoginRequiredForNoti;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "알림", description = "알림 관련 API입니다.")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -25,6 +28,7 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
+    @Operation(summary = "알림 구독", description = "알림 구독 API입니다.")
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @LoginRequiredForNoti
     public SseEmitter subscribe(@LoginForNoti LoginMember loginMember,
@@ -32,6 +36,7 @@ public class NotificationController {
         return notificationService.subscribe(loginMember.getId(), lastEventId);
     }
 
+    @Operation(summary = "알림 읽음", description = "알림 읽음 API입니다.")
     @PatchMapping("/notifications/{id}")
     @LoginRequired
     public ResponseEntity<Void> readNotification(@PathVariable("id") Long id) {
