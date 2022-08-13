@@ -1,26 +1,35 @@
 package com.musseukpeople.woorimap.notification.presentation;
 
+import static com.musseukpeople.woorimap.notification.domain.Notification.NotificationType.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
+import com.musseukpeople.woorimap.notification.domain.Notification;
+import com.musseukpeople.woorimap.notification.domain.NotificationRepository;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
 
 class NotificationControllerTest extends AcceptanceTest {
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @DisplayName("알림 구독 성공")
     @Test
     void subscribe_success() throws Exception {
         // given
-        String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test"));
-        accessToken = 커플_맺기_토큰(accessToken).substring(6);
+        String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test")).substring(6);
 
         // when
         MockHttpServletResponse response = mockMvc.perform(get("/api/subscribe")
@@ -32,4 +41,48 @@ class NotificationControllerTest extends AcceptanceTest {
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
     }
+
+    @DisplayName("알림 읽음 처리 성공")
+    @Test
+    void readNotification_success() throws Exception {
+        // given
+        String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test"));
+        Long notificationId = getNotificationId();
+
+        // when
+        MockHttpServletResponse response = readNotification(accessToken, notificationId);
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("존재 하지 않는 알림으로 인한 읽음 처리 실패")
+    @Test
+    void readNotification_notFound_fail() throws Exception {
+        // given
+        String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test"));
+        Long notificationId = 100L;
+
+        // when
+        MockHttpServletResponse response = readNotification(accessToken, notificationId);
+
+        // then
+        ErrorResponse errorResponse = getErrorResponse(response);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value()),
+            () -> assertThat(errorResponse.getMessage()).isEqualTo("존재하지 않는 알림입니다.")
+        );
+    }
+
+    private Long getNotificationId() {
+        return notificationRepository.save(new Notification(1L, 1L, 1L, POST_CREATED, "test")).getId();
+    }
+
+    private MockHttpServletResponse readNotification(String accessToken, Long notificationId) throws Exception {
+        return mockMvc.perform(patch("/api/notifications/{id}", notificationId)
+                .header(HttpHeaders.AUTHORIZATION, accessToken))
+            .andDo(print())
+            .andReturn().getResponse();
+    }
+
 }
