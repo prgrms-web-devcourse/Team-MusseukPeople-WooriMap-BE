@@ -33,6 +33,8 @@ dependencies {
 
     // Tika
     implementation 'org.apache.tika:tika-core:2.4.1'
+
+    implementation 'dev.akkinoc.spring.boot:logback-access-spring-boot-starter:3.3.2'
 }
 
 tasks.named('test') {
