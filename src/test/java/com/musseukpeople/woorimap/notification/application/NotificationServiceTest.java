@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.musseukpeople.woorimap.event.domain.PostEvent;
 import com.musseukpeople.woorimap.event.domain.PostEvent.EventType;
+import com.musseukpeople.woorimap.notification.application.dto.response.NotificationResponse;
 import com.musseukpeople.woorimap.notification.domain.Notification;
 import com.musseukpeople.woorimap.notification.domain.NotificationRepository;
 import com.musseukpeople.woorimap.notification.exception.NotFoundNotificationException;
@@ -76,7 +78,7 @@ class NotificationServiceTest {
     @Test
     void readNotification_success() {
         // given
-        Long notificationId = notificationRepository.save(new Notification(1L, 1L, 1L, POST_CREATED, "test"))
+        Long notificationId = notificationRepository.save(createNotification(1L))
             .getId();
 
         // when
@@ -99,5 +101,32 @@ class NotificationServiceTest {
         assertThatThrownBy(() -> notificationService.readNotification(notificationId))
             .isInstanceOf(NotFoundNotificationException.class)
             .hasMessageContaining("존재하지 않는 알림입니다. ");
+    }
+
+    @DisplayName("읽지 않은 알림 조회 성공")
+    @Test
+    void getUnreadNotifications_success() {
+        // given
+        Long memberId = 1L;
+        Notification notification = createNotification(1L);
+        notification.read();
+        Notification otherNotification = createNotification(1L);
+        notificationRepository.saveAll(List.of(notification, otherNotification));
+
+        // when
+        List<NotificationResponse> notifications = notificationService.getUnreadNotifications(memberId);
+
+        // then
+        assertThat(notifications).hasSize(1);
+    }
+
+    public Notification createNotification(Long memberId) {
+        return Notification.builder()
+            .receiverId(memberId)
+            .senderId(1L)
+            .contentId(1L)
+            .type(POST_CREATED)
+            .content("test")
+            .build();
     }
 }
