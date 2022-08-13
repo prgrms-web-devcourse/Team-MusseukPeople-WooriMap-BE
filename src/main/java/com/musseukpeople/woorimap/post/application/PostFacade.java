@@ -37,7 +37,7 @@ public class PostFacade {
 
     @Transactional
     public Long createPost(LoginMember loginMember, CreatePostRequest createPostRequest) {
-        Couple couple = coupleService.getCoupleById(loginMember.getCoupleId());
+        Couple couple = coupleService.getCoupleWithMemberById(loginMember.getCoupleId());
         Tags tags = tagService.findOrCreateTags(couple, createPostRequest.getTags());
 
         Post post = postService.createPost(couple, tags.getList(), createPostRequest);
@@ -47,7 +47,7 @@ public class PostFacade {
 
     @Transactional
     public Long modifyPost(LoginMember loginMember, Long postId, EditPostRequest editPostRequest) {
-        Couple couple = coupleService.getCoupleById(loginMember.getCoupleId());
+        Couple couple = coupleService.getCoupleWithMemberById(loginMember.getCoupleId());
         Tags tags = tagService.findOrCreateTags(couple, editPostRequest.getTags());
 
         Post post = postService.modifyPost(tags.getList(), postId, editPostRequest);
