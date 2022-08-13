@@ -212,7 +212,7 @@ class CoupleControllerTest extends AcceptanceTest {
                 .header(HttpHeaders.AUTHORIZATION, coupleToken))
 
             //then
-            .andExpect(status().isNoContent())
+            .andExpect(status().isOk())
             .andDo(print());
 
         Optional<Member> foundMember = memberRepository.findMemberByEmail(email);
