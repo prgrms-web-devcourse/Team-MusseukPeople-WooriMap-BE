@@ -44,6 +44,7 @@ public class Tag {
         this.name = name;
         this.color = color;
         this.couple = couple;
+        this.couple.addTag(this);
     }
 
     public boolean isSameName(Tag tag) {
