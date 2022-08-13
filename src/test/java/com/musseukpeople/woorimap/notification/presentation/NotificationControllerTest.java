@@ -29,7 +29,7 @@ class NotificationControllerTest extends AcceptanceTest {
     @Test
     void subscribe_success() throws Exception {
         // given
-        String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test"));
+        String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test")).substring(6);
 
         // when
         MockHttpServletResponse response = mockMvc.perform(get("/api/subscribe")
@@ -58,10 +58,10 @@ class NotificationControllerTest extends AcceptanceTest {
 
     @DisplayName("존재 하지 않는 알림으로 인한 읽음 처리 실패")
     @Test
-    void readNotification_notFound_success() throws Exception {
+    void readNotification_notFound_fail() throws Exception {
         // given
         String accessToken = 회원가입_토큰(new SignupRequest("test@gmail.com", "!Test1234", "test"));
-        Long notificationId = 1L;
+        Long notificationId = 100L;
 
         // when
         MockHttpServletResponse response = readNotification(accessToken, notificationId);
@@ -81,6 +81,7 @@ class NotificationControllerTest extends AcceptanceTest {
     private MockHttpServletResponse readNotification(String accessToken, Long notificationId) throws Exception {
         return mockMvc.perform(patch("/api/notifications/{id}", notificationId)
                 .header(HttpHeaders.AUTHORIZATION, accessToken))
+            .andDo(print())
             .andReturn().getResponse();
     }
 
