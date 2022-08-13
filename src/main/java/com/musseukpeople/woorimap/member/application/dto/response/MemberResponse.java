@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberResponse {
 
+    @Schema(description = "회원 번호")
+    private Long id;
+
     @Schema(description = "이메일")
     private String email;
 
@@ -23,7 +26,8 @@ public class MemberResponse {
     @Schema(description = "커플 유무")
     private Boolean isCouple;
 
-    public MemberResponse(String email, String imageUrl, String nickName, boolean isCouple) {
+    public MemberResponse(Long id, String email, String imageUrl, String nickName, boolean isCouple) {
+        this.id = id;
         this.email = email;
         this.imageUrl = imageUrl;
         this.nickName = nickName;
@@ -32,6 +36,7 @@ public class MemberResponse {
 
     public static MemberResponse from(Member member) {
         return new MemberResponse(
+            member.getId(),
             member.getEmail().getValue(),
             member.getImageUrl(),
             member.getNickName().getValue(),
