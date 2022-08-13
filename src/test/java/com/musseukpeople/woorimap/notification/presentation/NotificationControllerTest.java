@@ -77,7 +77,7 @@ class NotificationControllerTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("알림 조회 성공")
+    @DisplayName("읽지 않은 알림 조회 성공")
     @Test
     void showNotification() throws Exception {
         // given

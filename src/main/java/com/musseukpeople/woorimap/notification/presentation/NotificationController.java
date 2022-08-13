@@ -44,8 +44,9 @@ public class NotificationController {
     @Operation(summary = "알림 조회", description = "읽지 않은 알림 조회 API입니다.")
     @GetMapping("/notifications")
     @LoginRequired
-    public ResponseEntity<ApiResponse<List<NotificationResponse>>> showNotification(@Login LoginMember loginMember) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ApiResponse<List<NotificationResponse>>> showNotifications(@Login LoginMember loginMember) {
+        List<NotificationResponse> notifications = notificationService.getUnreadNotifications(loginMember.getId());
+        return ResponseEntity.ok(new ApiResponse<>(notifications));
     }
 
     @Operation(summary = "알림 읽음", description = "알림 읽음 API입니다.")
