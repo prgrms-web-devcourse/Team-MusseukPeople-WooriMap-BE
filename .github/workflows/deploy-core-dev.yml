@@ -1,4 +1,4 @@
-name: Deploy develop env
+name: Deploy Woorimap-Core develop env
 
 on:
   push:
@@ -9,7 +9,8 @@ permissions:
   contents: read
 
 jobs:
-  DEV-CD:
+  build:
+    if: contains(github.event.pull_request.labels.*.name, 'core')
     runs-on: ubuntu-latest
 
     steps:
@@ -56,8 +57,8 @@ jobs:
           port: 22
           script: |
             docker rm -f woorimap-dev
-            docker-compose pull
-            docker-compose up -d
+            docker-compose pull spring
+            docker-compose up -d spring
             docker image prune -f
 
       - name: Slack alarm
