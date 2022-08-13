@@ -1,0 +1,28 @@
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### MAC OS ###
+.DS_Store
+
+### log ###
+logs
+
+### Submodules ###
+src/main/resources/application-dev.yml
+src/main/resources/application-prod.yml
+
+### .env ###
+.env
+

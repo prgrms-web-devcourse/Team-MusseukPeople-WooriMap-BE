@@ -62,7 +62,6 @@ dependencies {
     // Tika
     implementation 'org.apache.tika:tika-core:2.4.1'
 
-
     // Security
     implementation 'org.springframework.security:spring-security-crypto:5.7.2'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -74,10 +73,6 @@ dependencies {
 
     // AWS CloudWatch
     implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
-
-    // AWS
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-    testImplementation 'io.findify:s3mock_2.12:0.2.4'
 
     // Log
     implementation group: 'org.codehaus.janino', name: 'janino', version: '3.0.7'

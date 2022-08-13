@@ -1,16 +1,9 @@
 package com.musseukpeople.woorimap.util;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
-import com.musseukpeople.woorimap.common.config.S3MockForIntegrationConfig;
-
-import io.findify.s3mock.S3Mock;
-
-@Import(S3MockForIntegrationConfig.class)
 @SpringBootTest
 public abstract class IntegrationTest {
 
@@ -20,11 +13,6 @@ public abstract class IntegrationTest {
 
     @Autowired
     private DatabaseCleanup databaseCleanup;
-
-    @AfterAll
-    public static void tearDown(@Autowired S3Mock s3Mock) {
-        s3Mock.stop();
-    }
 
     @AfterEach
     void tearDown() {
