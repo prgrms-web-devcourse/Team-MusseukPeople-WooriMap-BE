@@ -14,10 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.musseukpeople.woorimap.event.domain.PostEvent;
 
 @ExtendWith(MockitoExtension.class)
-class EventServiceTest {
+class EventListenerTest {
 
     @InjectMocks
-    private EventService eventService;
+    private EventListener eventListener;
 
     @Mock
     private Publisher publisher;
@@ -29,7 +29,7 @@ class EventServiceTest {
         PostEvent postEvent = new PostEvent(1L, 2L, 1L, PostEvent.EventType.POST_CREATED, "타이틀", LocalDateTime.now());
 
         // when
-        eventService.publishEvent(postEvent);
+        eventListener.publishEvent(postEvent);
 
         // then
         then(publisher).should(times(1)).publish(any());

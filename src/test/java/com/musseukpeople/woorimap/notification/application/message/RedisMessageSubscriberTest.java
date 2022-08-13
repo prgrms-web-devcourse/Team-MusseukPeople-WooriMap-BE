@@ -1,7 +1,8 @@
-package com.musseukpeople.woorimap.notification.application;
+package com.musseukpeople.woorimap.notification.application.message;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDateTime;
 
@@ -14,16 +15,19 @@ import org.springframework.data.redis.connection.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musseukpeople.woorimap.event.domain.PostEvent;
+import com.musseukpeople.woorimap.notification.application.NotificationService;
 
 class RedisMessageSubscriberTest {
 
     private RedisMessageSubscriber redisMessageSubscriber;
     private ObjectMapper objectMapper;
+    private NotificationService notificationService;
 
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        redisMessageSubscriber = new RedisMessageSubscriber(objectMapper);
+        notificationService = mock(NotificationService.class);
+        redisMessageSubscriber = new RedisMessageSubscriber(objectMapper, notificationService);
     }
 
     @DisplayName("이벤트 수신 성공")
@@ -35,7 +39,10 @@ class RedisMessageSubscriberTest {
 
         // when
         // then
-        assertDoesNotThrow(() -> redisMessageSubscriber.onMessage(message, "test".getBytes()));
+        assertAll(
+            () -> assertDoesNotThrow(() -> redisMessageSubscriber.onMessage(message, "test".getBytes())),
+            () -> then(notificationService).should(times(1)).sendPostNotification(any())
+        );
     }
 
     @DisplayName("이벤트 타입이 다름으로 인한 실패")

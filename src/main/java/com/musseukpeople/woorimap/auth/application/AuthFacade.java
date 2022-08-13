@@ -17,6 +17,7 @@ import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.member.application.MemberService;
 import com.musseukpeople.woorimap.member.domain.Member;
+import com.musseukpeople.woorimap.notification.application.NotificationService;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class AuthFacade {
     private final BlackListService blackListService;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final NotificationService notificationService;
 
     @Transactional
     public LoginResponseDto login(SignInRequest signInRequest) {
@@ -48,9 +50,14 @@ public class AuthFacade {
 
     @Transactional
     public void logout(LoginMember member) {
+        String memberId = String.valueOf(member.getId());
         String accessToken = member.getAccessToken();
+
         registerBlackList(accessToken);
-        refreshTokenService.removeByMemberId(String.valueOf(member.getId()));
+        refreshTokenService.removeByMemberId(memberId);
+
+        // TODO : 서버 분리 시 API로 변경
+        notificationService.deleteAllEmitterByMemberId(memberId);
     }
 
     public AccessTokenResponse refreshAccessToken(String accessToken, String refreshToken) {
