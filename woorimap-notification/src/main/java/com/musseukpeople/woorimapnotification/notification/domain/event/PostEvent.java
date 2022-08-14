@@ -1,4 +1,4 @@
-package com.musseukpeople.woorimapnotification.notification.domain;
+package com.musseukpeople.woorimapnotification.notification.domain.event;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

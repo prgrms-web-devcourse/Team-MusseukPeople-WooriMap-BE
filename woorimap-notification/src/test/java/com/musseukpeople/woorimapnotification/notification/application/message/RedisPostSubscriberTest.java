@@ -14,11 +14,11 @@ import org.springframework.data.redis.connection.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musseukpeople.woorimapnotification.notification.application.NotificationService;
-import com.musseukpeople.woorimapnotification.notification.domain.PostEvent;
+import com.musseukpeople.woorimapnotification.notification.domain.event.PostEvent;
 
-class RedisMessageSubscriberTest {
+class RedisPostSubscriberTest {
 
-    private RedisMessageSubscriber redisMessageSubscriber;
+    private RedisPostSubscriber redisMessageSubscriber;
     private ObjectMapper objectMapper;
     private NotificationService notificationService;
 
@@ -26,7 +26,7 @@ class RedisMessageSubscriberTest {
     void setUp() {
         objectMapper = new ObjectMapper();
         notificationService = mock(NotificationService.class);
-        redisMessageSubscriber = new RedisMessageSubscriber(objectMapper, notificationService);
+        redisMessageSubscriber = new RedisPostSubscriber(objectMapper, notificationService);
     }
 
     @DisplayName("이벤트 수신 성공")
