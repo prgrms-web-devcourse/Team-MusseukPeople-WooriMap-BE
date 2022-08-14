@@ -115,8 +115,12 @@ public class NotificationService {
     private void sendLostEvent(Long memberId, String lastEventId, String emitterId, SseEmitter sseEmitter) {
         Map<String, Object> events = emitterRepository.findAllEventCacheStartWithByMemberId(memberId + ID_DELIMITER);
         events.entrySet().stream()
-            .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
+            .filter(entry -> isLostEvent(lastEventId, entry.getKey()))
             .forEach(entry -> sendNotification(sseEmitter, EVENT_NAME, entry.getKey(), emitterId, entry.getValue()));
+    }
+
+    private boolean isLostEvent(String lastEventId, String eventId) {
+        return lastEventId.compareTo(eventId) < 0;
     }
 
     private void sendNotification(SseEmitter sseEmitter, String eventName, String eventId, String emitterId,
