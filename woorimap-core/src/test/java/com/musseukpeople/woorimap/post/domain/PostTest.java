@@ -14,7 +14,7 @@ import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.tag.domain.Tag;
 import com.musseukpeople.woorimap.util.fixture.TMemberBuilder;
 
-public class PostTest {
+class PostTest {
 
     @DisplayName("post 생성 실패 - tag 0개")
     @Test

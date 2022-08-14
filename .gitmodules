@@ -1,5 +1,5 @@
 [submodule "src/main/resources/woorimap-config"]
-	path = src/main/resources/woorimap-config
+	path = woorimap-core/src/main/resources/woorimap-config
 	url = https://github.com/dya-mond/woorimap-config.git
 [submodule "woorimap-notification/src/main/resources/woorimap-notification-config"]
 	path = woorimap-notification/src/main/resources/woorimap-notification-config

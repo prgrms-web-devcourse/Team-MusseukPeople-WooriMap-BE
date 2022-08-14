@@ -18,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
