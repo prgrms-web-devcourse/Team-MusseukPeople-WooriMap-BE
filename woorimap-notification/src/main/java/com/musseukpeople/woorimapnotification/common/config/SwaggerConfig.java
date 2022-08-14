@@ -24,7 +24,7 @@ public class SwaggerConfig {
                     .bearerFormat("JWT")
                     .in(SecurityScheme.In.HEADER)
                     .name(HttpHeaders.AUTHORIZATION)))
-            .info(new Info().title("WooriMap"));
+            .info(new Info().title("WooriMap-notification"));
     }
 
 }
