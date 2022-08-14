@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,6 +76,17 @@ public class AuthController {
             jwtToken.getRefreshToken()
         );
         return ResponseEntity.ok(new ApiResponse<>(accessToken));
+    }
+
+    /**
+     * private용 API
+     * image, notification에서 accessToken이 유효한지 확인하는 API
+     */
+    @Operation(hidden = true)
+    @GetMapping("/login/members")
+    @LoginRequired
+    public ResponseEntity<ApiResponse<LoginMember>> getLoginMember(@Login LoginMember loginMember) {
+        return ResponseEntity.ok(new ApiResponse<>(loginMember));
     }
 
     private void setTokenCookie(HttpServletResponse response, TokenDto tokenDto) {

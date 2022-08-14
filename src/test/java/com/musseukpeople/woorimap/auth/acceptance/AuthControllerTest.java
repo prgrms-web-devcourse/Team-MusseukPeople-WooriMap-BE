@@ -19,6 +19,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.musseukpeople.woorimap.auth.application.dto.request.SignInRequest;
 import com.musseukpeople.woorimap.auth.application.dto.response.AccessTokenResponse;
+import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.auth.presentation.dto.response.LoginResponse;
 import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
@@ -200,6 +201,27 @@ class AuthControllerTest extends AcceptanceTest {
         assertAll(
             () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
             () -> assertThat(errorResponse.getMessage()).isEqualTo("토큰을 재발급 할 수 없는 상태입니다.")
+        );
+    }
+
+    @DisplayName("LoginMember 객체 반환 성공")
+    @Test
+    void getLoginMember_success() throws Exception {
+        // given
+        String accessToken = 로그인_토큰(new SignInRequest("woorimap@gmail.com", "!Hwan123"));
+
+        // when
+        MockHttpServletResponse response = mockMvc.perform(get("/api/auth/login/members")
+                .content(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, accessToken))
+            .andDo(print())
+            .andReturn().getResponse();
+
+        // then
+        LoginMember loginMember = getResponseObject(response, LoginMember.class);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(loginMember.getId()).isPositive()
         );
     }
 

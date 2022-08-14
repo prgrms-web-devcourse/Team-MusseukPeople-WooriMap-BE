@@ -2,9 +2,12 @@ package com.musseukpeople.woorimap.auth.domain.login;
 
 import static com.musseukpeople.woorimap.auth.domain.login.LoginMember.Authority.*;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginMember {
 
     private Long id;
