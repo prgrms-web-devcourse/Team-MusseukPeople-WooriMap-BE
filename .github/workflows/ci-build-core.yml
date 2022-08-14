@@ -37,7 +37,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Test with Gradle
-        run: ./gradlew --info test
+        run: ./gradlew woorimap-core:test --info
 
       - name: Build with Gradle
-        run: ./gradlew build -x test
+        run: ./gradlew woorimap-core:build -x test
