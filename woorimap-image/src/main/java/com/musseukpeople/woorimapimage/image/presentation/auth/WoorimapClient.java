@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.musseukpeople.woorimapimage.common.model.ApiResponse;
-import com.musseukpeople.woorimapimage.image.presentation.auth.login.MemberResponse;
+import com.musseukpeople.woorimapimage.image.presentation.auth.login.LoginMember;
 
 @Component
 public class WoorimapClient {
@@ -24,13 +24,13 @@ public class WoorimapClient {
         this.woorimapUrl = woorimapHost + woorimapPort;
     }
 
-    public ApiResponse<MemberResponse> getMemberResponse(String accessToken) {
+    public ApiResponse<LoginMember> getLoginMember(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, accessToken);
         HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
 
-        ResponseEntity<ApiResponse<MemberResponse>> response = new RestTemplate().exchange(
-            woorimapUrl + "/api/members", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<ApiResponse<LoginMember>> response = new RestTemplate().exchange(
+            woorimapUrl + "/api/auth/login/members", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
             });
         return response.getBody();
     }

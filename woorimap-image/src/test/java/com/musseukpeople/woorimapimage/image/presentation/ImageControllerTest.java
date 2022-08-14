@@ -1,5 +1,6 @@
 package com.musseukpeople.woorimapimage.image.presentation;
 
+import static com.musseukpeople.woorimapimage.image.presentation.auth.login.LoginMember.Authority.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -23,14 +24,14 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import com.musseukpeople.woorimapimage.common.ImageTest;
 import com.musseukpeople.woorimapimage.common.model.ApiResponse;
-import com.musseukpeople.woorimapimage.image.presentation.auth.login.MemberResponse;
+import com.musseukpeople.woorimapimage.image.presentation.auth.login.LoginMember;
 
 class ImageControllerTest extends ImageTest {
 
     @BeforeEach
     void setUp() {
-        given(woorimapClient.getMemberResponse(anyString()))
-            .willReturn(new ApiResponse<>(new MemberResponse(1L, "test@gmail.com", null, "test", false)));
+        given(woorimapClient.getLoginMember(anyString())).willReturn(
+            new ApiResponse<>(new LoginMember(1L, 1L, COUPLE, "accessToken")));
     }
 
     @DisplayName("단일 이미지 업로드 성공")
