@@ -14,14 +14,14 @@ class NotificationTest {
     @Test
     void create_success() {
         // given
-        Long senderId = 1L;
+        String senderNickName = "우리맵";
         Long receiverId = 2L;
         Long contentId = 1L;
         NotificationType notificationType = POST_CREATED;
         String content = "test";
 
         // when
-        Notification notification = new Notification(senderId, receiverId, contentId, notificationType, content);
+        Notification notification = new Notification(senderNickName, receiverId, contentId, notificationType, content);
 
         // then
         assertThat(notification).isNotNull();
@@ -31,7 +31,7 @@ class NotificationTest {
     @Test
     void read_success() {
         // given
-        Notification notification = new Notification(1L, 2L, 1L, POST_CREATED, "test");
+        Notification notification = new Notification("우리맵", 2L, 1L, POST_CREATED, "test");
 
         // when
         notification.read();

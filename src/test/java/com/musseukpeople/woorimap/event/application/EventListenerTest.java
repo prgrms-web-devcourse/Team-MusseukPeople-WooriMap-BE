@@ -1,8 +1,7 @@
 package com.musseukpeople.woorimap.event.application;
 
+import static java.time.LocalDateTime.*;
 import static org.mockito.BDDMockito.*;
-
-import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ class EventListenerTest {
     @Test
     void publishEvent_success() {
         // given
-        PostEvent postEvent = new PostEvent(1L, 2L, 1L, PostEvent.EventType.POST_CREATED, "타이틀", LocalDateTime.now());
+        PostEvent postEvent = new PostEvent("test", 2L, 1L, PostEvent.EventType.POST_CREATED, "타이틀", now());
 
         // when
         eventListener.publishEvent(postEvent);

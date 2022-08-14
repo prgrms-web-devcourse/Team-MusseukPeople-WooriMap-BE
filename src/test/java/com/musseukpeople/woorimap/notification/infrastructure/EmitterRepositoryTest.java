@@ -1,5 +1,6 @@
 package com.musseukpeople.woorimap.notification.infrastructure;
 
+import static com.musseukpeople.woorimap.notification.domain.Notification.NotificationType.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Map;
@@ -39,7 +40,7 @@ class EmitterRepositoryTest {
     void saveEventCache_success() {
         // given
         String id = "1";
-        NotificationResponse data = new NotificationResponse(1L, 1L, "test", "content");
+        NotificationResponse data = new NotificationResponse(1L, 1L, POST_CREATED, "test", "content");
 
         // when
         emitterRepository.saveEventCache(id, data);

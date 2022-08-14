@@ -100,7 +100,7 @@ class NotificationControllerTest extends AcceptanceTest {
     }
 
     private Long createNotification() {
-        return notificationRepository.save(new Notification(1L, 1L, 1L, POST_CREATED, "test")).getId();
+        return notificationRepository.save(new Notification("우리맵", 1L, 1L, POST_CREATED, "test")).getId();
     }
 
     private MockHttpServletResponse readNotification(String accessToken, Long notificationId) throws Exception {

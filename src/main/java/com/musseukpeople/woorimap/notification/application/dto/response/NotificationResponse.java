@@ -1,5 +1,7 @@
 package com.musseukpeople.woorimap.notification.application.dto.response;
 
+import static com.musseukpeople.woorimap.notification.domain.Notification.*;
+
 import com.musseukpeople.woorimap.notification.domain.Notification;
 
 import lombok.AccessLevel;
@@ -12,12 +14,14 @@ public class NotificationResponse {
 
     private Long id;
     private Long contentId;
+    private NotificationType type;
     private String nickName;
     private String content;
 
-    public NotificationResponse(Long id, Long contentId, String nickName, String content) {
+    public NotificationResponse(Long id, Long contentId, NotificationType type, String nickName, String content) {
         this.id = id;
         this.contentId = contentId;
+        this.type = type;
         this.nickName = nickName;
         this.content = content;
     }
@@ -26,8 +30,8 @@ public class NotificationResponse {
         return new NotificationResponse(
             notification.getId(),
             notification.getContentId(),
-            // TODO : API를 통해 NickName 반환받도록 변경
-            String.valueOf(notification.getSenderId()),
+            notification.getNotificationType(),
+            notification.getSenderNickName(),
             notification.getContent()
         );
     }

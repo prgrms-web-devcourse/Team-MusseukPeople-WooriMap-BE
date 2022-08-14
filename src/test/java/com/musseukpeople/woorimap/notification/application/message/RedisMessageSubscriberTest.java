@@ -1,10 +1,9 @@
 package com.musseukpeople.woorimap.notification.application.message;
 
+import static java.time.LocalDateTime.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
-
-import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +33,7 @@ class RedisMessageSubscriberTest {
     @Test
     void onMessage_success() throws JsonProcessingException {
         // given
-        PostEvent postEvent = new PostEvent(1L, 2L, 1L, PostEvent.EventType.POST_CREATED, "test", LocalDateTime.now());
+        PostEvent postEvent = new PostEvent("test", 2L, 1L, PostEvent.EventType.POST_CREATED, "test", now());
         Message message = new DefaultMessage("2L".getBytes(), objectMapper.writeValueAsBytes(postEvent));
 
         // when

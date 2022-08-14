@@ -1,12 +1,12 @@
 package com.musseukpeople.woorimap.notification.application;
 
 import static com.musseukpeople.woorimap.notification.domain.Notification.NotificationType.*;
+import static java.time.LocalDateTime.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +63,7 @@ class NotificationServiceTest {
         // given
         Long receiverId = 2L;
         SseEmitter mockSseEmitter = mock(SseEmitter.class);
-        PostEvent postEvent = new PostEvent(1L, receiverId, 1L, EventType.POST_CREATED, "test", LocalDateTime.now());
+        PostEvent postEvent = new PostEvent("test", receiverId, 1L, EventType.POST_CREATED, "test", now());
         given(emitterRepository.findAllStartWithByMemberId(anyString())).willReturn(
             Map.of(String.valueOf(receiverId), mockSseEmitter));
 
@@ -123,7 +123,7 @@ class NotificationServiceTest {
     public Notification createNotification(Long memberId) {
         return Notification.builder()
             .receiverId(memberId)
-            .senderId(1L)
+            .senderNickName("우리맵")
             .contentId(1L)
             .type(POST_CREATED)
             .content("test")

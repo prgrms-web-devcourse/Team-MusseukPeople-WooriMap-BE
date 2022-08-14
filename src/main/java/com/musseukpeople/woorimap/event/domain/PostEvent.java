@@ -19,7 +19,7 @@ public class PostEvent implements Serializable {
 
     private static final long serialVersionUID = 5576120921802674645L;
 
-    private Long sourceId;
+    private String sourceNickName;
     private Long destinationId;
     private Long postId;
 
@@ -30,9 +30,9 @@ public class PostEvent implements Serializable {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime publishDateTime;
 
-    public PostEvent(Long sourceId, Long destinationId, Long postId, EventType eventType, String content,
+    public PostEvent(String sourceNickName, Long destinationId, Long postId, EventType eventType, String content,
                      LocalDateTime publishDateTime) {
-        this.sourceId = sourceId;
+        this.sourceNickName = sourceNickName;
         this.destinationId = destinationId;
         this.postId = postId;
         this.eventType = eventType;
@@ -42,7 +42,7 @@ public class PostEvent implements Serializable {
 
     public static PostEvent of(Long sourceId, Post post, EventType eventType) {
         return new PostEvent(
-            sourceId,
+            post.getCouple().getMyMember(sourceId).getNickName().getValue(),
             post.getCouple().getOpponentMember(sourceId).getId(),
             post.getId(),
             eventType,

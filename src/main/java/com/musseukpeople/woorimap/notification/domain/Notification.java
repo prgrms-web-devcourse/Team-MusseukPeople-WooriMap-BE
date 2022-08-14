@@ -29,8 +29,8 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "send_member_id")
-    private Long senderId;
+    @Column(nullable = false, name = "send_member_nick_name")
+    private String senderNickName;
 
     @Column(nullable = false, name = "receive_member_id")
     private Long receiverId;
@@ -53,8 +53,8 @@ public class Notification {
     private LocalDateTime createdDateTime;
 
     @Builder
-    public Notification(Long senderId, Long receiverId, Long contentId, NotificationType type, String content) {
-        this.senderId = senderId;
+    public Notification(String senderNickName, Long receiverId, Long contentId, NotificationType type, String content) {
+        this.senderNickName = senderNickName;
         this.receiverId = receiverId;
         this.contentId = contentId;
         this.notificationType = type;
