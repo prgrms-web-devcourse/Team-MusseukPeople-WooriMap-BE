@@ -1,5 +1,6 @@
 server:
   port: 8081
+  forward-headers-strategy: framework
 
 spring:
   profiles:
@@ -21,6 +22,14 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
+springdoc:
+  swagger-ui:
+    path: /api-docs
+    operations-sorter: method
+    tags-sorter: alpha
+  api-docs:
+    path: /api-docs/json
 
 woorimap:
   api:
@@ -47,3 +56,9 @@ woorimap:
   api:
     host: https://prod.woorimap.p-e.kr/
     port:
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
