@@ -16,7 +16,7 @@ import com.musseukpeople.woorimapnotification.notification.application.dto.respo
 import com.musseukpeople.woorimapnotification.notification.domain.Notification;
 import com.musseukpeople.woorimapnotification.notification.domain.Notification.NotificationType;
 import com.musseukpeople.woorimapnotification.notification.domain.NotificationRepository;
-import com.musseukpeople.woorimapnotification.notification.domain.PostEvent;
+import com.musseukpeople.woorimapnotification.notification.domain.event.PostEvent;
 import com.musseukpeople.woorimapnotification.notification.exception.NotFoundNotificationException;
 import com.musseukpeople.woorimapnotification.notification.infrastructure.EmitterRepository;
 
@@ -71,8 +71,8 @@ public class NotificationService {
 
     @Transactional
     public void deleteAllEmitterByMemberId(String memberId) {
-        emitterRepository.deleteAllStartWithByMemberId(memberId);
-        emitterRepository.deleteAllEventCacheStartWithByMemberId(memberId);
+        emitterRepository.deleteAllStartWithByMemberId(memberId + ID_DELIMITER);
+        emitterRepository.deleteAllEventCacheStartWithByMemberId(memberId + ID_DELIMITER);
     }
 
     @Transactional
