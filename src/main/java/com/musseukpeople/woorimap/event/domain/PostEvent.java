@@ -46,7 +46,7 @@ public class PostEvent implements Serializable {
             post.getCouple().getOpponentMember(sourceId).getId(),
             post.getId(),
             eventType,
-            post.getContent(),
+            post.getTitle(),
             LocalDateTime.now()
         );
     }
