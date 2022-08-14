@@ -15,7 +15,6 @@ import com.musseukpeople.woorimap.common.exception.ErrorCode;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -71,8 +70,12 @@ public class JwtTokenProvider implements JwtProvider {
     @Override
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = getClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
+            Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+            return !claims.getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
@@ -84,25 +87,26 @@ public class JwtTokenProvider implements JwtProvider {
     }
 
     @Override
-    public Claims getClaims(String token) {
+    public String getSubject(String token) {
+        return getClaims(token).getSubject();
+    }
+
+    @Override
+    public Long getCoupleId(String token) {
+        return getClaims(token).get(COUPLE_CLAIM_NAME, Long.class);
+    }
+
+    private Claims getClaims(String token) {
         try {
-            return getClaimsJws(token).getBody();
+            return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         } catch (JwtException | IllegalArgumentException e) {
             throw new InvalidTokenException(token, ErrorCode.INVALID_TOKEN);
         }
-    }
-
-    @Override
-    public String getClaimName() {
-        return COUPLE_CLAIM_NAME;
-    }
-
-    private Jws<Claims> getClaimsJws(String token) {
-        return Jwts.parserBuilder()
-            .setSigningKey(secretKey)
-            .build()
-            .parseClaimsJws(token);
     }
 }

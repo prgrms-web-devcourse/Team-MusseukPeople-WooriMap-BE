@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 
-import io.jsonwebtoken.Claims;
-
 class JwtTokenProviderTest {
 
     private static final JwtTokenProvider PROVIDER = new JwtTokenProvider(
@@ -30,12 +28,13 @@ class JwtTokenProviderTest {
         TokenDto accessToken = PROVIDER.createAccessToken(memberId, coupleId);
 
         // when
-        Claims claims = PROVIDER.getClaims(accessToken.getValue());
+        String jwtMemberId = PROVIDER.getSubject(accessToken.getValue());
+        Long jwtCoupleId = PROVIDER.getCoupleId(accessToken.getValue());
 
         // then
         assertAll(
-            () -> assertThat(claims.getSubject()).isEqualTo(memberId),
-            () -> assertThat(claims.get("coupleId", Long.class)).isEqualTo(coupleId)
+            () -> assertThat(jwtMemberId).isEqualTo(memberId),
+            () -> assertThat(jwtCoupleId).isEqualTo(coupleId)
         );
     }
 
@@ -46,7 +45,7 @@ class JwtTokenProviderTest {
         TokenDto refreshToken = PROVIDER.createRefreshToken();
 
         // when
-        String payload = PROVIDER.getClaims(refreshToken.getValue()).getSubject();
+        String payload = PROVIDER.getSubject(refreshToken.getValue());
 
         // then
         assertThat(payload).isNotNull();
