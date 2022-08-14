@@ -30,7 +30,7 @@ public class WoorimapClient {
         HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
 
         ResponseEntity<ApiResponse<LoginMember>> response = new RestTemplate().exchange(
-            woorimapUrl + "/api/auth//login/members", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
+            woorimapUrl + "/api/auth/login/members", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
             });
         return response.getBody();
     }
