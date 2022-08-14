@@ -3,6 +3,7 @@ package com.musseukpeople.woorimap.auth.acceptance;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 import java.io.IOException;
 
@@ -161,6 +162,30 @@ class AuthControllerTest extends AcceptanceTest {
 
         // then
         토큰_재발급_실패(response);
+    }
+
+    @DisplayName("커플 상태 변경 시 토큰 재발급 성공")
+    @Test
+    void refreshCoupleAccessToken_success() throws Exception {
+        // given
+        MockHttpServletResponse loginResponse = 로그인(new SignInRequest("woorimap@gmail.com", "!Hwan123"));
+        String accessToken = getAccessToken(loginResponse);
+        String refreshToken = getRefreshToken(loginResponse);
+
+        // when
+        MockHttpServletResponse response = mockMvc.perform(post("/api/auth/couples/token")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .cookie(new Cookie("refreshToken", refreshToken)))
+            .andDo(print())
+            .andReturn().getResponse();
+
+        // then
+        AccessTokenResponse accessTokenResponse = getResponseObject(response, AccessTokenResponse.class);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(accessTokenResponse.getAccessToken()).isNotNull()
+        );
     }
 
     private MockHttpServletResponse 로그아웃(String accessToken) throws Exception {
