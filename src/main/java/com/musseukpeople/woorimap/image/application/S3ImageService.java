@@ -3,12 +3,14 @@ package com.musseukpeople.woorimap.image.application;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,25 +35,27 @@ public class S3ImageService implements ImageService {
 
     private final String activeProfile;
 
+    private final Executor executor;
+
     public S3ImageService(
         AmazonS3Client amazonS3Client,
         @Value("${cloud.aws.s3.bucket}") String bucketName,
-        @Value("${spring.profiles.active}") String activeProfile) {
+        @Value("${spring.profiles.active}") String activeProfile,
+        @Qualifier("imageExecutor") Executor executor) {
         this.amazonS3Client = amazonS3Client;
         this.bucketName = bucketName;
         this.activeProfile = activeProfile;
+        this.executor = executor;
     }
 
     @Override
     public List<String> uploadImages(Long id, List<MultipartFile> files) {
-        List<CompletableFuture<String>> completableFutures = new ArrayList<>();
+        List<CompletableFuture<String>> imageUrlFutures = files.stream()
+            .map(file -> CompletableFuture.supplyAsync(() -> uploadImage(id, file), executor)
+                .orTimeout(3, TimeUnit.SECONDS))
+            .collect(Collectors.toList());
 
-        files.forEach(file ->
-            completableFutures.add(CompletableFuture
-                .supplyAsync(() -> uploadImage(id, file))));
-
-        CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0])).join();
-        return completableFutures.stream()
+        return imageUrlFutures.stream()
             .map(CompletableFuture::join)
             .collect(Collectors.toList());
     }
