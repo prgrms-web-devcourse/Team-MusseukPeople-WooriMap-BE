@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="appender/access/file-access-appender.xml"/>
+    <include resource="appender/access/console-access-appender.xml"/>
+
+    <springProfile name="prod, dev">
+        <appender-ref ref="file-access-appender"/>
+    </springProfile>
+
+    <springProfile name="local">
+        <appender-ref ref="console-access-appender"/>
+    </springProfile>
+</configuration>
