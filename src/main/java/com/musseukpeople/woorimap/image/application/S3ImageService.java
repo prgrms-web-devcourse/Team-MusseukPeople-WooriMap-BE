@@ -3,8 +3,10 @@ package com.musseukpeople.woorimap.image.application;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -34,8 +36,7 @@ public class S3ImageService implements ImageService {
     public S3ImageService(
         AmazonS3Client amazonS3Client,
         @Value("${cloud.aws.s3.bucket}") String bucketName,
-        @Value("${spring.profiles.active}") String activeProfile
-    ) {
+        @Value("${spring.profiles.active}") String activeProfile) {
         this.amazonS3Client = amazonS3Client;
         this.bucketName = bucketName;
         this.activeProfile = activeProfile;
@@ -43,8 +44,15 @@ public class S3ImageService implements ImageService {
 
     @Override
     public List<String> uploadImages(Long id, List<MultipartFile> files) {
-        return files.stream()
-            .map(file -> uploadImage(id, file))
+        List<CompletableFuture<String>> completableFutures = new ArrayList<>();
+
+        files.forEach(file ->
+            completableFutures.add(CompletableFuture
+                .supplyAsync(() -> uploadImage(id, file))));
+
+        CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0])).join();
+        return completableFutures.stream()
+            .map(CompletableFuture::join)
             .collect(Collectors.toList());
     }
 
