@@ -4,5 +4,7 @@ import com.musseukpeople.woorimap.event.domain.PostEvent;
 
 public interface Publisher {
 
-    void publish(PostEvent postEvent);
+    void publishPost(PostEvent postEvent);
+
+    void publishLogout(String memberId);
 }
