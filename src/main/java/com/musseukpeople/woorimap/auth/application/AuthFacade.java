@@ -1,6 +1,7 @@
 package com.musseukpeople.woorimap.auth.application;
 
 import java.util.Date;
+import java.util.Objects;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,12 @@ import com.musseukpeople.woorimap.auth.application.dto.response.LoginResponseDto
 import com.musseukpeople.woorimap.auth.domain.RefreshToken;
 import com.musseukpeople.woorimap.auth.domain.login.LoginMember;
 import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
+import com.musseukpeople.woorimap.auth.exception.InvalidTokenRequestException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.member.application.MemberService;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.notification.application.NotificationService;
 
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -39,12 +40,10 @@ public class AuthFacade {
         Member member = memberService.getMemberByEmail(signInRequest.getEmail());
         member.checkPassword(passwordEncoder, signInRequest.getPassword());
 
-        String memberId = String.valueOf(member.getId());
-        Long coupleId = member.isCouple() ? member.getCouple().getId() : null;
-        TokenDto accessToken = jwtProvider.createAccessToken(memberId, coupleId);
+        TokenDto accessToken = createAccessToken(member);
         TokenDto refreshToken = jwtProvider.createRefreshToken();
 
-        refreshTokenService.saveToken(memberId, refreshToken);
+        refreshTokenService.saveToken(String.valueOf(member.getId()), refreshToken);
         return new LoginResponseDto(accessToken, refreshToken, LoginMemberResponse.from(member));
     }
 
@@ -61,16 +60,41 @@ public class AuthFacade {
     }
 
     public AccessTokenResponse refreshAccessToken(String accessToken, String refreshToken) {
-        validateRefreshToken(refreshToken);
+        String memberId = jwtProvider.getSubject(accessToken);
+        Long coupleId = jwtProvider.getCoupleId(accessToken);
+        validateRefreshToken(memberId, refreshToken);
 
-        Claims claims = jwtProvider.getClaims(accessToken);
-        RefreshToken findRefreshToken = getRefreshToken(claims);
-        if (findRefreshToken.isNotSame(refreshToken)) {
-            throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
+        String newAccessToken = createNewAccessToken(memberId, coupleId);
+        return new AccessTokenResponse(newAccessToken);
+    }
+
+    @Transactional
+    public AccessTokenResponse refreshCoupleAccessToken(String accessToken, String refreshToken) {
+        String memberId = jwtProvider.getSubject(accessToken);
+        Long coupleId = jwtProvider.getCoupleId(accessToken);
+        validateRefreshToken(memberId, refreshToken);
+
+        Member member = memberService.getMemberWithCoupleById(Long.parseLong(memberId));
+        validateCoupleStatus(member, coupleId);
+        TokenDto newAccessToken = createAccessToken(member);
+        registerBlackList(accessToken);
+        return new AccessTokenResponse(newAccessToken.getValue());
+    }
+
+    private void validateCoupleStatus(Member member, Long coupleId) {
+        if (member.isCouple() && Objects.nonNull(coupleId)) {
+            throw new InvalidTokenRequestException(ErrorCode.INVALID_TOKEN_REQUEST);
         }
 
-        String newAccessToken = createNewAccessToken(claims);
-        return new AccessTokenResponse(newAccessToken);
+        if (!member.isCouple() && Objects.isNull(coupleId)) {
+            throw new InvalidTokenRequestException(ErrorCode.INVALID_TOKEN_REQUEST);
+        }
+    }
+
+    private TokenDto createAccessToken(Member member) {
+        String memberId = String.valueOf(member.getId());
+        Long coupleId = member.isCouple() ? member.getCouple().getId() : null;
+        return jwtProvider.createAccessToken(memberId, coupleId);
     }
 
     private void registerBlackList(String accessToken) {
@@ -80,19 +104,22 @@ public class AuthFacade {
         blackListService.saveBlackList(tokenDto);
     }
 
-    private void validateRefreshToken(String refreshToken) {
+    private void validateRefreshToken(String memberId, String refreshToken) {
         if (!jwtProvider.validateToken(refreshToken)) {
+            throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
+        }
+
+        RefreshToken findRefreshToken = getRefreshToken(memberId);
+        if (findRefreshToken.isNotSame(refreshToken)) {
             throw new InvalidTokenException(refreshToken, ErrorCode.INVALID_TOKEN);
         }
     }
 
-    private RefreshToken getRefreshToken(Claims claims) {
-        String memberId = claims.getSubject();
+    private RefreshToken getRefreshToken(String memberId) {
         return refreshTokenService.getTokenByMemberId(memberId);
     }
 
-    private String createNewAccessToken(Claims claims) {
-        return jwtProvider.createAccessToken(claims.getSubject(), claims.get(jwtProvider.getClaimName(), Long.class))
-            .getValue();
+    private String createNewAccessToken(String memberId, Long coupleId) {
+        return jwtProvider.createAccessToken(memberId, coupleId).getValue();
     }
 }
