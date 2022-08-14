@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/woorimap
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  redis:
+    host: localhost
+    password: local
+    port: 6379
+
+woorimap:
+  api:
+    host: http://localhost
+    port: :8080
