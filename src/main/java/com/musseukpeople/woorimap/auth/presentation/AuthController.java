@@ -70,7 +70,11 @@ public class AuthController {
     @SecurityRequirement(name = "bearer")
     @PostMapping("/couples/token")
     public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshCoupleAccessToken(@RequestTokens JwtToken jwtToken) {
-        return ResponseEntity.ok().build();
+        AccessTokenResponse accessToken = authFacade.refreshCoupleAccessToken(
+            jwtToken.getAccessToken(),
+            jwtToken.getRefreshToken()
+        );
+        return ResponseEntity.ok(new ApiResponse<>(accessToken));
     }
 
     private void setTokenCookie(HttpServletResponse response, TokenDto tokenDto) {

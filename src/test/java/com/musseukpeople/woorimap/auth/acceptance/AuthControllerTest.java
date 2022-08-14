@@ -171,20 +171,35 @@ class AuthControllerTest extends AcceptanceTest {
         MockHttpServletResponse loginResponse = 로그인(new SignInRequest("woorimap@gmail.com", "!Hwan123"));
         String accessToken = getAccessToken(loginResponse);
         String refreshToken = getRefreshToken(loginResponse);
+        커플_맺기("Bearer" + accessToken);
 
         // when
-        MockHttpServletResponse response = mockMvc.perform(post("/api/auth/couples/token")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .cookie(new Cookie("refreshToken", refreshToken)))
-            .andDo(print())
-            .andReturn().getResponse();
+        MockHttpServletResponse response = 커플_토큰_재발급(accessToken, refreshToken);
 
         // then
         AccessTokenResponse accessTokenResponse = getResponseObject(response, AccessTokenResponse.class);
         assertAll(
             () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(accessTokenResponse.getAccessToken()).isNotNull()
+        );
+    }
+
+    @DisplayName("커플 상태 변경 없음으로 인한 토큰 재발급 실패")
+    @Test
+    void refreshCoupleAccessToken_fail() throws Exception {
+        // given
+        MockHttpServletResponse loginResponse = 로그인(new SignInRequest("woorimap@gmail.com", "!Hwan123"));
+        String accessToken = getAccessToken(loginResponse);
+        String refreshToken = getRefreshToken(loginResponse);
+
+        // when
+        MockHttpServletResponse response = 커플_토큰_재발급(accessToken, refreshToken);
+
+        // then
+        ErrorResponse errorResponse = getErrorResponse(response);
+        assertAll(
+            () -> assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+            () -> assertThat(errorResponse.getMessage()).isEqualTo("토큰을 재발급 할 수 없는 상태입니다.")
         );
     }
 
@@ -199,6 +214,15 @@ class AuthControllerTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .cookie(new Cookie("refreshToken", refreshToken)))
+            .andReturn().getResponse();
+    }
+
+    private MockHttpServletResponse 커플_토큰_재발급(String accessToken, String refreshToken) throws Exception {
+        return mockMvc.perform(post("/api/auth/couples/token")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .cookie(new Cookie("refreshToken", refreshToken)))
+            .andDo(print())
             .andReturn().getResponse();
     }
 
