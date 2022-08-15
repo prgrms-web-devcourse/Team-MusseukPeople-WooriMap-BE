@@ -15,7 +15,6 @@ import com.musseukpeople.woorimap.auth.application.JwtProvider;
 import com.musseukpeople.woorimap.auth.presentation.AuthInterceptor;
 import com.musseukpeople.woorimap.auth.presentation.resolver.AuthArgumentResolver;
 import com.musseukpeople.woorimap.auth.presentation.resolver.JwtTokenArgumentResolver;
-import com.musseukpeople.woorimap.notification.presentation.resolver.AuthNotificationArgumentResolver;
 
 import lombok.RequiredArgsConstructor;
 
@@ -47,7 +46,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new AuthArgumentResolver(jwtProvider, memberAuthorityContext));
-        resolvers.add(new AuthNotificationArgumentResolver(jwtProvider, memberAuthorityContext));
         resolvers.add(new JwtTokenArgumentResolver());
     }
 }

@@ -25,16 +25,11 @@ import com.musseukpeople.woorimap.common.exception.ErrorResponse;
 import com.musseukpeople.woorimap.common.model.ApiResponse;
 import com.musseukpeople.woorimap.couple.application.dto.request.CreateCoupleRequest;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
-import com.musseukpeople.woorimap.notification.infrastructure.EmitterRepository;
 import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public abstract class AcceptanceTest {
-
-    static {
-        System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");
-    }
 
     @Autowired
     protected MockMvc mockMvc;
@@ -43,16 +38,11 @@ public abstract class AcceptanceTest {
     protected ObjectMapper objectMapper;
 
     @Autowired
-    private EmitterRepository emitterRepository;
-
-    @Autowired
     private DatabaseCleanup databaseCleanup;
 
     @AfterEach
     void tearDown() {
         databaseCleanup.execute();
-        emitterRepository.deleteAllStartWithByMemberId("");
-        emitterRepository.deleteAllEventCacheStartWithByMemberId("");
     }
 
     protected MockHttpServletResponse 회원가입(SignupRequest signupRequest) throws Exception {
