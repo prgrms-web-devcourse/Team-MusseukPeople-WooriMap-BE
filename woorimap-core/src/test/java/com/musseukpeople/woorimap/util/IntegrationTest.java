@@ -6,11 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public abstract class IntegrationTest {
-
-    static {
-        System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");
-    }
-
     @Autowired
     private DatabaseCleanup databaseCleanup;
 
