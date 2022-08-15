@@ -1,21 +1,4 @@
-plugins {
-    id 'org.springframework.boot' version '2.7.2'
-    id 'io.spring.dependency-management' version '1.0.12.RELEASE'
-    id 'java'
-}
-
-group = 'com.musseukpeople'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
     // DB
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
@@ -24,20 +7,6 @@ dependencies {
     implementation(group: 'it.ozimov', name: 'embedded-redis', version: '0.7.3') {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
-
-    // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    // Swagger
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
-
-    // Log
-    implementation 'dev.akkinoc.spring.boot:logback-access-spring-boot-starter:3.3.2'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
 }
 
 processResources.dependsOn('copySubmodule')
