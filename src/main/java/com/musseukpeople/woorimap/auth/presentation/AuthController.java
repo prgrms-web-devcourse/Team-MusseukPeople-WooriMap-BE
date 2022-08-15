@@ -66,6 +66,17 @@ public class AuthController {
         return ResponseEntity.ok(new ApiResponse<>(accessToken));
     }
 
+    @Operation(summary = "커플용 엑세스 토큰 재발급", description = "커플 상태 변경 시 엑세스 토큰을 재발급 받습니다.")
+    @SecurityRequirement(name = "bearer")
+    @PostMapping("/couples/token")
+    public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshCoupleAccessToken(@RequestTokens JwtToken jwtToken) {
+        AccessTokenResponse accessToken = authFacade.refreshCoupleAccessToken(
+            jwtToken.getAccessToken(),
+            jwtToken.getRefreshToken()
+        );
+        return ResponseEntity.ok(new ApiResponse<>(accessToken));
+    }
+
     private void setTokenCookie(HttpServletResponse response, TokenDto tokenDto) {
         ResponseCookie cookie = CookieUtil.createTokenCookie(tokenDto);
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());

@@ -51,7 +51,7 @@ public class PostFacade {
         Tags tags = tagService.findOrCreateTags(couple, editPostRequest.getTags());
 
         Post post = postService.modifyPost(tags.getList(), postId, editPostRequest);
-        eventPublisher.publishEvent(PostEvent.of(loginMember.getId(), post, POST_CREATED));
+        eventPublisher.publishEvent(PostEvent.of(loginMember.getId(), post, POST_MODIFIED));
         return post.getId();
     }
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.musseukpeople.woorimap.couple.domain.Couple;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
+import com.musseukpeople.woorimap.member.domain.Member;
 
 public class TCoupleBuilder {
 
@@ -29,6 +30,11 @@ public class TCoupleBuilder {
 
     public TCoupleBuilder coupleMembers(CoupleMembers coupleMembers) {
         this.members = coupleMembers;
+        return this;
+    }
+
+    public TCoupleBuilder members(List<Member> members) {
+        this.members = new CoupleMembers(members);
         return this;
     }
 

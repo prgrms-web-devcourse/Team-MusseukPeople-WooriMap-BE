@@ -17,7 +17,6 @@ import com.musseukpeople.woorimap.auth.exception.InvalidTokenException;
 import com.musseukpeople.woorimap.common.exception.ErrorCode;
 import com.musseukpeople.woorimap.common.util.AuthorizationExtractor;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.RequiredTypeException;
 import lombok.RequiredArgsConstructor;
 
@@ -47,23 +46,22 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private LoginMember getLoginMember(String accessToken) {
-        Claims claims = jwtProvider.getClaims(accessToken);
-        Long id = convertMemberId(accessToken, claims);
-        Long coupleId = convertCoupleId(accessToken, claims);
+        Long id = convertMemberId(accessToken);
+        Long coupleId = convertCoupleId(accessToken);
         return new LoginMember(id, coupleId, accessToken);
     }
 
-    private Long convertMemberId(String token, Claims claims) {
+    private Long convertMemberId(String token) {
         try {
-            return Long.parseLong(claims.getSubject());
+            return Long.parseLong(jwtProvider.getSubject(token));
         } catch (NumberFormatException e) {
             throw new InvalidTokenException(token, ErrorCode.INVALID_TOKEN);
         }
     }
 
-    private Long convertCoupleId(String token, Claims claims) {
+    private Long convertCoupleId(String token) {
         try {
-            return claims.get(jwtProvider.getClaimName(), Long.class);
+            return jwtProvider.getCoupleId(token);
         } catch (RequiredTypeException e) {
             throw new InvalidTokenException(token, ErrorCode.INVALID_TOKEN);
         }

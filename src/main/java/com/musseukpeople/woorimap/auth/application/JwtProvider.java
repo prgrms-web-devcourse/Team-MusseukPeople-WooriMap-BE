@@ -4,8 +4,6 @@ import java.util.Date;
 
 import com.musseukpeople.woorimap.auth.application.dto.TokenDto;
 
-import io.jsonwebtoken.Claims;
-
 public interface JwtProvider {
 
     TokenDto createAccessToken(String payload, Long coupleId);
@@ -16,7 +14,7 @@ public interface JwtProvider {
 
     Date getExpiredDate(String token);
 
-    Claims getClaims(String token);
+    String getSubject(String token);
 
-    String getClaimName();
+    Long getCoupleId(String token);
 }

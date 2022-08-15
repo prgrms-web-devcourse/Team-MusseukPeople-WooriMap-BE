@@ -26,6 +26,7 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A001", "유효하지 않은 토큰입니다."),
     NOT_FOUND_TOKEN(HttpStatus.UNAUTHORIZED, "A002", "로그인이 필요합니다."),
     BLACKLIST_TOKEN(HttpStatus.UNAUTHORIZED, "A003", "허용되지 않는 토큰입니다."),
+    INVALID_TOKEN_REQUEST(HttpStatus.UNAUTHORIZED, "A004", "토큰을 재발급 할 수 없는 상태입니다."),
 
     // Couple
     NOT_FOUND_COUPLE(HttpStatus.NOT_FOUND, "CP001", "존재하지 않는 커플입니다."),
