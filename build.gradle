@@ -1,198 +1,52 @@
-buildscript {
-    ext {
-        queryDslVersion = "5.0.0"
-    }
-}
-
 plugins {
     id 'org.springframework.boot' version '2.7.2'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
     id 'java'
-    id 'jacoco'
-    id "org.sonarqube" version "3.4.0.2513"
-    //Querydsl
-    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
-group = 'com.musseukpeople'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+subprojects {
+    group = 'com.musseukpeople'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '11'
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-    querydsl.extendsFrom compileClasspath
-}
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    // WEB
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-    // DB
-    runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'mysql:mysql-connector-java'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation(group: 'it.ozimov', name: 'embedded-redis', version: '0.7.3') {
-        exclude group: 'org.slf4j', module: 'slf4j-simple'
-    }
-    implementation 'org.flywaydb:flyway-core:8.5.12'
-    implementation 'org.flywaydb:flyway-mysql:8.5.12'
-
-    // QueryDsl
-    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-
-    // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    // Swagger
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
-
-    // Guava
-    implementation 'com.google.guava:guava:31.1-jre'
-
-    // Tika
-    implementation 'org.apache.tika:tika-core:2.4.1'
-
-
-    // Security
-    implementation 'org.springframework.security:spring-security-crypto:5.7.2'
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-
-    // test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    // AWS CloudWatch
-    implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
-
-    // AWS
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-    testImplementation 'io.findify:s3mock_2.12:0.2.4'
-
-    // Log
-    implementation group: 'org.codehaus.janino', name: 'janino', version: '3.0.7'
-    implementation 'dev.akkinoc.spring.boot:logback-access-spring-boot-starter:3.3.2'
-}
-
-test {
-    useJUnitPlatform()
-    finalizedBy 'jacocoTestReport'
-}
-
-processResources.dependsOn('copySubmodule')
-
-task copySubmodule(type: Copy) {
-    from 'src/main/resources/woorimap-config'
-    include '*.yml'
-    into './src/main/resources'
-}
-
-// jacoco
-jacoco {
-    toolVersion = "0.8.8"
-}
-
-jacocoTestReport {
-    reports {
-        html.enabled true
-        xml.enabled true
-    }
-
-    def Qdomains = []
-    for (qPattern in "**/QA".."**/QZ") {
-        Qdomains.add(qPattern + "*")
-    }
-
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it,
-                    exclude: [
-                            "**/*WoorimapApplication*",
-                            '**/*Fake*',
-                            '**/*Health*',
-                            '**/*Request*',
-                            '**/*Response*',
-                            '**/*Dto*',
-                            '**/*Exception*',
-                            '**/*Exception*',
-                            '**/common*',
-                    ] + Qdomains)
-        }))
-    }
-
-    finalizedBy 'jacocoTestCoverageVerification'
-}
-
-jacocoTestCoverageVerification {
-    def Qdomains = []
-    for (qPattern in '*.QA'..'*.QZ') {
-        Qdomains.add(qPattern + '*')
-    }
-
-
-    violationRules {
-        rule {
-            enabled = true
-            element = 'CLASS'
-
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.60
-            }
-
-            limit {
-                counter = 'METHOD'
-                value = 'COVEREDRATIO'
-                minimum = 0.60
-            }
-
-            excludes = [
-                    "**.*WoorimapApplication*",
-                    '**.*Fake*',
-                    '**.*Health*',
-                    '**.*Request*',
-                    '**.*Response*',
-                    '**.*Dto*',
-                    '**.*Interceptor*',
-                    '**.*Exception*',
-                    '**.*common*'
-            ] + Qdomains
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
         }
     }
-}
 
-sonarqube {
-    properties {
-        property "sonar.projectKey", "prgrms-web-devcourse_Team-MusseukPeople-WooriMap-BE"
-        property "sonar.organization", "prgrms-web-devcourse"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-        property "sonar.exclusions", "**.*Dto*, **.*common*, **.*Exception*, **.*Response*, **.*Request*"
+    repositories {
+        mavenCentral()
     }
-}
 
-//querydsl
-def querydslDir = "$buildDir/generated/querydsl"
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
-}
+    // 관리하는 모듈에 공통 dependencies
+    dependencies {
+        // WEB
+        implementation 'org.springframework.boot:spring-boot-starter-web'
 
-sourceSets {
-    main.java.srcDir querydslDir
-}
+        // Lombok
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
 
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
+        // Swagger
+        implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+
+        // Guava
+        implementation 'com.google.guava:guava:31.1-jre'
+
+        // test
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        // Log
+        implementation 'dev.akkinoc.spring.boot:logback-access-spring-boot-starter:3.3.2'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }

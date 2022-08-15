@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="appender/console-appender.xml"/>
+    <include resource="appender/file-info-appender.xml"/>
+    <include resource="appender/file-warn-appender.xml"/>
+    <include resource="appender/file-error-appender.xml"/>
+    <include resource="appender/file-db-appender.xml"/>
+
+    <springProfile name="local,test">
+        <logger name="com.musseukpeople.woorimapimage" level="DEBUG">
+            <appender-ref ref="console-appender"/>
+        </logger>
+
+        <logger name="org.springframework" level="INFO">
+            <appender-ref ref="console-appender"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="dev, prod">
+        <logger name="com.musseukpeople.woorimapimage" level="INFO">
+            <appender-ref ref="file-info-appender"/>
+            <appender-ref ref="file-warn-appender"/>
+            <appender-ref ref="file-error-appender"/>
+        </logger>
+
+        <logger name="org.springframework" level="INFO">
+            <appender-ref ref="file-info-appender"/>
+            <appender-ref ref="file-warn-appender"/>
+            <appender-ref ref="file-error-appender"/>
+        </logger>
+    </springProfile>
+</configuration>

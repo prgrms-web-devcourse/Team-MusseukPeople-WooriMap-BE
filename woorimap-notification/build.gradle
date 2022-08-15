@@ -1,0 +1,18 @@
+dependencies {
+    // DB
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation(group: 'it.ozimov', name: 'embedded-redis', version: '0.7.3') {
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
+}
+
+processResources.dependsOn('copySubmodule')
+
+task copySubmodule(type: Copy) {
+    from 'src/main/resources/woorimap-notification-config'
+    include '*.yml'
+    into './src/main/resources'
+}

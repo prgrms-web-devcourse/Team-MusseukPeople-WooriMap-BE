@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <include resource="appender/properties/default-properties.xml"/>
+    <property name="db-log" value="logs/db/db"/>
+    <appender name="file-db-appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${db-log}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${db-log}-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>15MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+</included>
