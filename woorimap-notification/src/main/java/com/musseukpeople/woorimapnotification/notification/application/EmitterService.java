@@ -54,7 +54,7 @@ public class EmitterService {
         NotificationResponse notificationResponse = NotificationResponse.from(notification);
         emitters.forEach((key, emitter) -> {
                 emitterRepository.saveEventCache(key, notificationResponse);
-                sendNotification(emitter, eventId, key, notificationResponse);
+                sendNotification(emitter, EVENT_NAME, eventId, key, notificationResponse);
             }
         );
     }
@@ -74,21 +74,22 @@ public class EmitterService {
     }
 
     private void sendConnectNotification(SseEmitter sseEmitter, String emitterId, Long memberId) {
-        sendNotification(sseEmitter, emitterId, emitterId, format(CONNECT_EVENT_MESSAGE_FORMAT, memberId));
+        sendNotification(sseEmitter, "connect", emitterId, emitterId, format(CONNECT_EVENT_MESSAGE_FORMAT, memberId));
     }
 
     private void sendLostEvent(Long memberId, String lastEventId, String emitterId, SseEmitter sseEmitter) {
         Map<String, Object> events = emitterRepository.findAllEventCacheStartWithByMemberId(memberId + ID_DELIMITER);
         events.entrySet().stream()
             .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
-            .forEach(entry -> sendNotification(sseEmitter, entry.getKey(), emitterId, entry.getValue()));
+            .forEach(entry -> sendNotification(sseEmitter, EVENT_NAME, entry.getKey(), emitterId, entry.getValue()));
     }
 
-    private void sendNotification(SseEmitter sseEmitter, String eventId, String emitterId, Object data) {
+    private void sendNotification(SseEmitter sseEmitter, String eventName, String eventId, String emitterId,
+                                  Object data) {
         try {
             sseEmitter.send(SseEmitter.event()
                 .id(eventId)
-                .name(EVENT_NAME)
+                .name(eventName)
                 .data(data));
         } catch (IOException e) {
             emitterRepository.deleteById(emitterId);
