@@ -3,6 +3,8 @@ package com.musseukpeople.woorimap.couple.domain;
 import static com.google.common.base.Preconditions.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -10,10 +12,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.musseukpeople.woorimap.common.model.BaseEntity;
 import com.musseukpeople.woorimap.couple.domain.vo.CoupleMembers;
 import com.musseukpeople.woorimap.member.domain.Member;
+import com.musseukpeople.woorimap.post.domain.Post;
+import com.musseukpeople.woorimap.tag.domain.Tag;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,6 +38,12 @@ public class Couple extends BaseEntity {
 
     @Embedded
     private CoupleMembers coupleMembers;
+
+    @OneToMany(mappedBy = "couple", orphanRemoval = true)
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "couple", orphanRemoval = true)
+    private List<Tag> tags = new ArrayList<>();
 
     public Couple(LocalDate startDate, CoupleMembers coupleMembers) {
         this(null, startDate, coupleMembers);
@@ -65,5 +76,13 @@ public class Couple extends BaseEntity {
 
     public boolean isSame(Couple couple) {
         return this.id.equals(couple.id);
+    }
+
+    public void addPost(Post post) {
+        this.posts.add(post);
+    }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
     }
 }

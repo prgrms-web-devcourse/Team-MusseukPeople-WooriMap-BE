@@ -6,8 +6,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +33,8 @@ import com.musseukpeople.woorimap.couple.domain.InviteCodeRepository;
 import com.musseukpeople.woorimap.member.application.dto.request.SignupRequest;
 import com.musseukpeople.woorimap.member.domain.Member;
 import com.musseukpeople.woorimap.member.domain.MemberRepository;
+import com.musseukpeople.woorimap.post.application.dto.request.CreatePostRequest;
+import com.musseukpeople.woorimap.tag.application.dto.request.TagRequest;
 import com.musseukpeople.woorimap.util.AcceptanceTest;
 
 class CoupleControllerTest extends AcceptanceTest {
@@ -38,9 +42,6 @@ class CoupleControllerTest extends AcceptanceTest {
     private static final String email = "test@gmail.com";
     private static final String password = "!Test1234";
     private static final String nickName = "test";
-
-    @Autowired
-    private CoupleRepository coupleRepository;
 
     @Autowired
     private InviteCodeRepository inviteCodeRepository;
@@ -206,6 +207,10 @@ class CoupleControllerTest extends AcceptanceTest {
     void removeCouple_success() throws Exception {
         //given
         String coupleToken = 커플_맺기_토큰(accessToken);
+        게시글_작성(coupleToken, createPostRequest());
+        게시글_작성(coupleToken, createPostRequest());
+        게시글_작성(coupleToken, createPostRequest());
+        게시글_작성(coupleToken, createPostRequest());
 
         //when
         mockMvc.perform(delete("/api/couples")
@@ -284,5 +289,21 @@ class CoupleControllerTest extends AcceptanceTest {
             .andExpect(status().isCreated())
             .andDo(print())
             .andReturn().getResponse();
+    }
+
+    private CreatePostRequest createPostRequest() {
+        return CreatePostRequest.builder()
+            .title("첫 이야기")
+            .content("<h1>첫 이야기.... </h1>")
+            .imageUrls(List.of("imageUrl1", "imageUrl2"))
+            .tags(List.of(
+                new TagRequest("서울", "#FFFFFF"),
+                new TagRequest("갬성", "#FFFFFF"),
+                new TagRequest("카페", "#FFFFFF")
+            ))
+            .datingDate(LocalDate.now())
+            .latitude(new BigDecimal("12.12312321"))
+            .longitude(new BigDecimal("122.3123121"))
+            .build();
     }
 }

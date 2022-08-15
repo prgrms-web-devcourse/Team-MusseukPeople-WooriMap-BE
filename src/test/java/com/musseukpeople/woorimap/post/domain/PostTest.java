@@ -20,12 +20,13 @@ public class PostTest {
     @Test
     void createPost_fail() {
         // given
+        Couple couple = createCouple();
         List<Tag> tags = List.of();
         List<String> imageUrls = List.of("imageUrl1", "imageUrl2", "imageUrl3");
 
         // when
         // then
-        assertThatThrownBy(() -> getPost(imageUrls, tags))
+        assertThatThrownBy(() -> getPost(imageUrls, tags, couple))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("태그는 1개 이상 등록해야합니다");
     }
@@ -43,7 +44,7 @@ public class PostTest {
 
         // when
         // then
-        assertThatThrownBy(() -> getPost(imageUrls, tags))
+        assertThatThrownBy(() -> getPost(imageUrls, tags, couple))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("이미지는 1개 이상 등록해야합니다");
     }
@@ -68,17 +69,18 @@ public class PostTest {
 
         // when
         // then
-        assertThatThrownBy(() -> getPost(imageUrls, tags))
+        assertThatThrownBy(() -> getPost(imageUrls, tags, couple))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("이미지는 최대 5개 등록 가능합니다");
     }
 
-    private Post getPost(List<String> imageUrls, List<Tag> tags) {
+    private Post getPost(List<String> imageUrls, List<Tag> tags,Couple couple) {
         return Post.builder()
             .title("hi")
             .imageUrls(imageUrls)
             .datingDate(LocalDate.now())
             .tags(tags)
+            .couple(couple)
             .build();
     }
 

@@ -67,6 +67,7 @@ public class Post extends BaseEntity {
     public Post(Couple couple, String title, String content, Location location, LocalDate datingDate,
                 List<String> imageUrls, List<Tag> tags) {
         this.couple = couple;
+        this.couple.addPost(this);
         this.title = title;
         this.content = content;
         this.location = location;

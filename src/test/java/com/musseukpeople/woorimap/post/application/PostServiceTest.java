@@ -86,8 +86,10 @@ class PostServiceTest extends IntegrationTest {
         tagRepository.saveAll(tags);
 
         // when
+        CreatePostRequest createPostRequest = createPostRequest();
+
         // then
-        assertThatThrownBy(() -> postService.createPost(couple, tags, createPostRequest()))
+        assertThatThrownBy(() -> postService.createPost(couple, tags, createPostRequest))
             .isInstanceOf(DuplicateTagException.class)
             .hasMessage("태그가 중복됩니다.");
     }
@@ -187,6 +189,28 @@ class PostServiceTest extends IntegrationTest {
         Optional<Post> foundPost = postRepository.findById(postId);
 
         assertThat(foundPost).isEmpty();
+    }
+
+    @DisplayName("커플 삭제시 해당 커플 게시물 모두 삭제")
+    @Test
+    void name() {
+        //given
+        List<Tag> tags = List.of(new Tag("seoul", "#FFFFFF", couple), new Tag("cafe", "#FFFFFF", couple));
+        tagRepository.saveAll(tags);
+        CreatePostRequest request = createPostRequest();
+        Long postId = postService.createPost(couple, tags, request).getId();
+
+        //when
+        Long coupleId = couple.getId();
+        coupleRepository.deleteById(coupleId);
+
+        List<Post> findPosts = postRepository.findPostsByFilterCondition(
+            new PostFilterCondition(null, null, null), coupleId);
+        List<Tag> findTags = tagRepository.findAllByCoupleId(coupleId);
+
+        //then
+        assertThat(findPosts).isEmpty();
+        assertThat(findTags).isEmpty();
     }
 
     private EditPostRequest editPostRequest() {
