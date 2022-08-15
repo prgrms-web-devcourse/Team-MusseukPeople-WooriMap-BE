@@ -6,7 +6,7 @@ import org.springframework.data.redis.listener.Topic;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.musseukpeople.woorimapnotification.notification.application.NotificationService;
+import com.musseukpeople.woorimapnotification.notification.application.NotificationFacade;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,12 +16,12 @@ public class RedisLogoutSubscriber implements RedisSubscriber {
 
     private static final ChannelTopic LOGOUT_CHANNEL = ChannelTopic.of("logout");
 
-    private final NotificationService notificationService;
+    private final NotificationFacade notificationFacade;
 
     @Override
     @Transactional
     public void onMessage(Message message, byte[] pattern) {
-        notificationService.deleteAllEmitterByMemberId(message.toString());
+        notificationFacade.deleteAllMemberEmitter(message.toString());
     }
 
     @Override

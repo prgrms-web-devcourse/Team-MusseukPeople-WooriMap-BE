@@ -13,20 +13,20 @@ import org.springframework.data.redis.connection.Message;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.musseukpeople.woorimapnotification.notification.application.NotificationService;
+import com.musseukpeople.woorimapnotification.notification.application.NotificationFacade;
 import com.musseukpeople.woorimapnotification.notification.domain.event.PostEvent;
 
 class RedisPostSubscriberTest {
 
     private RedisPostSubscriber redisMessageSubscriber;
     private ObjectMapper objectMapper;
-    private NotificationService notificationService;
+    private NotificationFacade notificationFacade;
 
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        notificationService = mock(NotificationService.class);
-        redisMessageSubscriber = new RedisPostSubscriber(objectMapper, notificationService);
+        notificationFacade = mock(NotificationFacade.class);
+        redisMessageSubscriber = new RedisPostSubscriber(objectMapper, notificationFacade);
     }
 
     @DisplayName("이벤트 수신 성공")
@@ -40,7 +40,7 @@ class RedisPostSubscriberTest {
         // then
         assertAll(
             () -> assertDoesNotThrow(() -> redisMessageSubscriber.onMessage(message, "test".getBytes())),
-            () -> then(notificationService).should(times(1)).sendPostNotification(any())
+            () -> then(notificationFacade).should(times(1)).sendPostNotification(any())
         );
     }
 

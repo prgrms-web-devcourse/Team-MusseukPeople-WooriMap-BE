@@ -25,10 +25,10 @@ import com.musseukpeople.woorimapnotification.notification.exception.NotFoundNot
 import com.musseukpeople.woorimapnotification.notification.infrastructure.EmitterRepository;
 import com.musseukpeople.woorimapnotification.notification.util.NotificationTest;
 
-class NotificationServiceTest extends NotificationTest {
+class NotificationFacadeTest extends NotificationTest {
 
     @Autowired
-    private NotificationService notificationService;
+    private NotificationFacade notificationFacade;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -44,7 +44,7 @@ class NotificationServiceTest extends NotificationTest {
         String lastEventId = "";
 
         // when
-        SseEmitter sseEmitter = notificationService.subscribe(id, lastEventId);
+        SseEmitter sseEmitter = notificationFacade.subscribe(id, lastEventId);
 
         // then
         assertAll(
@@ -64,7 +64,7 @@ class NotificationServiceTest extends NotificationTest {
             Map.of(String.valueOf(receiverId), mockSseEmitter));
 
         // when
-        notificationService.sendPostNotification(postEvent);
+        notificationFacade.sendPostNotification(postEvent);
 
         // then
         then(mockSseEmitter).should(times(1)).send(any());
@@ -78,7 +78,7 @@ class NotificationServiceTest extends NotificationTest {
             .getId();
 
         // when
-        notificationService.readNotification(notificationId);
+        notificationFacade.readNotification(notificationId);
 
         // then
         Notification notification = notificationRepository.findById(notificationId).get();
@@ -94,7 +94,7 @@ class NotificationServiceTest extends NotificationTest {
 
         // when
         // then
-        assertThatThrownBy(() -> notificationService.readNotification(notificationId))
+        assertThatThrownBy(() -> notificationFacade.readNotification(notificationId))
             .isInstanceOf(NotFoundNotificationException.class)
             .hasMessageContaining("존재하지 않는 알림입니다. ");
     }
@@ -110,7 +110,7 @@ class NotificationServiceTest extends NotificationTest {
         notificationRepository.saveAll(List.of(notification, otherNotification));
 
         // when
-        List<NotificationResponse> notifications = notificationService.getUnreadNotifications(memberId);
+        List<NotificationResponse> notifications = notificationFacade.getUnreadNotifications(memberId);
 
         // then
         assertThat(notifications).hasSize(1);

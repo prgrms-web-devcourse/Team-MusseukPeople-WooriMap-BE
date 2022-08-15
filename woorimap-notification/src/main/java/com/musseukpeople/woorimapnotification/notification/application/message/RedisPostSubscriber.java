@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.musseukpeople.woorimapnotification.notification.application.NotificationService;
+import com.musseukpeople.woorimapnotification.notification.application.NotificationFacade;
 import com.musseukpeople.woorimapnotification.notification.domain.event.PostEvent;
 
 import lombok.RequiredArgsConstructor;
@@ -22,14 +22,14 @@ public class RedisPostSubscriber implements RedisSubscriber {
     private static final String CONVERT_FAIL_MESSAGE = "메시지를 변환하지 못했습니다.";
 
     private final ObjectMapper objectMapper;
-    private final NotificationService notificationService;
+    private final NotificationFacade notificationFacade;
 
     @Override
     @Transactional
     public void onMessage(Message message, byte[] pattern) {
         try {
             PostEvent postEvent = objectMapper.readValue(message.getBody(), PostEvent.class);
-            notificationService.sendPostNotification(postEvent);
+            notificationFacade.sendPostNotification(postEvent);
         } catch (IOException e) {
             throw new IllegalArgumentException(CONVERT_FAIL_MESSAGE, e);
         }

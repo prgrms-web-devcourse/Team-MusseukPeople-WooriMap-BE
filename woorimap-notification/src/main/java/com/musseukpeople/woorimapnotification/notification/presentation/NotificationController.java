@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.musseukpeople.woorimapnotification.common.model.ApiResponse;
-import com.musseukpeople.woorimapnotification.notification.application.NotificationService;
+import com.musseukpeople.woorimapnotification.notification.application.NotificationFacade;
 import com.musseukpeople.woorimapnotification.notification.application.dto.response.NotificationResponse;
 import com.musseukpeople.woorimapnotification.notification.presentation.auth.login.Login;
 import com.musseukpeople.woorimapnotification.notification.presentation.auth.login.LoginMember;
@@ -30,21 +30,21 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api")
 public class NotificationController {
 
-    private final NotificationService notificationService;
+    private final NotificationFacade notificationFacade;
 
     @Operation(summary = "알림 구독", description = "알림 구독 API입니다.")
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @LoginRequiredForNoti
     public SseEmitter subscribe(@Login LoginMember loginMember,
                                 @RequestHeader(value = "last-event-id", required = false, defaultValue = "") String lastEventId) {
-        return notificationService.subscribe(loginMember.getId(), lastEventId);
+        return notificationFacade.subscribe(loginMember.getId(), lastEventId);
     }
 
     @Operation(summary = "알림 조회", description = "읽지 않은 알림 조회 API입니다.")
     @GetMapping("/notifications")
     @LoginRequired
     public ResponseEntity<ApiResponse<List<NotificationResponse>>> showNotifications(@Login LoginMember loginMember) {
-        List<NotificationResponse> notifications = notificationService.getUnreadNotifications(loginMember.getId());
+        List<NotificationResponse> notifications = notificationFacade.getUnreadNotifications(loginMember.getId());
         return ResponseEntity.ok(new ApiResponse<>(notifications));
     }
 
@@ -52,7 +52,7 @@ public class NotificationController {
     @PatchMapping("/notifications/{id}")
     @LoginRequired
     public ResponseEntity<Void> readNotification(@PathVariable("id") Long id) {
-        notificationService.readNotification(id);
+        notificationFacade.readNotification(id);
         return ResponseEntity.noContent().build();
     }
 }
