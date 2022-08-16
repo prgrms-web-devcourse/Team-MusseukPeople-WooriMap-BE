@@ -1,4 +1,5 @@
 # Team-MusseukPeople-WooriMap-BE
+![woorimap](https://user-images.githubusercontent.com/45508756/184794642-07be0a2f-1bae-4058-91b6-6cb5171ecc19.png)
 
 # 프로젝트 소개
 우리 커플의 추억 장소 공유 프로젝트
@@ -70,11 +71,8 @@
 ![image](https://user-images.githubusercontent.com/45508756/184793786-303c588f-800a-40f5-8def-d531cb9b260e.png)
 
 # 위키
-[기획서](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/기획서)
-
-[백엔드 컨벤션 및 전략](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/백엔드-컨벤션-및-전략)
-
-[유저 스토리](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/유저스토리)
-
-[팀 문화](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/팀문화)
+- [기획서](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/기획서)
+- [백엔드 컨벤션 및 전략](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/백엔드-컨벤션-및-전략)
+- [유저 스토리](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/유저스토리)
+- [팀 문화](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/팀문화)
 
