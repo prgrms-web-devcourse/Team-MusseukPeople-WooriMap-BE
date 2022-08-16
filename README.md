@@ -48,17 +48,8 @@
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"><img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white"><img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"><img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 
 # 기술 스택
-- Java 11
-- Gradle 
-- Spring Boot 
-- QueryDSL
-- Lombok
-- Guava
-- Junit5, mockito
-- Mysql 5.7 / 로컬 Mysql 8
-- Redis
-- Swagger
 
+![image2](https://user-images.githubusercontent.com/97223877/184804540-24bf15df-b68a-41b8-98f4-929491257178.png)
 
 # 아키텍처
 ## 백엔드
