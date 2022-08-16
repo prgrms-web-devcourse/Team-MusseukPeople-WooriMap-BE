@@ -48,16 +48,14 @@
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"><img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white"><img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"><img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 
 # 기술 스택
-- Java 11
-- Gradle 
-- Spring Boot 
-- QueryDSL
-- Lombok
-- Guava
-- Junit5, mockito
-- Mysql 5.7 / 로컬 Mysql 8
-- Redis
-- Swagger
+
+![image2](https://user-images.githubusercontent.com/97223877/184804540-24bf15df-b68a-41b8-98f4-929491257178.png)
+
+# 커밋 & PR 전략
+- 브랜치 전략 : git flow 전략을 따르되, release 브랜치의 경우 현재 상황에서 없다고 판단하여 제외하고 main, develop, feature, hotfix 브랜치만 사용
+- PR 코드 리뷰: 코드 리뷰를 통해 사전에 발생할 수 있는 문제 방지, 함께 고민하고 생각하며 개발 진행
+
+![commit](https://user-images.githubusercontent.com/97223877/184804899-ec1da2ba-2836-4ab3-b29e-7e490d7bfbd4.png)
 
 
 # 아키텍처
@@ -69,6 +67,12 @@
 
 ## ERD
 ![image](https://user-images.githubusercontent.com/45508756/184793786-303c588f-800a-40f5-8def-d531cb9b260e.png)
+
+
+# API 문서
+- [Core API](https://dev.woorimap.p-e.kr/swagger-ui/index.html)
+- [Image API](https://image.woorimap.p-e.kr/swagger-ui/index.html)
+- [Noti API](https://noti.woorimap.p-e.kr/swagger-ui/index.html)
 
 # 위키
 - [기획서](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/기획서)
