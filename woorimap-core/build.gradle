@@ -1,0 +1,163 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
+
+plugins {
+    id 'jacoco'
+    id "org.sonarqube" version "3.4.0.2513"
+    //Querydsl
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+}
+
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+
+dependencies {
+    // WEB
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // DB
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation(group: 'it.ozimov', name: 'embedded-redis', version: '0.7.3') {
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
+    implementation 'org.flywaydb:flyway-core:8.5.12'
+    implementation 'org.flywaydb:flyway-mysql:8.5.12'
+
+    // QueryDsl
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+    // Tika
+    implementation 'org.apache.tika:tika-core:2.4.1'
+
+    // Security
+    implementation 'org.springframework.security:spring-security-crypto:5.7.2'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // AWS CloudWatch
+    implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
+
+    // Log
+    implementation group: 'org.codehaus.janino', name: 'janino', version: '3.0.7'
+}
+
+test {
+    finalizedBy 'jacocoTestReport'
+}
+
+processResources.dependsOn('copySubmodule')
+
+task copySubmodule(type: Copy) {
+    from 'src/main/resources/woorimap-config'
+    include '*.yml'
+    into './src/main/resources'
+}
+
+// jacoco
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+        xml.enabled true
+    }
+
+    def Qdomains = []
+    for (qPattern in "**/QA".."**/QZ") {
+        Qdomains.add(qPattern + "*")
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: [
+                            "**/*WoorimapApplication*",
+                            '**/*Fake*',
+                            '**/*Health*',
+                            '**/*Request*',
+                            '**/*Response*',
+                            '**/*Dto*',
+                            '**/*Exception*',
+                            '**/*Exception*',
+                            '**/common*',
+                    ] + Qdomains)
+        }))
+    }
+
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    def Qdomains = []
+    for (qPattern in '*.QA'..'*.QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+
+
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.60
+            }
+
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.60
+            }
+
+            excludes = [
+                    "**.*WoorimapApplication*",
+                    '**.*Fake*',
+                    '**.*Health*',
+                    '**.*Request*',
+                    '**.*Response*',
+                    '**.*Dto*',
+                    '**.*Interceptor*',
+                    '**.*Exception*',
+                    '**.*common*'
+            ] + Qdomains
+        }
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "prgrms-web-devcourse_Team-MusseukPeople-WooriMap-BE"
+        property "sonar.organization", "prgrms-web-devcourse"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.exclusions", "**.*Dto*, **.*common*, **.*Exception*, **.*Response*, **.*Request*"
+    }
+}
+
+//querydsl
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+    main.java.srcDir querydslDir
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}

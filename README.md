@@ -1,12 +1,18 @@
 # Team-MusseukPeople-WooriMap-BE
+![woorimap](https://user-images.githubusercontent.com/45508756/184794642-07be0a2f-1bae-4058-91b6-6cb5171ecc19.png)
 
-📔 [머슥한녀석들의 프로젝트 노션](https://www.notion.so/backend-devcourse/02-2183133deb8a4dd4a88c6cba2ee10004)
-
-## 프로젝트 소개
+# 프로젝트 소개
 우리 커플의 추억 장소 공유 프로젝트
 
-## 팀원 소개
-### [Backend]
+# 기획 및 배경 동기
+- 우리의 이야기를 하나의 서비스에서 기록할 수 있고 공유할 수 있다면 어떨까?
+- 기존 연인들끼리 사용할 수 있는 어플은 사진 공유 및 서로가 쓴 글들의 공유가 가능하지만, 해당 기능들은 기존의 앱들로 대체가 가능한 경우들이 많다. 또한, 장소 별로 모아보기가 어려워 결국에는 다시 찾아보지 않고 남는 경우들이 많다.
+- 둘이 갔던 장소들을 지도로 모아 한 눈에 볼 수 있으면 좋겠다는 아이디어를 토대로, 우리맵이라는 지도 기반 연인간 추억 공유 서비스를 기획하였다.
+
+# 기간
+2022.07.21 ~ 2022.08.17
+
+# 팀원 소개
 <table>
     <tr>
         <td>
@@ -38,55 +44,39 @@
     </tr>
 </table>
 
-### [Frontend]
-<table>
-    <tr>
-        <td>
-        <a href="https://github.com/mrbartrns">
-            <img src="https://avatars.githubusercontent.com/u/56826914?v=4" width="100px" />
-        </a>
-    </td>
-    <td>
-        <a href="https://github.com/Yummy-sk">
-            <img src="https://avatars.githubusercontent.com/u/60822846?v=4" width="100px" />
-        </a>
-    </td>
-    <td>
-        <a href="https://github.com/MayOwall">
-            <img src="https://avatars.githubusercontent.com/u/97934878?v=4" width="100px" />
-        </a>
-    </td>
-    <td>
-        <a href="https://github.com/sangjin149">
-            <img src="https://avatars.githubusercontent.com/u/53640976?v=4" width="100px" />
-        </a>
-    </td>
-    <td>
-        <a href="https://github.com/woojerry">
-            <img src="https://avatars.githubusercontent.com/u/50645183?v=4" width="100px" />
-        </a>
-    </td>
-    </tr>
-    <tr>
-        <td align="center"><a href="https://github.com/mrbartrns">Ben (고준혁)</a></td>
-        <td align="center"><a href="https://github.com/Yummy-sk">Wego (염상권)</a></td>
-        <td align="center"><a href="https://github.com/MayOwall">Owall (이지은)</a></td>
-        <td align="center"><a href="https://github.com/sangjin149">Matt (이상진)</a></td>
-        <td align="center"><a href="https://github.com/woojerry">Elio (이우재)</a></td>
-    </tr>
-</table>
-
-## 커뮤니케이션
+# 커뮤니케이션
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"><img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white"><img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"><img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 
-## 기술 스택
-- Java 11
-- Gradle 
-- Spring Boot 
-- QueryDSL
-- Lombok
-- Guava
-- Junit5, mockito
-- Mysql 5.7 / 로컬 Mysql 8
-- Redis
-- Swagger
+# 기술 스택
+
+![image2](https://user-images.githubusercontent.com/97223877/184804540-24bf15df-b68a-41b8-98f4-929491257178.png)
+
+# 커밋 & PR 전략
+- 브랜치 전략 : git flow 전략을 따르되, release 브랜치의 경우 현재 상황에서 없다고 판단하여 제외하고 main, develop, feature, hotfix 브랜치만 사용
+- PR 코드 리뷰: 코드 리뷰를 통해 사전에 발생할 수 있는 문제 방지, 함께 고민하고 생각하며 개발 진행
+
+![commit](https://user-images.githubusercontent.com/97223877/184804899-ec1da2ba-2836-4ab3-b29e-7e490d7bfbd4.png)
+
+
+# 아키텍처
+## 백엔드
+![image (5)](https://user-images.githubusercontent.com/45508756/184793626-7e39d6b3-d60e-4ddb-b71d-0f3f26c18292.png)
+
+## CI/CD
+![image (4)](https://user-images.githubusercontent.com/45508756/184793645-e4206c58-bf7c-4efe-80e4-96e1a77ff6b3.png)
+
+## ERD
+![image](https://user-images.githubusercontent.com/45508756/184793786-303c588f-800a-40f5-8def-d531cb9b260e.png)
+
+
+# API 문서
+- [Core API](https://dev.woorimap.p-e.kr/swagger-ui/index.html)
+- [Image API](https://image.woorimap.p-e.kr/swagger-ui/index.html)
+- [Noti API](https://noti.woorimap.p-e.kr/swagger-ui/index.html)
+
+# 위키
+- [기획서](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/기획서)
+- [백엔드 컨벤션 및 전략](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/백엔드-컨벤션-및-전략)
+- [유저 스토리](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/유저스토리)
+- [팀 문화](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/팀문화)
+
