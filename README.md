@@ -68,6 +68,12 @@
 ## ERD
 ![image](https://user-images.githubusercontent.com/45508756/184793786-303c588f-800a-40f5-8def-d531cb9b260e.png)
 
+
+# API 문서
+- [Core API](https://dev.woorimap.p-e.kr/swagger-ui/index.html)
+- [Image API](https://image.woorimap.p-e.kr/swagger-ui/index.html)
+- [Noti API](https://noti.woorimap.p-e.kr/swagger-ui/index.html)
+
 # 위키
 - [기획서](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/기획서)
 - [백엔드 컨벤션 및 전략](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/백엔드-컨벤션-및-전략)
