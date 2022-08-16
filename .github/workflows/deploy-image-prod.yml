@@ -1,15 +1,18 @@
-name: Deploy production env
+name: Deploy Woorimap-image prod env
 
 on:
-  push:
+  pull_request:
     branches:
       - main
+    types:
+      - closed
 
 permissions:
   contents: read
 
 jobs:
-  PROD-CD:
+  build:
+    if: ${{ (github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'image')) }}
     runs-on: ubuntu-latest
 
     steps:
@@ -36,27 +39,28 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: ./gradlew clean woorimap-image:build
 
-      - name: Docker build & push to prod
+      ## docker build & push to develop
+      - name: Docker build & push to dev
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dockerfile-prod -t ${{ secrets.DOCKER_REPO }}/woorimap-prod .
-          docker push ${{ secrets.DOCKER_REPO }}/woorimap-prod
+          docker build -f ./woorimap-image/Dockerfile -t ${{ secrets.DOCKER_REPO }}/woorimap-image ./woorimap-image
+          docker push ${{ secrets.DOCKER_REPO }}/woorimap-image
 
       ## deploy to prod
-      - name: Deploy to prod
+      - name: Deploy to dev
         uses: appleboy/ssh-action@master
-        id: deploy-prod
+        id: deploy-dev
         with:
-          host: ${{ secrets.HOST_PROD }}
+          host: ${{ secrets.HOST_DEV }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            docker rm -f woorimap-prod
-            docker-compose pull
-            docker-compose up -d
+            docker rm -f woorimap-image
+            docker-compose pull image
+            docker-compose up -d image
             docker image prune -f
 
       - name: Slack alarm
