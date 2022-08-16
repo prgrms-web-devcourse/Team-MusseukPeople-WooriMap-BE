@@ -51,6 +51,13 @@
 
 ![image2](https://user-images.githubusercontent.com/97223877/184804540-24bf15df-b68a-41b8-98f4-929491257178.png)
 
+# 커밋 & PR 전략
+- 브랜치 전략 : git flow 전략을 따르되, release 브랜치의 경우 현재 상황에서 없다고 판단하여 제외하고 main, develop, feature, hotfix 브랜치만 사용
+- PR 코드 리뷰: 코드 리뷰를 통해 사전에 발생할 수 있는 문제 방지, 함께 고민하고 생각하며 개발 진행
+
+![commit](https://user-images.githubusercontent.com/97223877/184804899-ec1da2ba-2836-4ab3-b29e-7e490d7bfbd4.png)
+
+
 # 아키텍처
 ## 백엔드
 ![image (5)](https://user-images.githubusercontent.com/45508756/184793626-7e39d6b3-d60e-4ddb-b71d-0f3f26c18292.png)
