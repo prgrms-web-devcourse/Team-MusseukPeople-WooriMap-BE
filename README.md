@@ -1,4 +1,4 @@
-# Team-MusseukPeople-WooriMap-BE
+# 우리가 갔던 곳, [우리맵](https://woorimap.vercel.app/) 
 ![woorimap](https://user-images.githubusercontent.com/45508756/184794642-07be0a2f-1bae-4058-91b6-6cb5171ecc19.png)
 
 # 프로젝트 소개
@@ -80,3 +80,5 @@
 - [유저 스토리](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/유저스토리)
 - [팀 문화](https://github.com/prgrms-web-devcourse/Team-MusseukPeople-WooriMap-BE/wiki/팀문화)
 
+# Frontend GitHub Repository
+[우리맵 FE Repository](https://github.com/prgrms-web-devcourse/Team_02_WooriMap_FE)
