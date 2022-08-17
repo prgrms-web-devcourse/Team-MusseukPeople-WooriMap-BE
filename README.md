@@ -63,7 +63,7 @@
 ![image (5)](https://user-images.githubusercontent.com/45508756/184793626-7e39d6b3-d60e-4ddb-b71d-0f3f26c18292.png)
 
 ## CI/CD
-![image (4)](https://user-images.githubusercontent.com/45508756/184793645-e4206c58-bf7c-4efe-80e4-96e1a77ff6b3.png)
+![CI:CD](https://user-images.githubusercontent.com/65746780/185067050-a78492f5-7535-46a6-b784-e41f6cbcf62c.png)
 
 ## ERD
 ![image](https://user-images.githubusercontent.com/45508756/184793786-303c588f-800a-40f5-8def-d531cb9b260e.png)
