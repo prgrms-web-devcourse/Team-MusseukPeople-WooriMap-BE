@@ -15,13 +15,16 @@ import com.musseukpeople.woorimapimage.image.presentation.auth.login.LoginMember
 @Component
 public class WoorimapClient {
 
+    private final RestTemplate restTemplate;
     private final String woorimapUrl;
 
     public WoorimapClient(
         @Value("${woorimap.api.host}") String woorimapHost,
-        @Value("${woorimap.api.port}") String woorimapPort
+        @Value("${woorimap.api.port}") String woorimapPort,
+        RestTemplate restTemplate
     ) {
         this.woorimapUrl = woorimapHost + woorimapPort;
+        this.restTemplate = restTemplate;
     }
 
     public ApiResponse<LoginMember> getLoginMember(String accessToken) {
@@ -29,7 +32,7 @@ public class WoorimapClient {
         headers.add(HttpHeaders.AUTHORIZATION, accessToken);
         HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
 
-        ResponseEntity<ApiResponse<LoginMember>> response = new RestTemplate().exchange(
+        ResponseEntity<ApiResponse<LoginMember>> response = restTemplate.exchange(
             woorimapUrl + "/api/auth/login/members", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<>() {
             });
         return response.getBody();
